@@ -29,30 +29,26 @@ public class Main {
 
     /* Method to  READ all the employees */
     private static void listClient( ){
-        Session session = ourSessionFactory.openSession();
         Transaction tx = null;
 
-        try {
+        try (Session session = ourSessionFactory.openSession()) {
             tx = session.beginTransaction();
             List clients = session.createQuery("FROM ClientEntity ").list();
-            for (Iterator iterator = clients.iterator(); iterator.hasNext();){
-                ClientEntity client = (ClientEntity) iterator.next();
+            for (Object o : clients) {
+                ClientEntity client = (ClientEntity) o;
                 System.out.print("First Name: " + client.getNom());
                 System.out.print("  Siren: " + client.getSiren());
                 System.out.println("  Actif: " + client.getActif());
             }
             tx.commit();
         } catch (HibernateException e) {
-            if (tx!=null) tx.rollback();
+            if (tx != null) tx.rollback();
             e.printStackTrace();
-        } finally {
-            session.close();
         }
     }
 
-    public static void main(final String[] args) throws Exception {
-        /*final Session session = getSession();
-        try {
+    public static void main(final String[] args) {
+        try (Session session = getSession()) {
             System.out.println("querying all the managed entities...");
             final Metamodel metamodel = session.getSessionFactory().getMetamodel();
 
@@ -64,11 +60,7 @@ public class Main {
                     System.out.println("  " + o);
                 }
             }
-        } finally {
-            session.close();
-        }*/
+        }
         listClient();
     }
-
-
 }
