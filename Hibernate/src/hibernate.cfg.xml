@@ -4,11 +4,11 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.connection.url">jdbc:mysql://cp668097-001.dbaas.ovh.net:35675</property>
+        <property name="hibernate.connection.url">jdbc:mysql://cp668097-001.dbaas.ovh.net:35675/GenieLog</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <!-- todo changer avec le bon compte-->
-        <property name="hibernate.connection.username"></property>
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">phil</property>
+        <property name="hibernate.connection.password">r2CBDq20gQgHtHT3pDN0n</property>
 
         <mapping class="DataBase.AdresseClientEntity"/>
         <mapping class="DataBase.ClientEntity"/>
