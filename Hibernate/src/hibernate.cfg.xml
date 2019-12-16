@@ -10,8 +10,8 @@
         <property name="hibernate.connection.useSSL">false</property>
         
         <!-- todo changer avec le bon compte-->
-        <property name="hibernate.connection.username">phil</property>
-        <property name="hibernate.connection.password">r2CBDq20gQgHtHT3pDN0n</property>
+        <property name="hibernate.connection.username"></property>
+        <property name="hibernate.connection.password"></property>
         <property name="hibernate.connection.requireSSL">false</property>
         <property name="hibernate.connection.useSSL">false</property>
 
