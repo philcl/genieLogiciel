@@ -1,54 +1,37 @@
-import DataBase.ClientEntity;
+import API_REST.CreateSession;
+import API_REST.RessourceClient;
 import org.hibernate.*;
 import org.hibernate.query.Query;
-import org.hibernate.cfg.Configuration;
-
 import javax.persistence.metamodel.EntityType;
+import java.util.Scanner;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
+import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 public class Main {
-    private static final SessionFactory ourSessionFactory;
-
-    static {
-        try {
-            Configuration configuration = new Configuration();
-            configuration.configure();
-
-            ourSessionFactory = configuration.buildSessionFactory();
-        } catch (Throwable ex) {
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
-
-    public static Session getSession() throws HibernateException {
-        return ourSessionFactory.openSession();
-    }
-
-    /* Method to  READ all the employees */
-    private static void listClient( ){
-        Transaction tx = null;
-
-        try (Session session = ourSessionFactory.openSession()) {
-            tx = session.beginTransaction();
-            List clients = session.createQuery("FROM ClientEntity ").list();
-            for (Object o : clients) {
-                ClientEntity client = (ClientEntity) o;
-                System.out.print("First Name: " + client.getNom());
-                System.out.print("  Siren: " + client.getSiren());
-                System.out.println("  Actif: " + client.getActif());
-            }
-            tx.commit();
-        } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-        }
-    }
+    private static final Session ourSessionFactory = CreateSession.getSession();
+       /* Method to  READ all the employees */
 
     public static void main(final String[] args) {
-        try (Session session = getSession()) {
+        //Part about REST
+        JAXRSServerFactoryBean sf = new JAXRSServerFactoryBean();
+        sf.setResourceClasses(RessourceClient.class);
+        sf.setProvider(new JacksonJaxbJsonProvider());
+        sf.setResourceProvider(
+                RessourceClient.class,
+                new SingletonResourceProvider(new RessourceClient())
+        );
+        sf.setAddress("http://localhost:8161/");
+        sf.create();
+
+        System.out.println("Saisir car+return pour stopper le serveur");
+        new Scanner(System.in).next();
+
+        System.out.println("Fin");
+
+        //Part about database
+        try (Session session = CreateSession.getSession()) {
             System.out.println("querying all the managed entities...");
             final Metamodel metamodel = session.getSessionFactory().getMetamodel();
 
@@ -61,6 +44,5 @@ public class Main {
                 }
             }
         }
-        listClient();
     }
 }
