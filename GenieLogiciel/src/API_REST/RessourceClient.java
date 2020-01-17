@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.ws.rs.*;
 
-@Path("/test")
-public class RessourceClient {/*
+@Path("/client")
+public class RessourceClient {
     @POST
     @Produces("application/json")
     public ArrayList<ClientEntity> getListClient(@QueryParam("nom") String nom) {
@@ -23,12 +23,8 @@ public class RessourceClient {/*
             List clients = session.createQuery("FROM ClientEntity ").list();
             for (Object o : clients) {
                 ClientEntity client = (ClientEntity) o;
-                if(client.getActif() == 1) {
+                if(client.getActif() == 1)
                     listClients.add(client);
-                    System.out.print("First Name: " + client.getNom());
-                    System.out.print("  Siren: " + client.getSiren());
-                    System.out.println("  Actif: " + client.getActif());
-                }
             }
             tx.commit();
         } catch (HibernateException e) {
@@ -36,7 +32,7 @@ public class RessourceClient {/*
             e.printStackTrace();
         }
         return listClients;
-    }*/
+    }
     @Path("try")
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
