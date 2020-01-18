@@ -1,0 +1,5 @@
+#IntelliJ exclude parameters
+/.idea/
+/out/
+*.iml
+/src/hibernate.cfg.xml

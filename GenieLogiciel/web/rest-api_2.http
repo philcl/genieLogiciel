@@ -1,0 +1,6 @@
+POST http://localhost:8080/Test_code_war_exploded/ticket/init?clientId=602036444&ticketId=0
+Accept: */*
+Cache-Control: no-cache
+
+###
+

@@ -1,4 +1,5 @@
 import API_REST.RessourceClient;
+import API_REST.RessourceTicket;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -13,9 +14,8 @@ public class MyApplication extends Application{
     @Override
     public Set<Class<?>> getClasses() {
         HashSet h = new HashSet<Class<?>>();
-        h.add( HelloWorld.class );
-        h.add( toto.class);
         h.add(RessourceClient.class);
+        h.add(RessourceTicket.class);
         return h;
     }
 }

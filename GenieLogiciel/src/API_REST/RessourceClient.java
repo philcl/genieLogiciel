@@ -13,8 +13,8 @@ import javax.ws.rs.*;
 public class RessourceClient {
     @POST
     @Produces("application/json")
-    public ArrayList<ClientEntity> getListClient(@QueryParam("nom") String nom) {
-        System.out.println("testHeloo" +nom);
+    public ArrayList<ClientEntity> getListDemandeur(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket) {
+        System.out.println("testHello" +IdClient);
         ArrayList<ClientEntity> listClients = new ArrayList<>();
         Transaction tx = null;
 
@@ -27,6 +27,7 @@ public class RessourceClient {
                     listClients.add(client);
             }
             tx.commit();
+            session.close();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
