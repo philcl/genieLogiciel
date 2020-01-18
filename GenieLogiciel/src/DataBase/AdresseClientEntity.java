@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "AdresseClient", schema = "GenieLog")
+@Table(name = "AdresseClient", schema = "GenieLog", catalog = "")
 public class AdresseClientEntity {
     private long siret;
     private Integer numero;
@@ -27,6 +27,10 @@ public class AdresseClientEntity {
     @Column(name = "numero", nullable = true)
     public Integer getNumero() {
         return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
     }
 
     public void setNumero(Integer numero) {

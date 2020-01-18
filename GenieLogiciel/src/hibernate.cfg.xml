@@ -8,18 +8,23 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.requireSSL">false</property>
         <property name="hibernate.connection.useSSL">false</property>
-        
+
         <!-- todo changer avec le bon compte-->
-        <property name="hibernate.connection.username">phil</property>
-        <property name="hibernate.connection.password">r2CBDq20gQgHtHT3pDN0n</property>
+        <property name="hibernate.connection.username"></property>
+        <property name="hibernate.connection.password"></property>
 
         <mapping class="DataBase.AdresseClientEntity"/>
         <mapping class="DataBase.ClientEntity"/>
-        <mapping class="DataBase.JonctionClientEntity"/>
         <mapping class="DataBase.PersonneEntity"/>
         <mapping class="DataBase.PosteEntity"/>
-        <mapping class="DataBase.TicketEntity"/>
         <mapping class="DataBase.TicketJonctionEntity"/>
+        <mapping class="DataBase.CompetencesEntity"/>
+        <mapping class="DataBase.StatutTicketEntity"/>
+        <mapping class="DataBase.TypeDemandesEntity"/>
+        <mapping class="DataBase.CategorieEntity"/>
+        <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
+        <mapping class="DataBase.InterventionEntity"/>
+        <mapping class="DataBase.TicketEntity"/>
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

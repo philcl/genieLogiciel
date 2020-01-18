@@ -4,13 +4,15 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Personne", schema = "GenieLog")
+@Table(name = "Personne", schema = "GenieLog", catalog = "")
 public class PersonneEntity {
     private int idPersonne;
     private String prenom;
     private String nom;
     private String mail;
     private byte actif;
+    private long siret;
+    private int employe;
 
     @Id
     @Column(name = "idPersonne", nullable = false)
@@ -77,5 +79,25 @@ public class PersonneEntity {
     @Override
     public int hashCode() {
         return Objects.hash(idPersonne, prenom, nom, mail, actif);
+    }
+
+    @Basic
+    @Column(name = "SIRET")
+    public long getSiret() {
+        return siret;
+    }
+
+    public void setSiret(long siret) {
+        this.siret = siret;
+    }
+
+    @Basic
+    @Column(name = "Employe")
+    public int getEmploye() {
+        return employe;
+    }
+
+    public void setEmploye(int employe) {
+        this.employe = employe;
     }
 }
