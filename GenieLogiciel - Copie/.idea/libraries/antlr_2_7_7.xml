@@ -1,0 +1,51 @@
+<component name="libraryTable">
+  <library name="antlr-2.7.7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/antlr-2.7.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/byte-buddy-1.10.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/classmate-1.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/cxf-bundle-jaxrs-2.7.18.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/dom4j-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/FastInfoset-1.2.15.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/FastInoset.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/gmbal-api-only.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/ha-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/hibernate-commons-annotations-5.1.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/hibernate-core-5.4.9.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/istack-commons-runtime-3.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jackson-jaxrs-json-provider-2.10.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jandex-2.1.1.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/javassist-3.24.0-GA.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/javax.activation-api-1.2.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/javax.annotation.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/javax.persistence-api-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/javax.ws.rs-api-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxb-api-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxb-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxb-impl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxb-runtime-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxb-xjc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxws-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxws-rt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jaxws-tools.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jboss-logging-3.3.2.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jboss-transaction-api_1.2_spec-1.1.1.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/jsr181-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/mail.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/management-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/mimepull.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/mysql-connector-java-5.1.40.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/policy.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/saaj-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/saaj-impl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/stax-ex-1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/stax-ex.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/stax2-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/streambuffer.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/txw2-2.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/Hibernate/woodstox-core-asl.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
