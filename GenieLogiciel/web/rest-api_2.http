@@ -1,6 +1,13 @@
-POST http://localhost:8080/Test_code_war_exploded/ticket/init?clientId=123456783&ticketId=3
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/init?clientId=123456783&ticketId=3
 Accept: */*
 Cache-Control: no-cache
 
 ###
 
+### Send POST request with json body
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/create
+Content-Type: application/json
+
+{"categorie":"Etude","competences":[],"demandeur":{"nom":"CLAUDE","prenom":"Philippe"},"nomClient":"ACCOR","objet":"TestReussi","statut":"Clos","technicien":{"nom":"VITTONE","prenom":"Jules"},"type":"Demande"}
+
+###

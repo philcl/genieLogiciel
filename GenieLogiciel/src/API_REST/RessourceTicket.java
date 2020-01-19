@@ -8,17 +8,17 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/ticket")
 public class RessourceTicket {
-    //todo : Ajouter Liste des tech & Liste des demandeurs & priorityList
+    //todo : Ajouter priorityList
     @Path("/init")
     @POST
     @Produces("application/json")
@@ -191,6 +191,104 @@ public class RessourceTicket {
         }
         tx.commit();
         session.clear();
+        return ticket;
+    }
+
+    @Path("/create")
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    public ArrayList<Object> postCreation(HashMap<String, Object> json) {
+        ArrayList<Object> list = new ArrayList<>();
+        Transaction tx = null;
+        TicketEntity ticketEntity = new TicketEntity();
+
+        Ticket ticket = createObjectFromJson(json);
+        if(ticket == null) {
+            //todo renvoie d'une erreur pour mauvais format de ticket
+            System.out.println("h");
+        }
+
+        ticketEntity.setCategorie(ticket.categorie);
+        ticketEntity.setDate(Timestamp.from(Instant.now()));
+        ticketEntity.setDescription(ticket.description);
+        ticketEntity.setObjet(ticket.objet);
+        ticketEntity.setStatut(ticket.statut);
+        ticketEntity.setType(ticket.type);
+
+        try(Session session = CreateSession.getSession()) {
+
+            //Ajout de l'adresse (SIRET) des ID du demandeur et du technicien
+            tx = session.beginTransaction();
+
+            List result = session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.demandeur.prenom + "' and p.nom = '" + ticket.demandeur.nom + "'").list();
+            //todo verifier sur la base de donnee que les champs nom et prenom sont en index unique
+            PersonneEntity demandeur = (PersonneEntity)result.get(0);
+            ticketEntity.setAdresse(demandeur.getSiret());
+            ticketEntity.setDemandeur(demandeur.getIdPersonne());
+            tx.commit();
+            session.clear();
+
+            tx = session.beginTransaction();
+            result = session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.technicien.prenom + "' and p.nom = '" + ticket.technicien.nom + "'").list();
+            PersonneEntity tech = (PersonneEntity)result.get(0);
+            ticketEntity.setTechnicien(tech.getIdPersonne());
+            tx.commit();
+            session.clear();
+
+            tx = session.beginTransaction();
+            result = session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").list();
+            int maxID = (int) result.get(0);
+            ticketEntity.setId(maxID+1); //Rajout de l'increment
+            tx.commit();
+            session.clear();
+
+            //Ajout en base de donnee du ticket
+            tx = session.beginTransaction();
+            session.save(ticketEntity);
+
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+
+        list.add(ticket);
+        list.add(null);
+        list.add(null);
+        list.add(ticketEntity);
+        return list;
+    }
+
+    private Ticket createObjectFromJson(HashMap<String, Object> json) {
+        Personne technicien = null;
+        String description = "";
+        Ticket ticket = null;
+
+        try {
+            ArrayList<String> competences = (ArrayList<String>) json.get("competences");
+            String categorie = (String) json.get("categorie");
+            HashMap<String, String> demandeurMap = (HashMap<String, String>) json.get("demandeur");
+            Personne demandeur = new Personne(demandeurMap.get("nom"), demandeurMap.get("prenom"));
+            String objet = (String) json.get("objet");
+            if(json.get("description") != null)
+                description = (String) json.get("description");
+            else
+                description = "";
+
+            String type = (String) json.get("type");
+            String nomClient = (String) json.get("nomClient");
+            String statut = (String) json.get("statut");
+            if (json.get("technicien") != null) {
+                HashMap<String, String> technicienMap = (HashMap<String, String>) json.get("technicien");
+                technicien = new Personne(technicienMap.get("nom"), technicienMap.get("prenom"));
+            }
+            ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, nomClient, competences);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         return ticket;
     }
 }
