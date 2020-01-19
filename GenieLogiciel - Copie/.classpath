@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jersey-2.2"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/GlassFish 5.0.0"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/antlr-2.7.7"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/byte-buddy-1.10.2.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/classmate-1.5.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/cxf-bundle-jaxrs-2.7.18.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/dom4j-2.1.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/FastInfoset-1.2.15.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/FastInoset.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/gmbal-api-only.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/ha-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/hibernate-commons-annotations-5.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/hibernate-core-5.4.9.Final.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/istack-commons-runtime-3.0.7.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jackson-jaxrs-json-provider-2.10.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jandex-2.1.1.Final.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/javassist-3.24.0-GA.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/javax.activation-api-1.2.0.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/javax.annotation.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/javax.persistence-api-2.2.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/javax.ws.rs-api-2.1.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxb-api-2.3.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxb-runtime-2.3.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxws-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jaxws-tools.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jboss-logging-3.3.2.Final.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jboss-transaction-api_1.2_spec-1.1.1.Final.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/jsr181-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/mail.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/management-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/mimepull.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/mysql-connector-java-5.1.40.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/policy.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/saaj-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/saaj-impl.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/stax2-api.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/stax-ex.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/stax-ex-1.8.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/streambuffer.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/txw2-2.3.1.jar"/>
+	<classpathentry kind="lib" path="E:/phil/GenieLogiciel - Copie/lib/Hibernate/woodstox-core-asl.jar"/>
+	<classpathentry kind="lib" path="lib/REST/javax.ws.rs-api-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/REST/jersey-client.jar"/>
+	<classpathentry kind="lib" path="lib/REST/jersey-common.jar"/>
+	<classpathentry kind="lib" path="lib/REST/jersey-container-servlet-core.jar"/>
+	<classpathentry kind="lib" path="lib/REST/jersey-container-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/REST/jersey-server.jar"/>
+	<classpathentry kind="output" path="out/production/GenieLogiciel"/>
+</classpath>
