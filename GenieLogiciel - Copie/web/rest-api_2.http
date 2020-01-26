@@ -1,6 +1,14 @@
+//TODO: penser a changer les artifacts ici /Test_code_war_exploded/
 POST http://localhost:8080/Test_code_war_exploded/ticket/init?clientId=123456789&ticketId=2
 Accept: */*
 Cache-Control: no-cache
 
 ###
 
+### Send POST request with json body
+POST http://localhost:8080/Test_code_war_exploded/ticket/create
+Content-Type: application/json
+
+{"categorie":"Etude","competences":[],"demandeur":{"nom":"CLAUDE","prenom":"Philippe"},"nomClient":"ACCOR","objet":"TestReussi","statut":"Clos","technicien":{"nom":"VITTONE","prenom":"Jules"},"type":"Demande"}
+
+###

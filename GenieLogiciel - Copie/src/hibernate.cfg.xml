@@ -10,8 +10,8 @@
         <property name="hibernate.connection.useSSL">false</property>
 
         <!-- todo changer avec le bon compte-->
-        <property name="hibernate.connection.username"></property>
-        <property name="hibernate.connection.password"></property>
+        <property name="hibernate.connection.username">user</property>
+        <property name="hibernate.connection.password">Azerty12</property>
 
         <mapping class="DataBase.AdresseClientEntity"/>
         <mapping class="DataBase.ClientEntity"/>
