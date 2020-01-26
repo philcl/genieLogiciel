@@ -7,7 +7,10 @@ import org.hibernate.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/client")
 public class RessourceClient {
@@ -37,9 +40,14 @@ public class RessourceClient {
     @Path("try")
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
-    @Produces("text/plain")
-    public String getClichedMessage() {
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getClichedMessage() {
         // Return some cliched textual content
-        return "Hello World";
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
+                .entity("Hello World")
+                .build();
     }
 }

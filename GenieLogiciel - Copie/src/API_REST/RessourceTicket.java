@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class RessourceTicket {
     @Path("/init")
     @POST
     @Produces("application/json")
-    public Object getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket) {
+    public Response getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket) {
         //Init des objets
         ArrayList<Object> listInfos = new ArrayList<>();
         InitTicket answer = new InitTicket();
@@ -67,7 +68,12 @@ public class RessourceTicket {
             result = session.createQuery(request).list();
             if(result == null) {
                 listInfos.add("L'id du client n'existe pas");
-                return listInfos;
+                return Response.ok()
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                        .allow("OPTIONS")
+                        .entity(listInfos)
+                        .build();
             }
 
             for(Object o : result) {
@@ -120,7 +126,12 @@ public class RessourceTicket {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
-        return answer;
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
+                .entity(answer)
+                .build();
     }
 
     private Ticket recuperationTicket(Session session, Transaction tx, List result, int IdTicket) {
@@ -184,7 +195,7 @@ public class RessourceTicket {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public ArrayList<Object> postCreation(HashMap<String, Object> json) {
+    public Response postCreation(HashMap<String, Object> json) {
         ArrayList<Object> list = new ArrayList<>();
         Transaction tx = null;
         TicketEntity ticketEntity = new TicketEntity();
@@ -245,7 +256,12 @@ public class RessourceTicket {
         list.add(null);
         list.add(null);
         list.add(ticketEntity);
-        return list;
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
+                .entity(list)
+                .build();
     }
 
     private Ticket createObjectFromJson(HashMap<String, Object> json) {
