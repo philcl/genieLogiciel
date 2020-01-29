@@ -37,7 +37,7 @@ public class RessourceClient {
         }
         return listClients;
     }
-    @Path("try")
+    @Path("/try")
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
     @Produces({MediaType.APPLICATION_JSON})
