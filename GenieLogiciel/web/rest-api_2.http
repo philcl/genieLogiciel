@@ -20,11 +20,15 @@ Content-Type: text/plain
 {"username":"USR","passworde":"PASS2"}
 
 ### Send POST to verify login
-POST http://localhost:8080/GenieLogiciel_war_exploded/session/login
+POST http://localhost:8080/GenieLogiciel_war_exploded/user/login
 Content-Type: text/plain
 
-{"userId":"1", "userPassword":"myPassword"}
+{"userId":"1", "userPassword":"1234"}
+
+### create User
+POST http://localhost:8080/GenieLogiciel_war_exploded/user/create
+Content-Type: text/plain
+
+{"userId":"1", "userPassword":"1234"}
 
 ###
-
-### gÃKZï�-aûâ\"À›2\bl

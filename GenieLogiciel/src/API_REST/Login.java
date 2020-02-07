@@ -2,6 +2,7 @@ package API_REST;
 
 import DataBase.LoginEntity;
 import DataBase.PersonneEntity;
+import DataBase.PosteEntity;
 import Modele.Personne;
 import Modele.Token;
 import Modele.UserConnection;
@@ -30,7 +31,6 @@ import java.util.List;
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/user")
 public class Login {
-
     private static final String key = "18735496297587485219643518542546";
 
     @Path("/login")
@@ -38,37 +38,27 @@ public class Login {
     @Consumes("text/plain")
     @Produces("application/json")
     public Response login(String jsonStr) {
-        UserConnection user = null;
+        UserConnection user = new UserConnection();
+        LoginEntity userEntity = null;
         Transaction tx = null;
         byte[] bytes = null;
-        System.err.println("key = " + Arrays.toString(key.getBytes()));
-        SecretKeySpec specification = new SecretKeySpec(key.getBytes(), "AES");
-        String pass = "";
         boolean userFind = false;
-        LoginEntity userEntity = null;
 
         try(Session session = CreateSession.getSession()) {
             //Parse du String en JSON pour lire les données
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(jsonStr);
-            pass = obj.get("userPassword").toString();
+            String pass = obj.get("userPassword").toString();
 
             //Chiffrage du mot de passe d'origine pour verification sur la base de donnees
-            try {
-                Cipher chiffreur = Cipher.getInstance("AES");
-                chiffreur.init(Cipher.ENCRYPT_MODE, specification);
-                bytes = chiffreur.doFinal(pass.getBytes());
-            } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-                e.printStackTrace();
-                System.err.println("Erreur lors l'encryptage du mot de passe");
-            }
+            bytes = encrypt(pass);
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
             List result = session.createQuery("FROM LoginEntity l WHERE l.id = " + obj.get("userId")).list();
             for(Object o : result) {
                 userEntity = (LoginEntity) o;
-                if(bytes == userEntity.getPassword())
+                if(Arrays.equals(bytes, userEntity.getPassword()))
                     userFind = true;
                 else
                     System.err.println("personne non trouvée id = " + userEntity.getId() + "password = " + Arrays.toString(userEntity.getPassword()) + " bytes= " + Arrays.toString(bytes));
@@ -82,8 +72,24 @@ public class Login {
                 result = session.createQuery("FROM PersonneEntity p WHERE p.id = " + userEntity.getId()).list();
                 for (Object o : result) {
                     PersonneEntity personneEntity = (PersonneEntity) o;
-                    user = new UserConnection(personneEntity.getIdPersonne(), Token.getInstance().add().toString(), personneEntity.getNom(), personneEntity.getPrenom(), "Operateur");
+                    user.token = Token.getInstance().addUID();
+                    user.firstName = personneEntity.getNom();
+                    user.lastName = personneEntity.getPrenom();
+                    user.id = personneEntity.getIdPersonne();
                 }
+                tx.commit();
+                session.clear();
+
+                tx = session.beginTransaction();
+                PosteEntity poste = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE idPersonne = " + user.id).getSingleResult();
+                if(poste.getAdmin() == 1)
+                    user.role = "Admin";
+                else if(poste.getRespTech() == 1)
+                    user.role = "Responsable Technicien";
+                else if(poste.getTechnicien() == 1)
+                    user.role = "Technicien";
+                else if(poste.getOperateur() == 1)
+                    user.role = "Operateur";
                 tx.commit();
                 session.clear();
             }
@@ -134,11 +140,11 @@ public class Login {
 
             if(personFind) {
                 tx = session.beginTransaction();
+                LoginEntity user = new LoginEntity();
+                user.setId(p.getIdPersonne());
 
-                result = session.createQuery("FROM LoginEntity l WHERE l.id = " + p.getIdPersonne()).list();
-                for(Object o: result) {
-                    LoginEntity user = (LoginEntity) o;
-                }
+                user.setPassword(encrypt(pass));
+                session.save(user);
 
                 tx.commit();
                 session.clear();
@@ -153,5 +159,19 @@ public class Login {
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                 .allow("OPTIONS")
                 .build();
+    }
+
+    private byte[] encrypt(String toEncrypt) {
+        byte[] bytes = null;
+        SecretKeySpec specification = new SecretKeySpec(key.getBytes(), "AES");
+        try {
+            Cipher chiffreur = Cipher.getInstance("AES");
+            chiffreur.init(Cipher.ENCRYPT_MODE, specification);
+            bytes = chiffreur.doFinal(toEncrypt.getBytes());
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+            e.printStackTrace();
+            System.err.println("Erreur lors l'encryptage du mot de passe");
+        }
+        return bytes;
     }
 }

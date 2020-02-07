@@ -1,16 +1,16 @@
 package Modele;
 
-import java.rmi.server.UID;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.UUID;
 
-public class Token extends  HashMap<UID, Timestamp>{
+public class Token extends  HashMap<String, Timestamp>{
     private static Token me = null;
 
     private Token() {me = this;}
     public static Token getInstance() {
-        if(me != null)
+        if(me == null)
             new Token();
         return me;
     }
@@ -22,8 +22,8 @@ public class Token extends  HashMap<UID, Timestamp>{
         return false;
     }
 
-    public UID add() {
-        UID token = new UID();
+    public String addUID() {
+        String token = UUID.randomUUID().toString();
         this.put(token, Timestamp.valueOf(LocalDateTime.now()));
         return token;
     }

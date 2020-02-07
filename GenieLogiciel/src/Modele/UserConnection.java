@@ -4,6 +4,8 @@ public class UserConnection {
     public int id;
     public String firstName, lastName, role, token;
 
+    public UserConnection(){}
+
     public UserConnection(int id, String token, String firstName, String lastName, String role) {
         this.id = id;
         this.role = role;
