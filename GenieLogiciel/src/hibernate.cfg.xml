@@ -25,6 +25,7 @@
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
         <mapping class="DataBase.InterventionEntity"/>
         <mapping class="DataBase.TicketEntity"/>
+        <mapping class="DataBase.LoginEntity"/>
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

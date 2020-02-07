@@ -13,10 +13,10 @@ import javax.ws.rs.core.Response;
 
 @Path("/client")
 public class RessourceClient {
-    @POST
+    @Path("/list")
+    @GET
     @Produces("application/json")
     public ArrayList<ClientEntity> getListDemandeur(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket) {
-        System.out.println("testHello" +IdClient);
         ArrayList<ClientEntity> listClients = new ArrayList<>();
         Transaction tx = null;
 

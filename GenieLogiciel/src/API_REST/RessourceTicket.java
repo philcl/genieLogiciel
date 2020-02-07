@@ -1,10 +1,7 @@
 package API_REST;
 
 import DataBase.*;
-import Modele.AdresseClient;
-import Modele.InitTicket;
-import Modele.Personne;
-import Modele.Ticket;
+import Modele.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,7 +24,16 @@ public class RessourceTicket {
     @Path("/init")
     @POST
     @Produces("application/json")
-    public Response getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket) {
+    public Response getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket, @QueryParam("token") int token) {
+        //Verification du token
+        /*if(!Token.getInstance().tryToken(token))
+            return Response.status(401)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
+                    .entity("Token non valide")
+                    .build();
+*/
         //Init des objets
         ArrayList<Object> listInfos = new ArrayList<>();
         InitTicket answer = new InitTicket();
@@ -81,7 +87,7 @@ public class RessourceTicket {
             for(Object o : result) {
                 AdresseClientEntity adresse = (AdresseClientEntity) o;
                 if (adresse.getActif() == 1) {
-                    AdresseClient adresseClient = new AdresseClient((int) adresse.getSiret(), adresse.getNumero(), adresse.getCodePostal(), adresse.getRue(), adresse.getVille());
+                    AdresseClient adresseClient = new AdresseClient(adresse.getSiret(), adresse.getNumero(), adresse.getCodePostal(), adresse.getRue(), adresse.getVille());
                     answer.clientSiteList .add(adresseClient);
                 }
             }
@@ -136,68 +142,20 @@ public class RessourceTicket {
                 .build();
     }
 
-    private Ticket recuperationTicket(Session session, int IdTicket) {
-        Ticket ticket = null;
-        Transaction tx = session.beginTransaction();
-        List result = session.createQuery("FROM TicketEntity t WHERE t.id = " + IdTicket).list();
-        TicketEntity ticketEntity;
-        if(result.size() == 1) {
-            ticketEntity = (TicketEntity) result.get(0);
-            tx.commit();
-            session.clear();
-
-            //Recuperation du nom et prenom du technicien et du demandeur
-            tx = session.beginTransaction();
-            result = session.createQuery("FROM PersonneEntity p WHERE p.idPersonne = " + ticketEntity.getTechnicien() + "or p.idPersonne = " + ticketEntity.getDemandeur()).list();
-
-            Personne technicien, demandeur;
-
-            PersonneEntity p = (PersonneEntity) result.get(0);
-            if(p.getIdPersonne() == ticketEntity.getTechnicien()) {
-                technicien = new Personne(p.getNom(), p.getPrenom());
-                p = (PersonneEntity) result.get(1);
-                demandeur = new Personne(p.getNom(), p.getPrenom());
-            }
-            else {
-                demandeur = new Personne(p.getNom(), p.getPrenom());
-                p = (PersonneEntity) result.get(1);
-                technicien = new Personne(p.getNom(), p.getPrenom());
-            }
-            tx.commit();
-            session.clear();
-
-            //Recuperation du nom de l'entreprise du client
-            tx = session.beginTransaction();
-            int siret = Integer.parseInt(((Long)ticketEntity.getAdresse()).toString().substring(0, 9));
-            result = session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + siret).list();
-            String client = (String) result.get(0);
-
-            tx.commit();
-            session.clear();
-
-            //Recuperation des competences
-            tx = session.beginTransaction();
-            ArrayList<String> competences = new ArrayList<>();
-            String request = "SELECT c.competence FROM CompetencesEntity c, JonctionTicketCompetenceEntity jtc WHERE jtc.idTicket = " + IdTicket + " and jtc.competence = c.idCompetences";
-            result = session.createQuery(request).list();
-            for(Object o : result) {
-                String competence = (String) o;
-                competences.add(competence);
-            }
-
-            ticket = new Ticket(ticketEntity.getType(), ticketEntity.getObjet(), ticketEntity.getDescription(), ticketEntity.getCategorie(),
-                    ticketEntity.getStatut(), technicien, demandeur, client, competences);
-        }
-        tx.commit();
-        session.clear();
-        return ticket;
-    }
-
     @Path("/create")
     @POST
     @Consumes("text/plain")
     @Produces("application/json")
-    public Response postCreation(String jsonStr) {
+    public Response postCreation(String jsonStr, @QueryParam("token") int token) {
+        //Verification du token
+        if(!Token.getInstance().containsKey(token))
+            return Response.status(401)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
+                    .entity("Token non valide")
+                    .build();
+
         ArrayList<Object> list = new ArrayList<>();
         Transaction tx = null;
         TicketEntity ticketEntity = new TicketEntity();
@@ -278,6 +236,63 @@ public class RessourceTicket {
                 .allow("OPTIONS")
                 .entity(list)
                 .build();
+    }
+
+    private Ticket recuperationTicket(Session session, int IdTicket) {
+        Ticket ticket = null;
+        Transaction tx = session.beginTransaction();
+        List result = session.createQuery("FROM TicketEntity t WHERE t.id = " + IdTicket).list();
+        TicketEntity ticketEntity;
+        if(result.size() == 1) {
+            ticketEntity = (TicketEntity) result.get(0);
+            tx.commit();
+            session.clear();
+
+            //Recuperation du nom et prenom du technicien et du demandeur
+            tx = session.beginTransaction();
+            result = session.createQuery("FROM PersonneEntity p WHERE p.idPersonne = " + ticketEntity.getTechnicien() + "or p.idPersonne = " + ticketEntity.getDemandeur()).list();
+
+            Personne technicien, demandeur;
+
+            PersonneEntity p = (PersonneEntity) result.get(0);
+            if(p.getIdPersonne() == ticketEntity.getTechnicien()) {
+                technicien = new Personne(p.getNom(), p.getPrenom());
+                p = (PersonneEntity) result.get(1);
+                demandeur = new Personne(p.getNom(), p.getPrenom());
+            }
+            else {
+                demandeur = new Personne(p.getNom(), p.getPrenom());
+                p = (PersonneEntity) result.get(1);
+                technicien = new Personne(p.getNom(), p.getPrenom());
+            }
+            tx.commit();
+            session.clear();
+
+            //Recuperation du nom de l'entreprise du client
+            tx = session.beginTransaction();
+            int siret = Integer.parseInt(((Long)ticketEntity.getAdresse()).toString().substring(0, 9));
+            result = session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + siret).list();
+            String client = (String) result.get(0);
+
+            tx.commit();
+            session.clear();
+
+            //Recuperation des competences
+            tx = session.beginTransaction();
+            ArrayList<String> competences = new ArrayList<>();
+            String request = "SELECT c.competence FROM CompetencesEntity c, JonctionTicketCompetenceEntity jtc WHERE jtc.idTicket = " + IdTicket + " and jtc.competence = c.idCompetences";
+            result = session.createQuery(request).list();
+            for(Object o : result) {
+                String competence = (String) o;
+                competences.add(competence);
+            }
+
+            ticket = new Ticket(ticketEntity.getType(), ticketEntity.getObjet(), ticketEntity.getDescription(), ticketEntity.getCategorie(),
+                    ticketEntity.getStatut(), technicien, demandeur, client, competences);
+        }
+        tx.commit();
+        session.clear();
+        return ticket;
     }
 
     private Ticket createObjectFromJson(JSONObject json) {

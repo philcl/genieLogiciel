@@ -1,5 +1,4 @@
-import API_REST.RessourceClient;
-import API_REST.RessourceTicket;
+import API_REST.*;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -16,6 +15,7 @@ public class MyApplication extends Application{
         HashSet h = new HashSet<Class<?>>();
         h.add(RessourceClient.class);
         h.add(RessourceTicket.class);
+        h.add(Login.class);
         return h;
     }
 }
