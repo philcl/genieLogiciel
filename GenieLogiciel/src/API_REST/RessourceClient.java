@@ -49,4 +49,18 @@ public class RessourceClient {
                 .entity("Hello World")
                 .build();
     }
+
+    /*@GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("test")
+    public Response test() {
+        // Return some cliched textual content
+        return Response.ok()
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
+                .entity("okokokok")
+                .build();
+    }*/
+
 }

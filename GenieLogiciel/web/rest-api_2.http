@@ -11,3 +11,10 @@ Content-Type: application/json
 {"categorie":"Etude","competences":[],"demandeur":{"nom":"CLAUDE","prenom":"Philippe"},"nomClient":"ACCOR","objet":"TestReussi","statut":"Clos","technicien":{"nom":"VITTONE","prenom":"Jules"},"type":"Demande"}
 
 ###
+
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/test
+Content-Type: text/plain
+
+{"username":"USR","passworde":"PASS2"}
+
+###
