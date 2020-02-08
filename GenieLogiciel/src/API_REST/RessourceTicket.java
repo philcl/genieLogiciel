@@ -5,6 +5,7 @@ import Modele.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -20,20 +21,14 @@ import java.util.List;
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/ticket")
 public class RessourceTicket {
-    //todo : Ajouter priorityList
     @Path("/init")
     @POST
     @Produces("application/json")
-    public Response getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket, @QueryParam("token") int token) {
+    public Response getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket, @QueryParam("token") String token) {
         //Verification du token
-        /*if(!Token.getInstance().tryToken(token))
-            return Response.status(401)
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .allow("OPTIONS")
-                    .entity("Token non valide")
-                    .build();
-*/
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
+
         //Init des objets
         ArrayList<Object> listInfos = new ArrayList<>();
         InitTicket answer = new InitTicket();
@@ -76,7 +71,7 @@ public class RessourceTicket {
             result = session.createQuery(request).list();
             if(result == null) {
                 listInfos.add("L'id du client n'existe pas");
-                return Response.status(400)
+                return Response.status(406)
                         .header("Access-Control-Allow-Origin", "*")
                         .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                         .allow("OPTIONS")
@@ -128,6 +123,13 @@ public class RessourceTicket {
             if(IdTicket != 0) {
                 //todo : verifier que le clientId et le client du ticket sont bien les mêmes
                 answer.ticket = recuperationTicket(session, IdTicket);
+                if(answer.ticket == null)
+                    return Response.status(406)
+                            .header("Access-Control-Allow-Origin", "*")
+                            .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                            .allow("OPTIONS")
+                            .entity("Le ticket avec l'id " + IdTicket + " n'exsite pas")
+                            .build();
             }
             session.close();
         } catch (HibernateException e) {
@@ -146,84 +148,65 @@ public class RessourceTicket {
     @POST
     @Consumes("text/plain")
     @Produces("application/json")
-    public Response postCreation(String jsonStr, @QueryParam("token") int token) {
+    public Response postCreation(String jsonStr, @QueryParam("token") String token) {
         //Verification du token
-        if(!Token.getInstance().containsKey(token))
-            return Response.status(401)
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .allow("OPTIONS")
-                    .entity("Token non valide")
-                    .build();
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
 
         ArrayList<Object> list = new ArrayList<>();
         Transaction tx = null;
         TicketEntity ticketEntity = new TicketEntity();
-        Ticket ticket = null;
-        try {
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(jsonStr);
+        Ticket ticket = createObjectFromJson(jsonStr);
 
-            ticket = createObjectFromJson(json);
-            if(ticket == null) {
-                String str = "Le ticket n'est pas présent dans la requete";
-                System.out.println("h");
-                return Response.status(400)
-                        .header("Access-Control-Allow-Origin", "*")
-                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                        .allow("OPTIONS")
-                        .entity(str)
-                        .build();
-            }
+        if(ticket == null)
+            return Response.status(406)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                    .allow("OPTIONS")
+                    .entity("Le ticket n'est pas présent dans la requete")
+                    .build();
 
-            ticketEntity.setCategorie(ticket.categorie);
-            ticketEntity.setDate(Timestamp.from(Instant.now()));
-            ticketEntity.setDescription(ticket.description);
-            ticketEntity.setObjet(ticket.objet);
-            ticketEntity.setStatut(ticket.statut);
-            ticketEntity.setType(ticket.type);
+        ticketEntity.setCategorie(ticket.categorie);
+        ticketEntity.setDate(Timestamp.from(Instant.now()));
+        ticketEntity.setDescription(ticket.description);
+        ticketEntity.setObjet(ticket.objet);
+        ticketEntity.setStatut(ticket.statut);
+        ticketEntity.setType(ticket.type);
 
-            try(Session session = CreateSession.getSession()) {
+        try(Session session = CreateSession.getSession()) {
+            //Ajout de l'adresse (SIRET) des ID du demandeur et du technicien
+            tx = session.beginTransaction();
+            List result = session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.demandeur.prenom + "' and p.nom = '" + ticket.demandeur.nom + "'").list();
+            //todo verifier sur la base de donnee que les champs nom et prenom sont en index unique
+            PersonneEntity demandeur = (PersonneEntity)result.get(0);
+            ticketEntity.setAdresse(demandeur.getSiret());
+            ticketEntity.setDemandeur(demandeur.getIdPersonne());
+            tx.commit();
+            session.clear();
 
-                //Ajout de l'adresse (SIRET) des ID du demandeur et du technicien
-                tx = session.beginTransaction();
+            tx = session.beginTransaction();
+            result = session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.technicien.prenom + "' and p.nom = '" + ticket.technicien.nom + "'").list();
+            PersonneEntity tech = (PersonneEntity)result.get(0);
+            ticketEntity.setTechnicien(tech.getIdPersonne());
+            tx.commit();
+            session.clear();
 
-                List result = session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.demandeur.prenom + "' and p.nom = '" + ticket.demandeur.nom + "'").list();
-                //todo verifier sur la base de donnee que les champs nom et prenom sont en index unique
-                PersonneEntity demandeur = (PersonneEntity)result.get(0);
-                ticketEntity.setAdresse(demandeur.getSiret());
-                ticketEntity.setDemandeur(demandeur.getIdPersonne());
-                tx.commit();
-                session.clear();
+            tx = session.beginTransaction();
+            result = session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").list();
+            int maxID = (int) result.get(0);
+            ticketEntity.setId(maxID+1); //Rajout de l'increment
+            tx.commit();
+            session.clear();
 
-                tx = session.beginTransaction();
-                result = session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.technicien.prenom + "' and p.nom = '" + ticket.technicien.nom + "'").list();
-                PersonneEntity tech = (PersonneEntity)result.get(0);
-                ticketEntity.setTechnicien(tech.getIdPersonne());
-                tx.commit();
-                session.clear();
-
-                tx = session.beginTransaction();
-                result = session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").list();
-                int maxID = (int) result.get(0);
-                ticketEntity.setId(maxID+1); //Rajout de l'increment
-                tx.commit();
-                session.clear();
-
-                //Ajout en base de donnee du ticket
-                tx = session.beginTransaction();
-                session.save(ticketEntity);
-
-                tx.commit();
-                session.clear();
-                session.close();
-            } catch (HibernateException e) {
-                if (tx != null) tx.rollback();
-                e.printStackTrace();
-            }
-        }catch(ParseException e){
+            //Ajout en base de donnee du ticket
+            tx = session.beginTransaction();
+            session.save(ticketEntity);
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
             e.printStackTrace();
-            System.err.println("Parse impossible sur l'objet envoye");
         }
 
         list.add(ticket);
@@ -236,6 +219,89 @@ public class RessourceTicket {
                 .allow("OPTIONS")
                 .entity(list)
                 .build();
+    }
+
+    @Path("/modify")
+    @POST
+    @Consumes("text/plain")
+    public Response postModify(String jsonStr) {
+        String token = "", ticketJson = "";
+        long IdClient = 0, ticketId = 0;
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            IdClient = Long.parseLong((String)json.get("clientId"));
+            ticketId = Integer.parseInt((String)json.get("ticketId"));
+            token = (String)json.get("token");
+            ticketJson = ((JSONObject)json.get("ticket")).toJSONString();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.err.println("impossible de parse ///");
+        }
+
+        //Verification du token
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
+
+        Transaction tx = null;
+        Ticket ticket = createObjectFromJson(ticketJson);
+        if(ticket == null)
+            return ReponseType.getNOTOK("Le ticket n'est pas présent dans la requete");
+
+        try(Session session = CreateSession.getSession()) {
+            String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticketId;
+            //Creation de la requete pour l'update
+            tx =  session.beginTransaction();
+            Query update = session.createQuery(request);
+            int nbLignes = update.executeUpdate();
+            tx.commit();
+            session.clear();
+            System.err.println("nb lignes = " + nbLignes + " deuxieme request = " + request);
+
+            //Recuperation du tech
+            tx = session.beginTransaction();
+            PersonneEntity tech = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.technicien.prenom + "' and p.nom = '" + ticket.technicien.nom + "'").getSingleResult();
+            tx.commit();
+            session.clear();
+
+            if(tech == null)
+                return ReponseType.getNOTOK("Le technicien n'existe pas");
+
+            //Recuperation du demandeur
+            tx = session.beginTransaction();
+            PersonneEntity demandeur = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.prenom = '" + ticket.demandeur.prenom + "' and p.nom = '" + ticket.demandeur.nom + "'").getSingleResult();
+            tx.commit();
+            session.clear();
+
+            if(demandeur == null)
+                return ReponseType.getNOTOK("Le demandeur n'existe pas");
+
+            tx = session.beginTransaction();
+            AdresseClientEntity client = (AdresseClientEntity) session.createQuery("FROM AdresseClientEntity ac WHERE ac.siret = " + IdClient).getSingleResult();
+            tx.commit();
+            session.clear();
+
+            if(client == null)
+                return ReponseType.getNOTOK("Le client n'existe pas");
+
+            //Execution de la commande
+            tx = session.beginTransaction();
+            request = "UPDATE TicketEntity t SET t.adresse = " + client.getSiret() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getIdPersonne() + " WHERE t.id = " + ticketId;
+            update = session.createQuery(request);
+            nbLignes += update.executeUpdate();
+            tx.commit();
+            session.clear();
+            System.err.println("nb lignes = " + nbLignes + " deuxieme request = " + request);
+
+            if(nbLignes != 2)
+                return ReponseType.getNOTOK("Erreur lors de l'execution de la requete");
+            session.close();
+        }catch (HibernateException e){
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+        return ReponseType.getOK("");
     }
 
     private Ticket recuperationTicket(Session session, int IdTicket) {
@@ -270,9 +336,8 @@ public class RessourceTicket {
 
             //Recuperation du nom de l'entreprise du client
             tx = session.beginTransaction();
-            int siret = Integer.parseInt(((Long)ticketEntity.getAdresse()).toString().substring(0, 9));
-            result = session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + siret).list();
-            String client = (String) result.get(0);
+            int siren = Integer.parseInt(((Long)ticketEntity.getAdresse()).toString().substring(0, 9));
+            String client = (String) session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + siren).getSingleResult();
 
             tx.commit();
             session.clear();
@@ -295,12 +360,15 @@ public class RessourceTicket {
         return ticket;
     }
 
-    private Ticket createObjectFromJson(JSONObject json) {
+    private Ticket createObjectFromJson(String jsonStr) {
         Personne technicien = null;
         String description = "";
         Ticket ticket = null;
 
         try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+
             ArrayList<String> competences = (ArrayList<String>) json.get("competences");
             String categorie = (String) json.get("categorie");
             HashMap<String, String> demandeurMap = (HashMap<String, String>) json.get("demandeur");
@@ -319,8 +387,11 @@ public class RessourceTicket {
                 technicien = new Personne(technicienMap.get("nom"), technicienMap.get("prenom"));
             }
             ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, nomClient, competences);
-        } catch(Exception e) {
+        } catch(HibernateException e) {
             e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.err.println("Erreur lors du parsing de l'objet");
         }
         return ticket;
     }

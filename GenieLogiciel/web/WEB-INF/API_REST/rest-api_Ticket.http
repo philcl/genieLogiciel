@@ -1,0 +1,22 @@
+### Send POST to get init info for Ticket
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/init?clientId=123456789&ticketId=3&token=ace8824c-a74a-4129-8a48-e9b1a2400eb5
+Accept: */*
+Cache-Control: no-cache
+
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/create
+Content-Type: text/plain
+
+{"categorie":"Etude","competences":[],"demandeur":{"nom":"CLAUDE","prenom":"Philippe"},"nomClient":"ACCOR","objet":"TestReussi","statut":"Clos","technicien":{"nom":"VITTONE","prenom":"Jules"},"type":"Demande"}
+
+###
+
+### Send POST to modify Ticket
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
+Content-Type: text/plain
+
+{"clientId":"50000000000000","ticketId":"19","token":"8ae33bac-090f-4dfc-a771-483b2ceb0b8c","ticket":{"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"nom":"CLAUDE","prenom":"Philippe"},"nomClient":"ACCOR","objet":"TestReussi","statut":"En cours","technicien":{"nom":"VITTONE","prenom":"Jules"},"type":"Incident"}}
+
+###

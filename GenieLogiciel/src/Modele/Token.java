@@ -1,30 +1,41 @@
 package Modele;
 
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class Token extends  HashMap<String, Timestamp>{
-    private static Token me = null;
+    private static Token me = new Token();
 
-    private Token() {me = this;}
-    public static Token getInstance() {
-        if(me == null)
-            new Token();
-        return me;
-    }
-    public boolean tryToken(int token) {
-        if(this.containsKey(token)) {
+    private Token() {}
+
+    public static boolean tryToken(String token) {
+        if(me.containsKey(token)) {
             Timestamp hour = Timestamp.valueOf(LocalDateTime.now());
-            return (this.get(token).getTime() + (1 * 1000 * 60 * 60)) - hour.getTime() > 0;
+            return (me.get(token).getTime() + (1 * 1000 * 60 * 60)) - hour.getTime() > 0;
         }
         return false;
     }
 
-    public String addUID() {
+    public static String addUID() {
         String token = UUID.randomUUID().toString();
-        this.put(token, Timestamp.valueOf(LocalDateTime.now()));
+        me.put(token, Timestamp.valueOf(LocalDateTime.now()));
         return token;
     }
+
+    public static Response tokenNonValide() {
+        return Response.status(401)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                .allow("OPTIONS")
+                .entity("Token non valide")
+                .build();
+    }
 }
+//todo Ticket/ Client/ Demandeur/ Compte utilisateur :
+//- Ajout
+//- Modification
+//- Suppression
+//- Listing

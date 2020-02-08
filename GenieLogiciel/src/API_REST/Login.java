@@ -38,11 +38,10 @@ public class Login {
     @Consumes("text/plain")
     @Produces("application/json")
     public Response login(String jsonStr) {
-        UserConnection user = new UserConnection();
-        LoginEntity userEntity = null;
         Transaction tx = null;
         byte[] bytes = null;
         boolean userFind = false;
+        UserConnection user = null;
 
         try(Session session = CreateSession.getSession()) {
             //Parse du String en JSON pour lire les données
@@ -55,44 +54,27 @@ public class Login {
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
-            List result = session.createQuery("FROM LoginEntity l WHERE l.id = " + obj.get("userId")).list();
-            for(Object o : result) {
-                userEntity = (LoginEntity) o;
-                if(Arrays.equals(bytes, userEntity.getPassword()))
-                    userFind = true;
-                else
-                    System.err.println("personne non trouvée id = " + userEntity.getId() + "password = " + Arrays.toString(userEntity.getPassword()) + " bytes= " + Arrays.toString(bytes));
-            }
+            LoginEntity userEntity = (LoginEntity) session.createQuery("FROM LoginEntity l WHERE l.id = " + obj.get("userId")).getSingleResult();
+            if(userEntity == null)
+                return Response.status(406)
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                        .allow("OPTIONS")
+                        .entity("user not found")
+                        .build();
+
+            if(Arrays.equals(bytes, userEntity.getPassword()))
+                user = getUser(userEntity.getId());
+            else
+                return Response.status(401)
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                        .allow("OPTIONS")
+                        .entity(new String("Wrong password"))
+                        .build();
+
             tx.commit();
             session.clear();
-
-            //Recuperation du user
-            if(userFind) {
-                tx = session.beginTransaction();
-                result = session.createQuery("FROM PersonneEntity p WHERE p.id = " + userEntity.getId()).list();
-                for (Object o : result) {
-                    PersonneEntity personneEntity = (PersonneEntity) o;
-                    user.token = Token.getInstance().addUID();
-                    user.firstName = personneEntity.getNom();
-                    user.lastName = personneEntity.getPrenom();
-                    user.id = personneEntity.getIdPersonne();
-                }
-                tx.commit();
-                session.clear();
-
-                tx = session.beginTransaction();
-                PosteEntity poste = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE idPersonne = " + user.id).getSingleResult();
-                if(poste.getAdmin() == 1)
-                    user.role = "Admin";
-                else if(poste.getRespTech() == 1)
-                    user.role = "Responsable Technicien";
-                else if(poste.getTechnicien() == 1)
-                    user.role = "Technicien";
-                else if(poste.getOperateur() == 1)
-                    user.role = "Operateur";
-                tx.commit();
-                session.clear();
-            }
             session.close();
         }catch(ParseException e){
             e.printStackTrace();
@@ -133,7 +115,6 @@ public class Login {
                     personFind = true;
                     break;
                 }
-
             }
             tx.commit();
             session.clear();
@@ -142,10 +123,8 @@ public class Login {
                 tx = session.beginTransaction();
                 LoginEntity user = new LoginEntity();
                 user.setId(p.getIdPersonne());
-
                 user.setPassword(encrypt(pass));
                 session.save(user);
-
                 tx.commit();
                 session.clear();
             }
@@ -153,7 +132,6 @@ public class Login {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         return Response.ok()
                 .header("Access-Control-Allow-Origin", "*")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
@@ -173,5 +151,41 @@ public class Login {
             System.err.println("Erreur lors l'encryptage du mot de passe");
         }
         return bytes;
+    }
+
+    private UserConnection getUser(int userId) {
+        UserConnection user = new UserConnection();
+        Transaction tx = null;
+
+        try (Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            List result = session.createQuery("FROM PersonneEntity p WHERE p.id = " + userId).list();
+            for (Object o : result) {
+                PersonneEntity personneEntity = (PersonneEntity) o;
+                user.token = Token.addUID();
+                user.firstName = personneEntity.getNom();
+                user.lastName = personneEntity.getPrenom();
+                user.id = personneEntity.getIdPersonne();
+            }
+            tx.commit();
+            session.clear();
+
+            tx = session.beginTransaction();
+            PosteEntity poste = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE idPersonne = " + user.id).getSingleResult();
+            if (poste.getAdmin() == 1)
+                user.role = "Admin";
+            else if (poste.getRespTech() == 1)
+                user.role = "Responsable Technicien";
+            else if (poste.getTechnicien() == 1)
+                user.role = "Technicien";
+            else if (poste.getOperateur() == 1)
+                user.role = "Operateur";
+            tx.commit();
+            session.clear();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+        return user;
     }
 }
