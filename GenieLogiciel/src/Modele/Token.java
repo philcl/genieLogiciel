@@ -12,9 +12,16 @@ public class Token extends  HashMap<String, Timestamp>{
     private Token() {}
 
     public static boolean tryToken(String token) {
+        //todo pour le rendu a enlever
+        if(me.size() == 0) {
+            Timestamp t = Timestamp.valueOf(LocalDateTime.now());
+            t.setTime(t.getTime() + (24 * 1000 * 60 * 60));
+            me.put("96b29b22-cefb-4699-93b9-9fcc97aa003e", t);
+        }
+
         if(me.containsKey(token)) {
             Timestamp hour = Timestamp.valueOf(LocalDateTime.now());
-            boolean res = (me.get(token).getTime() + (1 * 1000 * 60 * 60)) - hour.getTime() > 0;
+            boolean res = (me.get(token).getTime()) - hour.getTime() > 0;
 
             if(!res)
                 me.remove(token);
@@ -25,7 +32,9 @@ public class Token extends  HashMap<String, Timestamp>{
 
     public static String addUID() {
         String token = UUID.randomUUID().toString();
-        me.put(token, Timestamp.valueOf(LocalDateTime.now()));
+        Timestamp t = Timestamp.valueOf(LocalDateTime.now());
+        t.setTime(t.getTime() + (1000 * 60 * 60));
+        me.put(token, t);
         return token;
     }
 
@@ -39,8 +48,6 @@ public class Token extends  HashMap<String, Timestamp>{
     }
 }
 //todo :
-//ticket Suppression
-//
 //Client Ajout
 //Client Modification
 //Client Suppression

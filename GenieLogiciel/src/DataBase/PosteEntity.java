@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Poste", schema = "GenieLog", catalog = "")
+@Table(name = "Poste", schema = "GenieLog")
 public class PosteEntity {
     private int idPersonne;
     private byte admin;
@@ -13,7 +13,7 @@ public class PosteEntity {
     private byte operateur;
 
     @Id
-    @Column(name = "idPersonne", nullable = false)
+    @Column(name = "idPersonne")
     public int getIdPersonne() {
         return idPersonne;
     }
@@ -23,7 +23,7 @@ public class PosteEntity {
     }
 
     @Basic
-    @Column(name = "Admin", nullable = false)
+    @Column(name = "Admin")
     public byte getAdmin() {
         return admin;
     }
@@ -33,7 +33,7 @@ public class PosteEntity {
     }
 
     @Basic
-    @Column(name = "RespTech", nullable = false)
+    @Column(name = "RespTech")
     public byte getRespTech() {
         return respTech;
     }
@@ -43,7 +43,7 @@ public class PosteEntity {
     }
 
     @Basic
-    @Column(name = "Technicien", nullable = false)
+    @Column(name = "Technicien")
     public byte getTechnicien() {
         return technicien;
     }
@@ -53,7 +53,7 @@ public class PosteEntity {
     }
 
     @Basic
-    @Column(name = "Operateur", nullable = false)
+    @Column(name = "Operateur")
     public byte getOperateur() {
         return operateur;
     }

@@ -2,12 +2,11 @@
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/login
 Content-Type: text/plain
 
-{"userId":"1", "userPassword":"1234"}
-
+{"userLogin":"1", "userPassword":"1234"}
+###
 ### create User
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/create
 Content-Type: text/plain
 
-{"userId":"1", "userPassword":"1234"}
-
+{"userLogin":"10", "userPassword":"1234"}
 ###

@@ -9,7 +9,7 @@ public class TicketJonctionEntityPK implements Serializable {
     private int idParent;
     private int idEnfant;
 
-    @Column(name = "IDParent", nullable = false)
+    @Column(name = "IDParent")
     @Id
     public int getIdParent() {
         return idParent;
@@ -19,7 +19,7 @@ public class TicketJonctionEntityPK implements Serializable {
         this.idParent = idParent;
     }
 
-    @Column(name = "IDEnfant", nullable = false)
+    @Column(name = "IDEnfant")
     @Id
     public int getIdEnfant() {
         return idEnfant;

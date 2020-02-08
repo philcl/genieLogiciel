@@ -1,14 +1,14 @@
 package API_REST;
 
-import DataBase.LoginEntity;
 import DataBase.PersonneEntity;
 import DataBase.PosteEntity;
-import Modele.Personne;
+import DataBase.StaffEntity;
 import Modele.Token;
 import Modele.UserConnection;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -54,7 +54,7 @@ public class Login {
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
-            LoginEntity userEntity = (LoginEntity) session.createQuery("FROM LoginEntity l WHERE l.id = " + obj.get("userId")).getSingleResult();
+            StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("userLogin")).getSingleResult();
             if(userEntity == null)
                 return Response.status(406)
                         .header("Access-Control-Allow-Origin", "*")
@@ -63,14 +63,14 @@ public class Login {
                         .entity("user not found")
                         .build();
 
-            if(Arrays.equals(bytes, userEntity.getPassword()))
+            if(Arrays.equals(bytes, userEntity.getMdp()))
                 user = getUser(userEntity.getId());
             else
                 return Response.status(401)
                         .header("Access-Control-Allow-Origin", "*")
                         .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                         .allow("OPTIONS")
-                        .entity(new String("Wrong password"))
+                        .entity(new String("Wrong password "))
                         .build();
 
             tx.commit();
@@ -105,29 +105,21 @@ public class Login {
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(jsonStr);
             pass = obj.get("userPassword").toString();
-            int userId = Integer.parseInt(obj.get("userId").toString());
+            String login = (String)obj.get("userLogin");
 
             tx = session.beginTransaction();
-            List result = session.createQuery("FROM PersonneEntity p WHERE p.id = " + userId).list();
-            for(Object o : result) {
-                p = (PersonneEntity) o;
-                if (p.getIdPersonne() == userId) {
-                    personFind = true;
-                    break;
-                }
-            }
+            StaffEntity user = new StaffEntity();
+            user.setLogin(login);
+            user.setMdp(encrypt(pass));
+            user.setActif(1);
+            user.setMail("");
+            user.setNom("");
+            user.setPrenom("");
+            user.setTelephone("06");
+            user.setAdresse(1);
+            session.save(user);
             tx.commit();
             session.clear();
-
-            if(personFind) {
-                tx = session.beginTransaction();
-                LoginEntity user = new LoginEntity();
-                user.setId(p.getIdPersonne());
-                user.setPassword(encrypt(pass));
-                session.save(user);
-                tx.commit();
-                session.clear();
-            }
             session.close();
         } catch (ParseException e) {
             e.printStackTrace();
@@ -137,6 +129,43 @@ public class Login {
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                 .allow("OPTIONS")
                 .build();
+    }
+
+    @Path("/modify")
+    @POST
+    @Consumes("text/plain")
+    public Response modifyPassword(String jsonStr) {
+        String token = "";
+        Transaction tx = null;
+
+        try(Session session = CreateSession.getSession()){
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            token = (String)json.get("token");
+            if(!Token.tryToken(token))
+                return Token.tokenNonValide();
+
+            tx = session.beginTransaction();
+
+            byte[] pass = encrypt((String)json.get("userPassword"));
+            String request = "UPDATE StaffEntity s SET s.mdp = '" + Arrays.toString(pass) + "' WHERE s.login = " + (Integer)json.get("userLogin");
+            Query update = session.createQuery(request);
+            int nbLigne = update.executeUpdate();
+            if(nbLigne != 1)
+                return ReponseType.getNOTOK("Erreur d'execution de la requete pour le changement de password");
+
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch(HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+
+        return ReponseType.getOK("");
     }
 
     private byte[] encrypt(String toEncrypt) {
@@ -159,13 +188,13 @@ public class Login {
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            List result = session.createQuery("FROM PersonneEntity p WHERE p.id = " + userId).list();
+            List result = session.createQuery("FROM StaffEntity p WHERE p.id = " + userId).list();
             for (Object o : result) {
-                PersonneEntity personneEntity = (PersonneEntity) o;
+                StaffEntity staffEntity = (StaffEntity) o;
                 user.token = Token.addUID();
-                user.firstName = personneEntity.getNom();
-                user.lastName = personneEntity.getPrenom();
-                user.id = personneEntity.getIdPersonne();
+                user.firstName = staffEntity.getNom();
+                user.lastName = staffEntity.getPrenom();
+                user.id = staffEntity.getId();
             }
             tx.commit();
             session.clear();
@@ -173,13 +202,13 @@ public class Login {
             tx = session.beginTransaction();
             PosteEntity poste = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE idPersonne = " + user.id).getSingleResult();
             if (poste.getAdmin() == 1)
-                user.role = "Admin";
+                user.role.add("Admin");
             else if (poste.getRespTech() == 1)
-                user.role = "Responsable Technicien";
+                user.role.add("Responsable Technicien");
             else if (poste.getTechnicien() == 1)
-                user.role = "Technicien";
+                user.role.add("Technicien");
             else if (poste.getOperateur() == 1)
-                user.role = "Operateur";
+                user.role.add("Operateur");
             tx.commit();
             session.clear();
         } catch (HibernateException e) {

@@ -13,19 +13,21 @@
         <property name="hibernate.connection.username">user</property>
         <property name="hibernate.connection.password">Azerty12</property>
 
-        <mapping class="DataBase.AdresseClientEntity"/>
+        <mapping class="DataBase.AdresseEntity"/>
+        <mapping class="DataBase.CategorieEntity"/>
         <mapping class="DataBase.ClientEntity"/>
+        <mapping class="DataBase.CompetencesEntity"/>
+        <mapping class="DataBase.InterventionEntity"/>
+        <mapping class="DataBase.JonctionAdresseSiretEntity"/>
+        <mapping class="DataBase.JonctionStaffCompetenceEntity"/>
+        <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
         <mapping class="DataBase.PersonneEntity"/>
         <mapping class="DataBase.PosteEntity"/>
-        <mapping class="DataBase.TicketJonctionEntity"/>
-        <mapping class="DataBase.CompetencesEntity"/>
+        <mapping class="DataBase.StaffEntity"/>
         <mapping class="DataBase.StatutTicketEntity"/>
-        <mapping class="DataBase.TypeDemandesEntity"/>
-        <mapping class="DataBase.CategorieEntity"/>
-        <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
-        <mapping class="DataBase.InterventionEntity"/>
         <mapping class="DataBase.TicketEntity"/>
-        <mapping class="DataBase.LoginEntity"/>
+        <mapping class="DataBase.TicketJonctionEntity"/>
+        <mapping class="DataBase.TypeDemandesEntity"/>
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

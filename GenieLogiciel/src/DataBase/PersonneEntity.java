@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Personne", schema = "GenieLog", catalog = "")
+@Table(name = "Personne", schema = "GenieLog")
 public class PersonneEntity {
     private int idPersonne;
     private String prenom;
@@ -12,10 +12,9 @@ public class PersonneEntity {
     private String mail;
     private byte actif;
     private long siret;
-    private int employe;
 
     @Id
-    @Column(name = "idPersonne", nullable = false)
+    @Column(name = "idPersonne")
     public int getIdPersonne() {
         return idPersonne;
     }
@@ -25,7 +24,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "Prenom", nullable = false, length = 45)
+    @Column(name = "Prenom")
     public String getPrenom() {
         return prenom;
     }
@@ -35,7 +34,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "Nom", nullable = false, length = 45)
+    @Column(name = "Nom")
     public String getNom() {
         return nom;
     }
@@ -45,7 +44,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "mail", nullable = true, length = 100)
+    @Column(name = "mail")
     public String getMail() {
         return mail;
     }
@@ -55,30 +54,13 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "actif", nullable = false)
+    @Column(name = "actif")
     public byte getActif() {
         return actif;
     }
 
     public void setActif(byte actif) {
         this.actif = actif;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PersonneEntity that = (PersonneEntity) o;
-        return idPersonne == that.idPersonne &&
-                actif == that.actif &&
-                Objects.equals(prenom, that.prenom) &&
-                Objects.equals(nom, that.nom) &&
-                Objects.equals(mail, that.mail);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(idPersonne, prenom, nom, mail, actif);
     }
 
     @Basic
@@ -91,13 +73,21 @@ public class PersonneEntity {
         this.siret = siret;
     }
 
-    @Basic
-    @Column(name = "Employe")
-    public int getEmploye() {
-        return employe;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersonneEntity that = (PersonneEntity) o;
+        return idPersonne == that.idPersonne &&
+                actif == that.actif &&
+                siret == that.siret &&
+                Objects.equals(prenom, that.prenom) &&
+                Objects.equals(nom, that.nom) &&
+                Objects.equals(mail, that.mail);
     }
 
-    public void setEmploye(int employe) {
-        this.employe = employe;
+    @Override
+    public int hashCode() {
+        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret);
     }
 }

@@ -4,14 +4,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "TicketJonction", schema = "GenieLog", catalog = "")
+@Table(name = "TicketJonction", schema = "GenieLog")
 @IdClass(TicketJonctionEntityPK.class)
 public class TicketJonctionEntity {
     private int idParent;
     private int idEnfant;
 
     @Id
-    @Column(name = "IDParent", nullable = false)
+    @Column(name = "IDParent")
     public int getIdParent() {
         return idParent;
     }
@@ -21,7 +21,7 @@ public class TicketJonctionEntity {
     }
 
     @Id
-    @Column(name = "IDEnfant", nullable = false)
+    @Column(name = "IDEnfant")
     public int getIdEnfant() {
         return idEnfant;
     }

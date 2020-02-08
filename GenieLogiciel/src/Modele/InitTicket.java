@@ -6,7 +6,7 @@ public class InitTicket {
     public ArrayList<String> skillsList ;
     public ArrayList<String> statusList ;
     public ArrayList<String> demandeTypeList ;
-    public ArrayList<AdresseClient> clientSiteList ;
+    public ArrayList<Demandeur> clientSiteList ;
     public ArrayList<String> categorieList ;
     public ArrayList<Personne> technicienList ;
     public ArrayList<Personne> demandeurList ;

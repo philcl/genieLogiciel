@@ -4,13 +4,13 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Competences", schema = "GenieLog", catalog = "")
+@Table(name = "Competences", schema = "GenieLog")
 public class CompetencesEntity {
     private int idCompetences;
     private String competence;
 
     @Id
-    @Column(name = "idCompetences", nullable = false)
+    @Column(name = "idCompetences")
     public int getIdCompetences() {
         return idCompetences;
     }
@@ -20,7 +20,7 @@ public class CompetencesEntity {
     }
 
     @Basic
-    @Column(name = "competence", nullable = false, length = 100)
+    @Column(name = "competence")
     public String getCompetence() {
         return competence;
     }

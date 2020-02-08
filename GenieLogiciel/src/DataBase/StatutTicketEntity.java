@@ -7,12 +7,12 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "StatutTicket", schema = "GenieLog", catalog = "")
+@Table(name = "StatutTicket", schema = "GenieLog")
 public class StatutTicketEntity {
     private String idStatusTicket;
 
     @Id
-    @Column(name = "idStatusTicket", nullable = false, length = 50)
+    @Column(name = "idStatusTicket")
     public String getIdStatusTicket() {
         return idStatusTicket;
     }
