@@ -23,8 +23,23 @@ import java.util.List;
 public class RessourceTicket {
     @Path("/init")
     @POST
+    @Consumes("text/plain")
     @Produces("application/json")
-    public Response getInit(@QueryParam("clientId") int IdClient, @QueryParam("ticketId") int IdTicket, @QueryParam("token") String token) {
+    public Response getInit(String jsonStr) {
+        String token = "";
+        long IdClient = 0;
+        int IdTicket = 0;
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            IdClient = Long.parseLong((String) json.get("clientId"));
+            IdTicket = Integer.parseInt((String) json.get("ticketId"));
+            token = (String) json.get("token");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        System.err.print("received data : " + IdClient  + " " +  IdTicket + "  token " + token);
         //Verification du token
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
@@ -148,7 +163,16 @@ public class RessourceTicket {
     @POST
     @Consumes("text/plain")
     @Produces("application/json")
-    public Response postCreation(String jsonStr, @QueryParam("token") String token) {
+    public Response postCreation(String jsonStr) {
+        String token = "", ticketJson = "";
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            token = (String)json.get("token");
+            ticketJson = ((JSONObject)json.get("ticket")).toJSONString();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         //Verification du token
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
@@ -156,7 +180,7 @@ public class RessourceTicket {
         ArrayList<Object> list = new ArrayList<>();
         Transaction tx = null;
         TicketEntity ticketEntity = new TicketEntity();
-        Ticket ticket = createObjectFromJson(jsonStr);
+        Ticket ticket = createObjectFromJson(ticketJson);
 
         if(ticket == null)
             return Response.status(406)
@@ -226,7 +250,8 @@ public class RessourceTicket {
     @Consumes("text/plain")
     public Response postModify(String jsonStr) {
         String token = "", ticketJson = "";
-        long IdClient = 0, ticketId = 0;
+        long IdClient = 0;
+        int ticketId = 0;
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
@@ -304,6 +329,74 @@ public class RessourceTicket {
         return ReponseType.getOK("");
     }
 
+    @Path("/state")
+    @POST
+    @Consumes("text/plain")
+    public Response changeState(String jsonStr) {
+        Transaction tx = null;
+        try (Session session = CreateSession.getSession()){
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            int ticketId = Integer.parseInt((String)json.get("ticketId"));
+            String token = (String)json.get("token");
+            String statut = (String)json.get("statut");
+
+            if(!Token.tryToken(token))
+                return Token.tokenNonValide();
+
+            tx = session.beginTransaction();
+            System.err.println("ticket id = " + ticketId);
+            int id = -1;
+            id = (int) session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.id = " + ticketId).getSingleResult();
+            tx.commit();
+            session.clear();
+            if(id == -1)
+                return ReponseType.getNOTOK("Le ticketId n'existe pas");
+
+            tx = session.beginTransaction();
+            Query update = session.createQuery("UPDATE TicketEntity T set T.statut = '" + statut + "' WHERE t.id = " + ticketId);
+            int nbLignes = update.executeUpdate();
+            if(nbLignes != 1)
+                return  ReponseType.getNOTOK("Erreur lors de la requete en base de donnees");
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (HibernateException e){
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+        return ReponseType.getOK("");
+    }
+
+    @Path("/list")
+    @POST
+    @Consumes("text/plain")
+    @Produces("application/json")
+    public Response getList(String jsonStr) {
+        Transaction tx = null;
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        String token = "";
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            token = (String)json.get("token");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            List result = session.createQuery("SELECT t.id FROM TicketEntity t").list();
+            tx.commit();
+            session.clear();
+            for(Object o : result)
+                tickets.add(recuperationTicket(session, (int)o));
+        }
+        return ReponseType.getOK(tickets);
+    }
     private Ticket recuperationTicket(Session session, int IdTicket) {
         Ticket ticket = null;
         Transaction tx = session.beginTransaction();
@@ -362,7 +455,7 @@ public class RessourceTicket {
 
     private Ticket createObjectFromJson(String jsonStr) {
         Personne technicien = null;
-        String description = "";
+        String description;
         Ticket ticket = null;
 
         try {
