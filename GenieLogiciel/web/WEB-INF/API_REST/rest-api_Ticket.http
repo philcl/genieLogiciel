@@ -24,9 +24,15 @@ Content-Type: text/plain
 
 {"ticketId":"19","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","statut":"Resolu"}
 ###
-### Send GET to have all tickets
+### Send GET to have all tickets without techId
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+###
+### Send GET to have all tickets with techId
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "userId":2}
 ###

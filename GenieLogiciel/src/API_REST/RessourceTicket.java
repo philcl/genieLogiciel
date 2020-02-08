@@ -29,6 +29,7 @@ public class RessourceTicket {
         long IdClient = 0;
         int IdTicket = -1;
         try {
+            //Recuperation du JSON et parsing
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             IdClient = Long.parseLong((String) json.get("clientId"));
@@ -172,7 +173,7 @@ public class RessourceTicket {
                     .header("Access-Control-Allow-Origin", "*")
                     .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                     .allow("OPTIONS")
-                    .entity("Le ticket n'est pas présent dans la requete")
+                    .entity("Le ticket n'est pas present dans la requete")
                     .build();
 
         ticketEntity.setCategorie(ticket.categorie);
@@ -253,7 +254,7 @@ public class RessourceTicket {
         Transaction tx = null;
         Ticket ticket = createObjectFromJson(ticketJson);
         if(ticket == null)
-            return ReponseType.getNOTOK("Le ticket n'est pas présent dans la requete");
+            return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete");
 
         try(Session session = CreateSession.getSession()) {
             String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticketId;
@@ -357,10 +358,12 @@ public class RessourceTicket {
         Transaction tx = null;
         ArrayList<Ticket> tickets = new ArrayList<>();
         String token = "";
+        int techId = -1;
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String)json.get("token");
+            techId = Integer.parseInt(((Long)json.get("userId")).toString());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -368,13 +371,28 @@ public class RessourceTicket {
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
 
-        try(Session session = CreateSession.getSession()) {
-            tx = session.beginTransaction();
-            List result = session.createQuery("SELECT t.id FROM TicketEntity t").list();
-            tx.commit();
-            session.clear();
-            for(Object o : result)
-                tickets.add(recuperationTicket(session, (int)o));
+        //S'il n'y a pas de technicien en parametre
+        if(techId == -1) {
+            try (Session session = CreateSession.getSession()) {
+                tx = session.beginTransaction();
+                List result = session.createQuery("SELECT t.id FROM TicketEntity t").list();
+                tx.commit();
+                session.clear();
+                for (Object o : result)
+                    tickets.add(recuperationTicket(session, (int) o));
+                session.close();
+            }
+        }
+        else {
+            try(Session session = CreateSession.getSession()) {
+                tx = session.beginTransaction();
+                List result = session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.technicien = " + techId).list();
+                tx.commit();
+                session.clear();
+                for(Object o : result)
+                    tickets.add(recuperationTicket(session, (int) o));
+                session.close();
+            }
         }
         return ReponseType.getOK(tickets);
     }
