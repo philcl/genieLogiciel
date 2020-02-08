@@ -2,6 +2,7 @@ package API_REST;
 
 import DataBase.*;
 import Modele.*;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -33,10 +34,11 @@ public class RessourceTicket {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             IdClient = Long.parseLong((String) json.get("clientId"));
-            IdTicket = Integer.parseInt (((Long) json.get("ticketId")).toString());
+            try{IdTicket = Integer.parseInt (((Long) json.get("ticketId")).toString());} catch(NullPointerException ignored){}
             token = (String) json.get("token");
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (clientId, token, 'optionnel ticketId')");
         }
 
         //Verification du token
@@ -64,7 +66,7 @@ public class RessourceTicket {
             result = session.createQuery("FROM StaffEntity").list();
             for(Object o : result) {
                 StaffEntity technicienEntity = (StaffEntity) o;
-                answer.technicienList .add(new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId()));
+                answer.technicienList.add(new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId()));
             }
             tx.commit();
             session.clear();
@@ -156,8 +158,9 @@ public class RessourceTicket {
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String)json.get("token");
             ticketJson = ((JSONObject)json.get("ticket")).toJSONString();
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametre (token, ticket)");
         }
         //Verification du token
         if(!Token.tryToken(token))
@@ -242,9 +245,10 @@ public class RessourceTicket {
             token = (String)json.get("token");
             ticketJson = ((JSONObject)json.get("ticket")).toJSONString();
 
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            System.err.println("impossible de parse ///");
+            System.err.println("impossible de parse");
+            return ReponseType.getNOTOK("L'un des parametre n'est pas present (clientId, ticketId, token, ticket)");
         }
 
         //Verification du token
@@ -316,12 +320,19 @@ public class RessourceTicket {
     @Consumes("text/plain")
     public Response changeState(String jsonStr) {
         Transaction tx = null;
+        int ticketId = -1;
+        String token = "", statut = "";
         try (Session session = CreateSession.getSession()){
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(jsonStr);
-            int ticketId = Integer.parseInt((String)json.get("ticketId"));
-            String token = (String)json.get("token");
-            String statut = (String)json.get("statut");
+            try {
+                JSONParser parser = new JSONParser();
+                JSONObject json = (JSONObject) parser.parse(jsonStr);
+                ticketId = Integer.parseInt((String) json.get("ticketId"));
+                token = (String) json.get("token");
+                statut = (String) json.get("statut");
+            } catch (ParseException | NullPointerException e) {
+                e.printStackTrace();
+                return  ReponseType.getNOTOK("Il manque des parametres (ticketId, token, statut)");
+            }
 
             if(!Token.tryToken(token))
                 return Token.tokenNonValide();
@@ -336,13 +347,15 @@ public class RessourceTicket {
                 return ReponseType.getNOTOK("Le ticketId n'existe pas");
 
             tx = session.beginTransaction();
-            Query update = session.createQuery("UPDATE TicketEntity T set T.statut = '" + statut + "' WHERE T.id = " + ticketId);
-            int nbLignes = update.executeUpdate();
-            if(nbLignes != 1)
-                return  ReponseType.getNOTOK("Erreur lors de la requete en base de donnees");
-
-        } catch (ParseException e) {
-            e.printStackTrace();
+            try {
+                Query update = session.createQuery("UPDATE TicketEntity T set T.statut = '" + statut + "' WHERE T.id = " + ticketId);
+                int nbLignes = update.executeUpdate();
+                if (nbLignes != 1)
+                    return ReponseType.getNOTOK("Erreur lors de la requete en base de donnees");
+                tx.commit();
+            } catch(Exception e) { if(tx != null) tx.rollback(); return ReponseType.getNOTOK("Le statut " + statut + " n'existe pas");}
+            session.clear();
+            session.close();
         } catch (HibernateException e){
             if (tx != null) tx.rollback();
             e.printStackTrace();
@@ -363,9 +376,10 @@ public class RessourceTicket {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String)json.get("token");
-            techId = Integer.parseInt(((Long)json.get("userId")).toString());
-        } catch (ParseException e) {
+            try {techId = Integer.parseInt(((Long)json.get("userId")).toString());} catch(Exception ignored){}
+        } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (token, 'optionnel userId')");
         }
 
         if(!Token.tryToken(token))
