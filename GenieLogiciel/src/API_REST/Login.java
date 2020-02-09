@@ -55,7 +55,7 @@ public class Login {
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
-            StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("userLogin")).getSingleResult();
+            StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("staffUserName")).getSingleResult();
             if(userEntity == null)
                 return Response.status(406)
                         .header("Access-Control-Allow-Origin", "*")
@@ -98,15 +98,14 @@ public class Login {
     public Response createUser(String jsonStr) {
         String pass = "";
         Transaction tx = null;
-        boolean personFind = false;
-        PersonneEntity p = null;
+        Staff p = null;
 
         try(Session session = CreateSession.getSession()) {
             //Parse du String en JSON pour lire les données
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(jsonStr);
             pass = obj.get("userPassword").toString();
-            String login = (String)obj.get("userLogin");
+            String login = (String)obj.get("staffUserName");
 
             tx = session.beginTransaction();
             StaffEntity user = new StaffEntity();
@@ -114,9 +113,9 @@ public class Login {
             user.setMdp(encrypt(pass));
             user.setActif(1);
             user.setMail("");
-            user.setNom("");
-            user.setPrenom("");
-            user.setTelephone("06");
+            user.setNom("staffName");
+            user.setPrenom("staffSurname");
+            user.setTelephone("staffTel");
             user.setAdresse(1);
             session.save(user);
             tx.commit();
@@ -148,7 +147,7 @@ public class Login {
 
             tx = session.beginTransaction();
             byte[] pass = encrypt((String)json.get("userPassword"));
-            String request = "UPDATE StaffEntity s SET s.mdp = '" + Arrays.toString(pass) + "' WHERE s.login = " + (Integer)json.get("userLogin");
+            String request = "UPDATE StaffEntity s SET s.mdp = '" + Arrays.toString(pass) + "' WHERE s.login = " + (Integer)json.get("staffUserName");
             Query update = session.createQuery(request);
             int nbLigne = update.executeUpdate();
             tx.commit();

@@ -116,7 +116,7 @@ public class RessourceTicket {
                 //todo : verifier que le clientId et le client du ticket sont bien les mêmes
                 answer.ticket = recuperationTicket(session, IdTicket);
                 if(answer.ticket == null)
-                    return ReponseType.getNOTOK("Le ticket avec l'id " + IdTicket + " n'exsite pas", true, null, session);
+                    return ReponseType.getNOTOK("Le ticket avec l'id " + IdTicket + " n'existe pas", true, null, session);
             }
             session.close();
         } catch (HibernateException e) {
@@ -141,7 +141,7 @@ public class RessourceTicket {
             try{ticketParent = Integer.parseInt(((Long)json.get("ticketParent")).toString());} catch(NullPointerException ignored){}
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des parametre (token, ticket, 'optionnel ticketParent')", false,null, null);
+            return ReponseType.getNOTOK("Il manque des parametres (token, ticket, 'optionnel ticketParent')", false,null, null);
         }
         //Verification du token
         if(!Token.tryToken(token))
