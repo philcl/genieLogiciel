@@ -2,11 +2,17 @@
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/login
 Content-Type: text/plain
 
-{"userLogin":"1", "userPassword":"1234"}
+{"staffUserName":"1", "userPassword":"1234"}
 ###
 ### create User
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/create
 Content-Type: text/plain
 
-{"userLogin":"10", "userPassword":"1234"}
+{"staffUserName":"10", "userPassword":"1234"}
+###
+### modify User mdp
+POST http://localhost:8080/GenieLogiciel_war_exploded/user/modify
+Content-Type: text/plain
+
+{"staffUserName":"10", "userPassword":"4567","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
