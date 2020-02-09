@@ -16,7 +16,7 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
 Content-Type: text/plain
 
-{"clientId":50000000000000,"ticketId":19,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"75000","numero":1,"rue":"RUE N","ville":"PARIS"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 15,"nom":"DUPONT","prenom":"Ccc"},"nomClient":"ACCOR","objet":"TestReussi","statut":"En cours","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Incident"}}
+{"clientId":50000000000000,"ticketId":19,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"75000","numero":1,"rue":"RUE N","ville":"PARIS"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 15,"nom":"DUPONT","prenom":"Ccc"},"nomClient":"ACCOR","objet":"TestReussi","statut":"En cours","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Incident","id":19}}
 ###
 ##Send POST to modify the state
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/state

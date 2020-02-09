@@ -19,6 +19,7 @@
         <mapping class="DataBase.CompetencesEntity"/>
         <mapping class="DataBase.InterventionEntity"/>
         <mapping class="DataBase.JonctionAdresseSiretEntity"/>
+        <mapping class="DataBase.JonctionInterventionCompetenceEntity"/>
         <mapping class="DataBase.JonctionStaffCompetenceEntity"/>
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
         <mapping class="DataBase.PersonneEntity"/>

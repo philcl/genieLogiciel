@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "StatutTicket", schema = "GenieLog")
+@Table(name = "StatutTicket", schema = "GenieLog", catalog = "")
 public class StatutTicketEntity {
     private String idStatusTicket;
 

@@ -17,6 +17,7 @@ public class TicketEntity {
     private Timestamp date;
     private int demandeur;
     private String type;
+    private int ticket;
 
     @Id
     @Column(name = "ID")
@@ -118,6 +119,16 @@ public class TicketEntity {
         this.type = type;
     }
 
+    @Basic
+    @Column(name = "Ticket")
+    public int getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(int ticket) {
+        this.ticket = ticket;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -126,6 +137,7 @@ public class TicketEntity {
         return id == that.id &&
                 adresse == that.adresse &&
                 demandeur == that.demandeur &&
+                ticket == that.ticket &&
                 Objects.equals(technicien, that.technicien) &&
                 Objects.equals(categorie, that.categorie) &&
                 Objects.equals(statut, that.statut) &&
@@ -137,6 +149,6 @@ public class TicketEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, adresse, technicien, categorie, statut, objet, description, date, demandeur, type);
+        return Objects.hash(id, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket);
     }
 }

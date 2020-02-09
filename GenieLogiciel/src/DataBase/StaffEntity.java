@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Staff", schema = "GenieLog")
+@Table(name = "Staff", schema = "GenieLog", catalog = "")
 public class StaffEntity {
     private int id;
     private String login;

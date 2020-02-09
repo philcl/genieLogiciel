@@ -3,6 +3,7 @@ package API_REST;
 import DataBase.PersonneEntity;
 import DataBase.PosteEntity;
 import DataBase.StaffEntity;
+import Modele.Staff;
 import Modele.Token;
 import Modele.UserConnection;
 import org.hibernate.HibernateException;
@@ -146,17 +147,16 @@ public class Login {
                 return Token.tokenNonValide();
 
             tx = session.beginTransaction();
-
             byte[] pass = encrypt((String)json.get("userPassword"));
             String request = "UPDATE StaffEntity s SET s.mdp = '" + Arrays.toString(pass) + "' WHERE s.login = " + (Integer)json.get("userLogin");
             Query update = session.createQuery(request);
             int nbLigne = update.executeUpdate();
-            if(nbLigne != 1)
-                return ReponseType.getNOTOK("Erreur d'execution de la requete pour le changement de password");
-
             tx.commit();
             session.clear();
             session.close();
+            if(nbLigne != 1)
+                return ReponseType.getNOTOK("Erreur d'execution de la requete pour le changement de password", false, null, null);
+
         } catch (ParseException e) {
             e.printStackTrace();
         } catch(HibernateException e) {
@@ -216,5 +216,11 @@ public class Login {
             e.printStackTrace();
         }
         return user;
+    }
+
+    private Staff getStaff(int staffId) {
+        Staff staff = new Staff();
+
+        return staff;
     }
 }

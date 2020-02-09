@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Intervention", schema = "GenieLog")
+@Table(name = "Intervention", schema = "GenieLog", catalog = "")
 public class InterventionEntity {
     private int id;
     private Timestamp debut;
@@ -13,6 +13,7 @@ public class InterventionEntity {
     private int etat;
     private int technicien;
     private int ticket;
+    private Timestamp dureeEstimee;
 
     @Id
     @Column(name = "ID")
@@ -74,6 +75,16 @@ public class InterventionEntity {
         this.ticket = ticket;
     }
 
+    @Basic
+    @Column(name = "dureeEstimee")
+    public Timestamp getDureeEstimee() {
+        return dureeEstimee;
+    }
+
+    public void setDureeEstimee(Timestamp dureeEstimee) {
+        this.dureeEstimee = dureeEstimee;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,11 +95,12 @@ public class InterventionEntity {
                 technicien == that.technicien &&
                 ticket == that.ticket &&
                 Objects.equals(debut, that.debut) &&
-                Objects.equals(fin, that.fin);
+                Objects.equals(fin, that.fin) &&
+                Objects.equals(dureeEstimee, that.dureeEstimee);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, debut, fin, etat, technicien, ticket);
+        return Objects.hash(id, debut, fin, etat, technicien, ticket, dureeEstimee);
     }
 }
