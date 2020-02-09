@@ -1,0 +1,14 @@
+### Send POST to change clientName to clientId
+POST http://localhost:8080/GenieLogiciel_war_exploded/client/getId
+Content-Type: text/plain
+
+{"clientName":"ACCOR","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+
+###
+### Send POST to change clientName to clientId
+POST http://localhost:8080/GenieLogiciel_war_exploded/client/list
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+
+###

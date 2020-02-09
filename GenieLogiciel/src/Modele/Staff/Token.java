@@ -1,4 +1,4 @@
-package Modele;
+package Modele.Staff;
 
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;

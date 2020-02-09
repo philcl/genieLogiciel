@@ -1,0 +1,37 @@
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
+Content-Type: text/plain
+
+{
+   "clientId":123456789,
+   "token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"
+   "ticket":{
+      "categorie":"Etude",
+      "competences":[
+         "Electricien",
+         "Frigoriste"
+      ],
+      "demandeur":{
+         "id":10,
+         "nom":"ALAINE",
+         "prenom":"Catherine"
+      },
+      "nomClient":"Boucherie ALAINE",
+      "objet":"Installation d'une nouvelle vitrine réfrigérée",
+      "statut":"En cours",
+      "technicien":{
+         "id":7,
+         "nom":"DURAND",
+         "prenom":"Michel"
+      },
+      "type":"Demande",
+      "id":3,
+      "adresse":{
+         "numero":32,
+         "rue":"RUE ALAINE",
+         "ville":"LYON",
+         "codePostal":"69000"
+      }
+   }
+}
+
+###

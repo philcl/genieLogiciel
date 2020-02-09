@@ -10,6 +10,7 @@ public class InitTicket {
     public ArrayList<String> categorieList ;
     public ArrayList<Personne> technicienList ;
     public ArrayList<Personne> demandeurList ;
+    public String clientName;
     public Ticket ticket;
 
     public InitTicket() {

@@ -1,5 +1,7 @@
-
+GenieLogiciel/GenieLogiciel.iml
+GenieLogiciel/.idea
 GenieLogiciel/src/hibernate.cfg.xml
+
 .idea/genieLogiciel.iml
 .idea/artifacts/genieLogiciel_war_exploded.xml
 .idea/hibernate.cfg.xml

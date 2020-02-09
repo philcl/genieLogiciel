@@ -4,19 +4,19 @@ Accept: */*
 Cache-Control: no-cache
 Content-Type: text/plain
 
-{"clientId":"50000000000000","ticketId":19,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+{"clientId":"50000000000000","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
 ### Send POST to create Ticket
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/create
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"75000","numero":1,"rue":"RUE N","ville":"PARIS"},"categorie":"Etude","competences":[],"demandeur":{"id":15,"nom":"DUPONT","prenom":"Ccc"},"nomClient":"ACCOR","objet":"TestReussi","statut":"Resolu","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Demande"}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"75000","numero":1,"rue":"RUE N","ville":"PARIS"},"categorie":"Etude","competences":[],"demandeur":{"id":15,"nom":"DUPONT","prenom":"Ccc"},"objet":"TestReussi","statut":"Resolu","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Demande"}}
 ###
 ### Send POST to modify Ticket
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
 Content-Type: text/plain
 
-{"clientId":50000000000000,"ticketId":19,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"75000","numero":1,"rue":"RUE N","ville":"PARIS"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 15,"nom":"DUPONT","prenom":"Ccc"},"nomClient":"ACCOR","objet":"TestReussi","statut":"En cours","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Incident","id":19}}
+{"clientId":50000000000000,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"75000","numero":1,"rue":"RUE N","ville":"PARIS"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 15,"nom":"DUPONT","prenom":"Ccc"},"objet":"TestReussi","statut":"En cours","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Incident","id":19}}
 ###
 ##Send POST to modify the state
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/state
@@ -24,13 +24,13 @@ Content-Type: text/plain
 
 {"ticketId":"19","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","statut":"Resolu"}
 ###
-### Send GET to have all tickets without techId
+### Send POST to have all tickets without techId
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
-### Send GET to have all tickets with techId
+### Send POST to have all tickets with techId
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
 Content-Type: text/plain
 

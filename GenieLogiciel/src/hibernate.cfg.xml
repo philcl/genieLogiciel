@@ -21,6 +21,7 @@
         <mapping class="DataBase.JonctionAdresseSiretEntity"/>
         <mapping class="DataBase.JonctionInterventionCompetenceEntity"/>
         <mapping class="DataBase.JonctionStaffCompetenceEntity"/>
+        <mapping class="DataBase.JonctionStaffPosteEntity"/>
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
         <mapping class="DataBase.PersonneEntity"/>
         <mapping class="DataBase.PosteEntity"/>
@@ -29,6 +30,7 @@
         <mapping class="DataBase.TicketEntity"/>
         <mapping class="DataBase.TicketJonctionEntity"/>
         <mapping class="DataBase.TypeDemandesEntity"/>
+
 
         <!-- DB schema will be updated if needed -->
         <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->

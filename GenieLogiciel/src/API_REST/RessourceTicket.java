@@ -2,7 +2,7 @@ package API_REST;
 
 import DataBase.*;
 import Modele.*;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import Modele.Staff.Token;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
@@ -76,7 +77,7 @@ public class RessourceTicket {
             //Recuperation de la liste des sites du client
             String request = "FROM JonctionAdresseSiretEntity A WHERE A.siret LIKE '" + IdClient + "%'";
             result = session.createQuery(request).list();
-            if(result == null)
+            if(result == null || result.isEmpty())
                 return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
 
             for(Object o : result) {
@@ -108,6 +109,11 @@ public class RessourceTicket {
                 CompetencesEntity competence = (CompetencesEntity) o;
                 answer.skillsList .add(competence.getCompetence());
             }
+
+            String clientName;
+            try{clientName = (String) session.createQuery("FROM ClientEntity c WHERE c.siren = " + IdClient).getSingleResult();}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren " + IdClient + " n'existe pas", true, tx, session);}
+            answer.clientName = clientName;
             tx.commit();
             session.clear();
 
@@ -153,12 +159,7 @@ public class RessourceTicket {
         Ticket ticket = createObjectFromJson(ticketJson);
 
         if(ticket == null)
-            return Response.status(406)
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                    .allow("OPTIONS")
-                    .entity("Le ticket n'est pas present dans la requete")
-                    .build();
+            return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete ou est mal rempli", false, null, null);
 
         ticketEntity.setCategorie(ticket.categorie);
         ticketEntity.setDate(Timestamp.from(Instant.now()));
@@ -171,11 +172,15 @@ public class RessourceTicket {
         try(Session session = CreateSession.getSession()) {
             //Ajout de l'adresse (SIRET) des ID du demandeur et du technicien
             tx = session.beginTransaction();
-            PersonneEntity demandeur= (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();
+            PersonneEntity demandeur;
+            try{demandeur = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur avec l'id " + ticket.demandeur.id + " n'existe pas", true, tx, session);}
             ticketEntity.setAdresse(demandeur.getSiret());
             ticketEntity.setDemandeur(demandeur.getIdPersonne());
 
-            StaffEntity tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id).getSingleResult();
+            StaffEntity tech;
+            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id).getSingleResult();}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien avec l'id " + ticket.technicien.id + " n'existe pas", true, tx, session);}
             ticketEntity.setTechnicien(tech.getId());
 
             int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult();
@@ -214,7 +219,6 @@ public class RessourceTicket {
             IdClient = (Long) json.get("clientId");
             token = (String)json.get("token");
             ticketJson = ((JSONObject)json.get("ticket")).toJSONString();
-
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
             System.err.println("impossible de parse");
@@ -228,30 +232,32 @@ public class RessourceTicket {
         Transaction tx = null;
         Ticket ticket = createObjectFromJson(ticketJson);
         if(ticket == null)
-            return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete", false, null, null);
+            return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete ou est mal rempli", false, null, null);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             //Recuperation du tech
-            StaffEntity tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id).getSingleResult();
-            if(tech == null)
-                return ReponseType.getNOTOK("Le technicien n'existe pas", true, tx, session);
+            StaffEntity tech;
+            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id).getSingleResult();}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien n'existe pas", true, tx, session);}
 
             //Recuperation du demandeur
-            PersonneEntity demandeur = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();
-            if(demandeur == null)
-                return ReponseType.getNOTOK("Le demandeur n'existe pas", true, tx, session);
+            PersonneEntity demandeur;
+            try{demandeur = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur n'existe pas", true, tx, session);}
 
             //Recuperation du client
-            JonctionAdresseSiretEntity client = (JonctionAdresseSiretEntity) session.createQuery("FROM JonctionAdresseSiretEntity ac WHERE ac.siret = " + IdClient).getSingleResult();
-            if(client == null)
-                return ReponseType.getNOTOK("Le client n'existe pas", true, tx, session);
+            JonctionAdresseSiretEntity client = null;
+            try{client = (JonctionAdresseSiretEntity) session.createQuery("FROM JonctionAdresseSiretEntity ac WHERE ac.siret LIKE '" + IdClient + "%'").getSingleResult();}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Le client n'existe pas", true, tx, session);}
+
             tx.commit();
             session.clear();
 
             //Execution de la commande update
             tx =  session.beginTransaction();
-            String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticket.id;
+            //le replace permet d'echapper le token '
+            String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet.replace("'", "''") + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description.replace("'", "''") + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticket.id;
             Query update = session.createQuery(request);
             int nbLignes = update.executeUpdate();
 
@@ -367,6 +373,7 @@ public class RessourceTicket {
         }
         return ReponseType.getOK(tickets);
     }
+
     private Ticket recuperationTicket(Session session, int IdTicket) {
         Ticket ticket = null;
         Transaction tx = session.beginTransaction();
@@ -401,7 +408,7 @@ public class RessourceTicket {
 
             Adresse adresseClient = new Adresse(adresse.getNumero(), adresse.getCodePostal(), adresse.getRue(), adresse.getVille());
             ticket = new Ticket(ticketEntity.getType(), ticketEntity.getObjet(), ticketEntity.getDescription(), ticketEntity.getCategorie(),
-                    ticketEntity.getStatut(), technicien, demandeur, client.getNom(), competences, adresseClient, ticketEntity.getId());
+                    ticketEntity.getStatut(), technicien, demandeur, competences, adresseClient, ticketEntity.getId());
         }
         tx.commit();
         session.clear();
@@ -419,32 +426,38 @@ public class RessourceTicket {
             e.printStackTrace();
             System.err.println("Erreur lors du parsing de l'objet");
         }
-        ArrayList<String> competences = (ArrayList<String>) json.get("competences");
-        String categorie = (String) json.get("categorie");
-        JSONObject demandeurJson = (JSONObject) json.get("demandeur");
-        Personne demandeur = new Personne((String)demandeurJson.get("nom"), (String)demandeurJson.get("prenom"), Integer.parseInt(((Long)demandeurJson.get("id")).toString()));
-        String objet = (String) json.get("objet");
-        if(json.get("description") != null)
-            description = (String) json.get("description");
-        else
-            description = "";
+        try {
+            ArrayList<String> competences = (ArrayList<String>) json.get("competences");
+            String categorie = (String) json.get("categorie");
+            JSONObject demandeurJson = (JSONObject) json.get("demandeur");
+            Personne demandeur = new Personne((String) demandeurJson.get("nom"), (String) demandeurJson.get("prenom"), Integer.parseInt(((Long) demandeurJson.get("id")).toString()));
+            String objet = (String) json.get("objet");
+            if (json.get("description") != null)
+                description = (String) json.get("description");
+            else
+                description = "";
 
-        String type = (String) json.get("type");
-        String nomClient = (String) json.get("nomClient");
-        String statut = (String) json.get("statut");
-        if (json.get("technicien") != null) {
-            JSONObject technicienJSON = (JSONObject) json.get("technicien");
-            technicien = new Personne((String) technicienJSON.get("nom"), (String) technicienJSON.get("prenom"), Integer.parseInt(((Long)technicienJSON.get("id")).toString()));
+            String type = (String) json.get("type");
+            String statut = (String) json.get("statut");
+            if (json.get("technicien") != null) {
+                JSONObject technicienJSON = (JSONObject) json.get("technicien");
+                technicien = new Personne((String) technicienJSON.get("nom"), (String) technicienJSON.get("prenom"), Integer.parseInt(((Long) technicienJSON.get("id")).toString()));
+            }
+
+            JSONObject adresseJSON = (JSONObject) json.get("adresse");
+            Adresse adresse = new Adresse(Integer.parseInt(((Long) adresseJSON.get("numero")).toString()), (String) adresseJSON.get("codePostal"), (String) adresseJSON.get("rue"), (String) adresseJSON.get("ville"));
+            int id = -1;
+            //Test avec null pointeur exception pour verifier que id existe dans si non nous sommes en creation
+            try {
+                id = Integer.parseInt(((Long) json.get("id")).toString());
+            } catch (NullPointerException ignored) {
+            }
+
+            Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id);
+            return ticket;
+        } catch (NullPointerException e) {
+            return null;
         }
-
-        JSONObject adresseJSON = (JSONObject) json.get("adresse");
-        Adresse adresse = new Adresse(Integer.parseInt(((Long)adresseJSON.get("numero")).toString()), (String)adresseJSON.get("codePostal"), (String)adresseJSON.get("rue"), (String)adresseJSON.get("ville"));
-        int id = -1;
-        //Test avec null pointeur exception pour verifier que id existe dans si non nous sommes en creation
-        try{id = Integer.parseInt(((Long)json.get("id")).toString());} catch(NullPointerException ignored){}
-
-        Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, nomClient, competences, adresse, id);
-        return ticket;
     }
 
     @POST

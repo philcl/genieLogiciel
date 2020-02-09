@@ -6,60 +6,27 @@ import java.util.Objects;
 @Entity
 @Table(name = "Poste", schema = "GenieLog", catalog = "")
 public class PosteEntity {
-    private int idPersonne;
-    private byte admin;
-    private byte respTech;
-    private byte technicien;
-    private byte operateur;
+    private int idPoste;
+    private String poste;
 
     @Id
-    @Column(name = "idPersonne")
-    public int getIdPersonne() {
-        return idPersonne;
+    @Column(name = "idPoste")
+    public int getIdPoste() {
+        return idPoste;
     }
 
-    public void setIdPersonne(int idPersonne) {
-        this.idPersonne = idPersonne;
-    }
-
-    @Basic
-    @Column(name = "Admin")
-    public byte getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(byte admin) {
-        this.admin = admin;
+    public void setIdPoste(int idPoste) {
+        this.idPoste = idPoste;
     }
 
     @Basic
-    @Column(name = "RespTech")
-    public byte getRespTech() {
-        return respTech;
+    @Column(name = "Poste")
+    public String getPoste() {
+        return poste;
     }
 
-    public void setRespTech(byte respTech) {
-        this.respTech = respTech;
-    }
-
-    @Basic
-    @Column(name = "Technicien")
-    public byte getTechnicien() {
-        return technicien;
-    }
-
-    public void setTechnicien(byte technicien) {
-        this.technicien = technicien;
-    }
-
-    @Basic
-    @Column(name = "Operateur")
-    public byte getOperateur() {
-        return operateur;
-    }
-
-    public void setOperateur(byte operateur) {
-        this.operateur = operateur;
+    public void setPoste(String poste) {
+        this.poste = poste;
     }
 
     @Override
@@ -67,15 +34,12 @@ public class PosteEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PosteEntity that = (PosteEntity) o;
-        return idPersonne == that.idPersonne &&
-                admin == that.admin &&
-                respTech == that.respTech &&
-                technicien == that.technicien &&
-                operateur == that.operateur;
+        return idPoste == that.idPoste &&
+                Objects.equals(poste, that.poste);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPersonne, admin, respTech, technicien, operateur);
+        return Objects.hash(idPoste, poste);
     }
 }
