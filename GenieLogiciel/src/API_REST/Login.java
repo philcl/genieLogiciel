@@ -1,6 +1,5 @@
 package API_REST;
 
-import DataBase.PersonneEntity;
 import DataBase.PosteEntity;
 import DataBase.StaffEntity;
 import Modele.Staff;
@@ -50,6 +49,8 @@ public class Login {
             JSONObject obj = (JSONObject) parser.parse(jsonStr);
             String pass = obj.get("userPassword").toString();
 
+            System.err.println("Votre password est " + pass);
+
             //Chiffrage du mot de passe d'origine pour verification sur la base de donnees
             bytes = encrypt(pass);
 
@@ -96,7 +97,7 @@ public class Login {
     @POST
     @Consumes("text/plain")
     public Response createUser(String jsonStr) {
-        String pass = "";
+        String pass = "", login = "";
         Transaction tx = null;
         Staff p = null;
 
@@ -104,8 +105,10 @@ public class Login {
             //Parse du String en JSON pour lire les données
             JSONParser parser = new JSONParser();
             JSONObject obj = (JSONObject) parser.parse(jsonStr);
-            pass = obj.get("userPassword").toString();
-            String login = (String)obj.get("staffUserName");
+            try{pass = obj.get("userPassword").toString(); }
+            catch (NullPointerException e) { return ReponseType.getNOTOK("Password non rempli", false, null, null);}
+            try{login = (String)obj.get("staffUserName");}
+            catch (NullPointerException e) { return ReponseType.getNOTOK("staffUserName non rempli", false, null, null);}
 
             tx = session.beginTransaction();
             StaffEntity user = new StaffEntity();
@@ -124,11 +127,7 @@ public class Login {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .allow("OPTIONS")
-                .build();
+        return ReponseType.getOK("");
     }
 
     @Path("/modify")
@@ -147,7 +146,7 @@ public class Login {
 
             tx = session.beginTransaction();
             byte[] pass = encrypt((String)json.get("userPassword"));
-            String request = "UPDATE StaffEntity s SET s.mdp = '" + Arrays.toString(pass) + "' WHERE s.login = " + (Integer)json.get("staffUserName");
+            String request = "UPDATE StaffEntity s SET s.mdp = '" + Arrays.toString(pass) + "' WHERE s.login = " + (String)json.get("staffUserName");
             Query update = session.createQuery(request);
             int nbLigne = update.executeUpdate();
             tx.commit();

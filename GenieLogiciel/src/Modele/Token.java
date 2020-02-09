@@ -13,7 +13,7 @@ public class Token extends  HashMap<String, Timestamp>{
 
     public static boolean tryToken(String token) {
         //todo pour le rendu a enlever
-        if(me.size() == 0) {
+        if(!me.containsKey("96b29b22-cefb-4699-93b9-9fcc97aa003e")) {
             Timestamp t = Timestamp.valueOf(LocalDateTime.now());
             t.setTime(t.getTime() + (24 * 1000 * 60 * 60));
             me.put("96b29b22-cefb-4699-93b9-9fcc97aa003e", t);
