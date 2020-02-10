@@ -120,14 +120,14 @@ public class Login {
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
 
-        p = getStaffFromJSON(obj.toJSONString()); //Transformation du json en modele Staff
+        p = getStaffFromJSON(obj.toJSONString(), true); //Transformation du json en modele Staff
         if (p == null)
             return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli veuillez verifier", false, null, null);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "'").getSingleResult();
-            return ReponseType.getNOTOK("Le login existe deja veuillez les changer", true, tx, session);
+            return ReponseType.getNOTOK("Le login existe deja veuillez le changer", true, tx, session);
         } catch (NoResultException ignored) {}
 
         //Recuperation du staffEntity
@@ -206,7 +206,7 @@ public class Login {
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
 
-        p = getStaffFromJSON(obj.toJSONString()); //Transformation du json en modele Staff
+        p = getStaffFromJSON(obj.toJSONString(), false); //Transformation du json en modele Staff
         if (p == null)
             return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli veuillez verifier", false, null, null);
 
@@ -233,13 +233,7 @@ public class Login {
             return ReponseType.getNOTOK("L'un des postes n'existe pas", false, null, null);
 
         try (Session session = CreateSession.getSession()) {
-            tx = session.beginTransaction();
-            //Suppression des competences
-            session.createQuery("DELETE JonctionStaffCompetenceEntity j WHERE j.staffId = " + p.staffId ).executeUpdate();
-            session.createQuery("DELETE JonctionStaffPosteEntity j WHERE j.idStaff = " + p.staffId).executeUpdate();
-
-            tx.commit();
-            session.clear();
+            //Ajout du staff sur la base
             tx = session.beginTransaction();
             StaffEntity staffEntity;
 
@@ -256,32 +250,13 @@ public class Login {
 
             session.update(staffEntity);
 
-
-            //todo sauvegarder les changements sur la base
-            //Ajout du staff sur la base
-            Integer id = user.getId();
-            System.err.println("class : " + StaffEntity.class + " value : " + id);
-            /*StaffEntity user1 = session.getReference(StaffEntity.class, id);
-            if(user1 != null) {
-                System.err.println(user1.getNom());
-                session.update(user1);
-            }
-            else {
-                System.err.println();
-                return ReponseType.getNOTOK("user 1 is null", true, tx, session);
-            }*/
-
-            tx.commit();
-            session.clear();
-            tx = session.beginTransaction();
-
             //Ajout des nouvelles competences
             for (JonctionStaffCompetenceEntity j : competenceToAdd)
-                session.save(j);
+                session.saveOrUpdate(j);
 
             //Ajout des postes
             for (JonctionStaffPosteEntity poste : posteId)
-                session.save(poste);
+                session.saveOrUpdate(poste);
 
             tx.commit();
             session.clear();
@@ -389,7 +364,7 @@ public class Login {
      * @param jsonStr
      * @return Renvoi un objet Staff contenant les informations du JSON
      */
-    private Staff getStaffFromJSON(String jsonStr) {
+    private Staff getStaffFromJSON(String jsonStr, boolean creation) {
         Staff staff = new Staff();
         JSONObject json = null;
         try {
@@ -400,26 +375,48 @@ public class Login {
             System.err.println("Impossible de parse le staff");
         }
 
+        //todo mettre des test sur null pour etre sur que les champs soient bien remplis
         //Extraction des informations du JSON
         try {
             //ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("staffAdress");
+            staff.staffAdress.numero = -1;
             staff.staffAdress.numero = Integer.parseInt(((Long) adresse.get("numero")).toString());
             staff.staffAdress.codePostal = (String) adresse.get("codePostal");
             staff.staffAdress.rue = (String) adresse.get("rue");
             staff.staffAdress.ville = (String) adresse.get("ville");
 
+            if(staff.staffAdress.numero == -1 || staff.staffAdress.codePostal == null ||staff.staffAdress.rue == null ||staff.staffAdress.ville == null)
+                return null;
+
             //Ajout du reste de l'objet staff
-            staff.staffId = Integer.parseInt(((Long) json.get("staffId")).toString());
+            if(creation) {
+                try {staff.staffId = Integer.parseInt(((Long) json.get("staffId")).toString());}
+                catch (NullPointerException ignored) {}
+            }
+            else {
+                staff.staffId = -1;
+                staff.staffId = Integer.parseInt(((Long) json.get("staffId")).toString());
+                if(staff.staffId == -1)
+                    return null;
+            }
             staff.staffSurname = (String) json.get("staffSurname");
             staff.staffName = (String) json.get("staffName");
             staff.staffTel = (String) json.get("staffTel");
             staff.staffMail = (String) json.get("staffMail");
+
+            if(staff.staffSurname == null || staff.staffName == null ||staff.staffTel == null || staff.staffMail == null)
+                return null;
+
             staff.staffUserName = (String) json.get("staffUserName");
             staff.staffPassword = (String) json.get("staffPassword");
             staff.staffRole.addAll((ArrayList<String>) json.get("staffRole"));
             staff.staffCompetency.addAll((ArrayList<String>) json.get("staffCompetency"));
+
+            if(staff.staffUserName == null || staff.staffPassword == null || staff.staffRole == null || staff.staffCompetency == null)
+                return null;
         } catch (NullPointerException e) {
+            System.err.println("renvoi null le format du json du staff n'est pas correct");
             return null;
         }
         return staff;
