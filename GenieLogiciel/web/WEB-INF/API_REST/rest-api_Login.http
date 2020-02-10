@@ -16,3 +16,9 @@ Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":10,"staffUserName":"11","staffPassword":"5678","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Philippe","staffName":"CLAUDE","staffTel":"0504070105","staffCompetency":["Electricien","Frigoriste"],"staffRole":["Admin","RespTech"]}}
 ###
+### list User
+POST http://localhost:8080/GenieLogiciel_war_exploded/user/list
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+###
