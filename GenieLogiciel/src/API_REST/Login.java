@@ -1,11 +1,11 @@
 package API_REST;
 
 import DataBase.*;
-import Modele.Staff.Staff;
-import Modele.Staff.StaffList;
-import Modele.Staff.Token;
-import Modele.Staff.UserConnection;
+import Modele.Staff.*;
+
 import java.sql.Blob;
+
+import javassist.tools.reflect.CannotCreateException;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -270,6 +270,78 @@ public class Login {
         return ReponseType.getOK("");
     }
 
+    @Path("/init")
+    @POST
+    @Consumes("text/plain")
+    @Produces("application/json")
+    public Response getInit(String jsonStr) {
+        String token = "";
+        int staffId = -1;
+        StaffInit staffInit = new StaffInit();
+        Transaction tx = null;
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            token = (String) json.get("token");
+            try{ staffId = Integer.parseInt(((Long)json.get("staffId")).toString());} catch(NullPointerException ignored){}
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Il manques des parametres (token, 'optionnel staffId')", false, null, null);
+        }
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+
+            List result = session.createQuery("SELECT c.competence FROM CompetencesEntity c").list();
+            for(Object o : result)
+                staffInit.competencesList.add((String) o);
+
+            result = session.createQuery("SELECT p.poste FROM PosteEntity p").list();
+            for(Object o : result)
+                staffInit.fonctionsList.add((String) o);
+
+            if(staffId != -1) {
+                staffInit.staff = new Staff();
+                StaffEntity staffEntity;
+                try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + staffId).getSingleResult();}
+                catch(NoResultException e) {return ReponseType.getNOTOK("Le user avec l'id " + staffId + " n'existe pas", true, tx,session);}
+
+                AdresseEntity adresse;
+                try{adresse = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + staffEntity.getAdresse()).getSingleResult();}
+                catch(NoResultException e) {return ReponseType.getNOTOK("Une erreur c'est produite sur la base de donnee", true, tx, session);}
+
+                //Recuperation du staff
+                staffInit.staff.staffPassword = "";
+                staffInit.staff.staffUserName = staffEntity.getLogin();
+                staffInit.staff.staffMail = staffEntity.getMail();
+                staffInit.staff.staffTel = staffEntity.getTelephone();
+                staffInit.staff.staffName = staffEntity.getNom();
+                staffInit.staff.staffSurname = staffEntity.getPrenom();
+                staffInit.staff.staffId = staffId;
+
+                //Recuperation de l'adresse
+                staffInit.staff.staffAdress.ville = adresse.getVille();
+                staffInit.staff.staffAdress.rue = adresse.getRue();
+                staffInit.staff.staffAdress.codePostal = adresse.getCodePostal();
+                staffInit.staff.staffAdress.numero = adresse.getNumero();
+
+                //Recuperation des roles et competences
+                staffInit.staff.staffCompetency = getCompetences(session, staffId);
+                staffInit.staff.staffRole = getPoste(session, staffId);
+
+                tx.commit();
+                session.clear();
+                session.close();
+            }
+        } catch(HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return ReponseType.getOK(staffInit);
+    }
+
     @Path("/list")
     @POST
     @Consumes("text/plain")
@@ -419,7 +491,9 @@ public class Login {
                 return null;
 
             staff.staffUserName = (String) json.get("staffUserName");
-            staff.staffPassword = (String) json.get("staffPassword");
+            String password = (String) json.get("staffPassword");
+            if(!password.equals("") || creation)
+                staff.staffPassword = password;
             staff.staffRole.addAll((ArrayList<String>) json.get("staffRole"));
             staff.staffCompetency.addAll((ArrayList<String>) json.get("staffCompetency"));
 
@@ -524,6 +598,24 @@ public class Login {
             }
         }
         return comptenceToAdd;
+    }
+
+    private ArrayList<String> getCompetences(Session session, int userId) {
+        ArrayList<String> staffCompetences = new ArrayList<>();
+        List result = session.createQuery("FROM CompetencesEntity").list();
+        HashMap<Integer, String> competences = new HashMap<>();
+        for(Object o : result) {
+            CompetencesEntity competence = (CompetencesEntity) o;
+            competences.put(competence.getIdCompetences(), competence.getCompetence());
+        }
+
+        result = session.createQuery("FROM JonctionStaffCompetenceEntity sc WHERE sc.staffId = " + userId).list();
+        for(Object o : result) {
+            JonctionStaffCompetenceEntity staffPoste = (JonctionStaffCompetenceEntity) o;
+            String poste = competences.get(staffPoste.getCompetenceId());
+            staffCompetences.add(poste);
+        }
+        return staffCompetences;
     }
 
     private ArrayList<String> getPoste(Session session, int userId) {
