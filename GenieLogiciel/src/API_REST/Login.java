@@ -276,7 +276,17 @@ public class Login {
     @Produces("application/json")
     public Response getStaffList(String jsonStr) {
         Transaction tx = null;
+        String token = "";
         ArrayList<StaffList> staffList = new ArrayList<>();
+        try {
+          JSONParser parser = new JSONParser();
+          JSONObject obj = (JSONObject) parser.parse(jsonStr);
+          token = (String) obj.get("token");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();

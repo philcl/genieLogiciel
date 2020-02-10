@@ -10,6 +10,7 @@ public class InitTicket {
     public ArrayList<String> categorieList ;
     public ArrayList<Personne> technicienList ;
     public ArrayList<Personne> demandeurList ;
+    public ArrayList<Integer> priorityList;
     public String clientName;
     public Ticket ticket;
 
@@ -21,5 +22,6 @@ public class InitTicket {
         this.categorieList  = new ArrayList<>();
         this.technicienList  = new ArrayList<>();
         this.demandeurList  = new ArrayList<>();
+        this.priorityList = new ArrayList<>();
     }
 }

@@ -57,7 +57,7 @@ public class RessourceTicket {
             List result = session.createQuery("FROM TypeDemandesEntity ").list();
             for(Object o : result) {
                 TypeDemandesEntity typeDemande = (TypeDemandesEntity) o;
-                answer.demandeTypeList .add(typeDemande.getIdTypeDemandes());
+                answer.demandeTypeList.add(typeDemande.getIdTypeDemandes());
             }
 
             //Recuperation de la liste des techniciens
@@ -71,7 +71,7 @@ public class RessourceTicket {
             result = session.createQuery("FROM PersonneEntity p WHERE p.siret LIKE '" + IdClient + "%'").list();
             for(Object o : result) {
                 PersonneEntity demandeurEntity = (PersonneEntity) o;
-                answer.demandeurList .add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
+                answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
             }
 
             //Recuperation de la liste des sites du client
@@ -93,25 +93,32 @@ public class RessourceTicket {
             result = session.createQuery("FROM CategorieEntity ").list();
             for(Object o : result) {
                 CategorieEntity categorie = (CategorieEntity) o;
-                answer.categorieList .add(categorie.getCategorie());
+                answer.categorieList.add(categorie.getCategorie());
             }
 
             //Recuperation de la liste des statut
             result = session.createQuery("FROM StatutTicketEntity ").list();
             for (Object o : result) {
                 StatutTicketEntity statut = (StatutTicketEntity) o;
-                answer.statusList .add(statut.getIdStatusTicket());
+                answer.statusList.add(statut.getIdStatusTicket());
             }
 
             // Recuperation de la liste des competences
             result = session.createQuery("FROM CompetencesEntity ").list();
             for (Object o : result) {
                 CompetencesEntity competence = (CompetencesEntity) o;
-                answer.skillsList .add(competence.getCompetence());
+                answer.skillsList.add(competence.getCompetence());
+            }
+
+            //Recuperation de la liste des priorites
+            result = session.createQuery("SELECT DISTINCT t.priorite FROM TicketEntity t").list();
+            for(Object o : result) {
+                Byte priority = (Byte) o;
+                answer.priorityList.add(priority.intValue());
             }
 
             String clientName;
-            try{clientName = (String) session.createQuery("FROM ClientEntity c WHERE c.siren = " + IdClient).getSingleResult();}
+            try{clientName = (String) session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + IdClient).getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren " + IdClient + " n'existe pas", true, tx, session);}
             answer.clientName = clientName;
             tx.commit();
@@ -256,27 +263,21 @@ public class RessourceTicket {
 
             //Execution de la commande update
             tx =  session.beginTransaction();
-            //le replace permet d'echapper le token '
 
-            TicketEntity ticketEntity;
-            ticketEntity = (TicketEntity) session.createQuery("FROM TicketEntity t WHERE t.id = " + ticket.id).getSingleResult();
-            //session.evict(ticketEntity);
-            ticketEntity.setObjet(ticket.objet);
-            session.update(ticketEntity);
-            /*
+            //le replace permet d'echapper le token '
             String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet.replace("'", "''") + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description.replace("'", "''") + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticket.id;
             Query update = session.createQuery(request);
             int nbLignes = update.executeUpdate();
 
-            request = "UPDATE TicketEntity t SET t.adresse = " + client.getSiret() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + " WHERE t.id = " + ticket.id;
+            request = "UPDATE TicketEntity t SET t.adresse = " + client.getSiret() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + ", t.priorite = " + ticket.priorite + " WHERE t.id = " + ticket.id;
             update = session.createQuery(request);
             nbLignes += update.executeUpdate();
-            */
+
             tx.commit();
             session.clear();
 
-            //if(nbLignes != 2)
-            //    return ReponseType.getNOTOK("Erreur lors de l'execution de la requete", true, null, session);
+            if(nbLignes != 2)
+                return ReponseType.getNOTOK("Erreur lors de l'execution de la requete", true, null, session);
             session.close();
         }catch (HibernateException e){
             if (tx != null) tx.rollback();
@@ -416,7 +417,7 @@ public class RessourceTicket {
 
             Adresse adresseClient = new Adresse(adresse.getNumero(), adresse.getCodePostal(), adresse.getRue(), adresse.getVille());
             ticket = new Ticket(ticketEntity.getType(), ticketEntity.getObjet(), ticketEntity.getDescription(), ticketEntity.getCategorie(),
-                    ticketEntity.getStatut(), technicien, demandeur, competences, adresseClient, ticketEntity.getId());
+                    ticketEntity.getStatut(), technicien, demandeur, competences, adresseClient, ticketEntity.getId(), ticketEntity.getPriorite());
         }
         tx.commit();
         session.clear();
@@ -435,8 +436,11 @@ public class RessourceTicket {
             System.err.println("Erreur lors du parsing de l'objet");
         }
         try {
-            ArrayList<String> competences = (ArrayList<String>) json.get("competences");
-            String categorie = (String) json.get("categorie");
+            //todo tester a null si oui renvoyer null
+            int priorite  = -1;
+            priorite = Integer.parseInt(((Long) json.get("priorite")).toString());
+            if(priorite == -1)
+                return null;
             JSONObject demandeurJson = (JSONObject) json.get("demandeur");
             Personne demandeur = new Personne((String) demandeurJson.get("nom"), (String) demandeurJson.get("prenom"), Integer.parseInt(((Long) demandeurJson.get("id")).toString()));
             String objet = (String) json.get("objet");
@@ -445,6 +449,8 @@ public class RessourceTicket {
             else
                 description = "";
 
+            ArrayList<String> competences = (ArrayList<String>) json.get("competences");
+            String categorie = (String) json.get("categorie");
             String type = (String) json.get("type");
             String statut = (String) json.get("statut");
             if (json.get("technicien") != null) {
@@ -461,32 +467,10 @@ public class RessourceTicket {
             } catch (NullPointerException ignored) {
             }
 
-            Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id);
+            Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id, priorite);
             return ticket;
         } catch (NullPointerException e) {
             return null;
         }
-    }
-
-    @POST
-    @Path("/test")
-    @Consumes("text/plain")
-    @Produces("application/json")
-    public Response getOptions(String str){
-        String msg = "";
-        try {
-            JSONParser parser = new JSONParser();
-            JSONObject obj = (JSONObject) parser.parse(str);
-            msg = "ok, user = " + obj.get("username") + " pwd = " + obj.get("passworde");
-        }catch(ParseException e){
-            e.printStackTrace();
-            System.err.println("Parse impossible sur l'objet envoye");
-        }
-        return Response.ok()
-                .header("Access-Control-Allow-Origin", "*")
-                .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                .allow("OPTIONS")
-                .entity(msg)
-                .build();
     }
 }
