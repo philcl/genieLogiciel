@@ -11,7 +11,7 @@ public class JonctionStaffCompetenceEntity {
     private int competenceId;
 
     @Id
-    @Column(name = "staffID")
+    @Column(name = "staffID", nullable = false)
     public int getStaffId() {
         return staffId;
     }
@@ -21,7 +21,7 @@ public class JonctionStaffCompetenceEntity {
     }
 
     @Id
-    @Column(name = "competenceID")
+    @Column(name = "competenceID", nullable = false)
     public int getCompetenceId() {
         return competenceId;
     }

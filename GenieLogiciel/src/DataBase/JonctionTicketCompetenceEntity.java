@@ -11,7 +11,7 @@ public class JonctionTicketCompetenceEntity {
     private int competence;
 
     @Id
-    @Column(name = "IdTicket")
+    @Column(name = "IdTicket", nullable = false)
     public int getIdTicket() {
         return idTicket;
     }
@@ -21,7 +21,7 @@ public class JonctionTicketCompetenceEntity {
     }
 
     @Id
-    @Column(name = "Competence")
+    @Column(name = "Competence", nullable = false)
     public int getCompetence() {
         return competence;
     }

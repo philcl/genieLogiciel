@@ -10,7 +10,7 @@ public class PosteEntity {
     private String poste;
 
     @Id
-    @Column(name = "idPoste")
+    @Column(name = "idPoste", nullable = false)
     public int getIdPoste() {
         return idPoste;
     }
@@ -20,7 +20,7 @@ public class PosteEntity {
     }
 
     @Basic
-    @Column(name = "Poste")
+    @Column(name = "Poste", nullable = false, length = 100)
     public String getPoste() {
         return poste;
     }

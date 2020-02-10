@@ -11,7 +11,7 @@ public class JonctionStaffPosteEntity {
     private int idPoste;
 
     @Id
-    @Column(name = "idStaff")
+    @Column(name = "idStaff", nullable = false)
     public int getIdStaff() {
         return idStaff;
     }
@@ -21,7 +21,7 @@ public class JonctionStaffPosteEntity {
     }
 
     @Id
-    @Column(name = "idPoste")
+    @Column(name = "idPoste", nullable = false)
     public int getIdPoste() {
         return idPoste;
     }

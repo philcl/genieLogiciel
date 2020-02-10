@@ -14,7 +14,7 @@ public class PersonneEntity {
     private long siret;
 
     @Id
-    @Column(name = "idPersonne")
+    @Column(name = "idPersonne", nullable = false)
     public int getIdPersonne() {
         return idPersonne;
     }
@@ -24,7 +24,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "Prenom")
+    @Column(name = "Prenom", nullable = false, length = 45)
     public String getPrenom() {
         return prenom;
     }
@@ -34,7 +34,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "Nom")
+    @Column(name = "Nom", nullable = false, length = 45)
     public String getNom() {
         return nom;
     }
@@ -44,7 +44,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "mail")
+    @Column(name = "mail", nullable = true, length = 100)
     public String getMail() {
         return mail;
     }
@@ -54,7 +54,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "actif")
+    @Column(name = "actif", nullable = false)
     public byte getActif() {
         return actif;
     }
@@ -64,7 +64,7 @@ public class PersonneEntity {
     }
 
     @Basic
-    @Column(name = "SIRET")
+    @Column(name = "SIRET", nullable = false)
     public long getSiret() {
         return siret;
     }

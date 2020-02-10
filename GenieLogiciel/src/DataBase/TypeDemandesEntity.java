@@ -12,7 +12,7 @@ public class TypeDemandesEntity {
     private String idTypeDemandes;
 
     @Id
-    @Column(name = "idTypeDemandes")
+    @Column(name = "idTypeDemandes", nullable = false, length = 100)
     public String getIdTypeDemandes() {
         return idTypeDemandes;
     }

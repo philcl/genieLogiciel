@@ -18,7 +18,7 @@ public class StaffEntity {
     private int actif;
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     public int getId() {
         return id;
     }
@@ -28,7 +28,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "login")
+    @Column(name = "login", nullable = false, length = 50)
     public String getLogin() {
         return login;
     }
@@ -38,7 +38,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "mdp")
+    @Column(name = "mdp", nullable = false)
     public byte[] getMdp() {
         return mdp;
     }
@@ -48,7 +48,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "adresse")
+    @Column(name = "adresse", nullable = false)
     public int getAdresse() {
         return adresse;
     }
@@ -58,7 +58,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "telephone")
+    @Column(name = "telephone", nullable = false, length = 10)
     public String getTelephone() {
         return telephone;
     }
@@ -68,7 +68,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "mail")
+    @Column(name = "mail", nullable = true, length = 50)
     public String getMail() {
         return mail;
     }
@@ -78,7 +78,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "prenom")
+    @Column(name = "prenom", nullable = false, length = 50)
     public String getPrenom() {
         return prenom;
     }
@@ -88,7 +88,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false, length = 100)
     public String getNom() {
         return nom;
     }
@@ -98,7 +98,7 @@ public class StaffEntity {
     }
 
     @Basic
-    @Column(name = "actif")
+    @Column(name = "actif", nullable = false)
     public int getActif() {
         return actif;
     }

@@ -12,7 +12,7 @@ public class CategorieEntity {
     private String categorie;
 
     @Id
-    @Column(name = "categorie")
+    @Column(name = "categorie", nullable = false, length = 50)
     public String getCategorie() {
         return categorie;
     }

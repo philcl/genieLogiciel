@@ -12,7 +12,7 @@ public class ClientEntity {
     private int adresse;
 
     @Id
-    @Column(name = "SIREN")
+    @Column(name = "SIREN", nullable = false)
     public int getSiren() {
         return siren;
     }
@@ -22,7 +22,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "nom")
+    @Column(name = "nom", nullable = false, length = 100)
     public String getNom() {
         return nom;
     }
@@ -32,7 +32,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "actif")
+    @Column(name = "actif", nullable = false)
     public byte getActif() {
         return actif;
     }
@@ -42,7 +42,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "Adresse")
+    @Column(name = "Adresse", nullable = false)
     public int getAdresse() {
         return adresse;
     }

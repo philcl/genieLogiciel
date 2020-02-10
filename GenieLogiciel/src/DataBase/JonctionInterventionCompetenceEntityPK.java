@@ -9,7 +9,7 @@ public class JonctionInterventionCompetenceEntityPK implements Serializable {
     private int intervention;
     private int competence;
 
-    @Column(name = "intervention")
+    @Column(name = "intervention", nullable = false)
     @Id
     public int getIntervention() {
         return intervention;
@@ -19,7 +19,7 @@ public class JonctionInterventionCompetenceEntityPK implements Serializable {
         this.intervention = intervention;
     }
 
-    @Column(name = "competence")
+    @Column(name = "competence", nullable = false)
     @Id
     public int getCompetence() {
         return competence;

@@ -11,7 +11,7 @@ public class TicketJonctionEntity {
     private int idEnfant;
 
     @Id
-    @Column(name = "IDParent")
+    @Column(name = "IDParent", nullable = false)
     public int getIdParent() {
         return idParent;
     }
@@ -21,7 +21,7 @@ public class TicketJonctionEntity {
     }
 
     @Id
-    @Column(name = "IDEnfant")
+    @Column(name = "IDEnfant", nullable = false)
     public int getIdEnfant() {
         return idEnfant;
     }

@@ -18,9 +18,10 @@ public class TicketEntity {
     private int demandeur;
     private String type;
     private int ticket;
+    private byte priorite;
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     public int getId() {
         return id;
     }
@@ -30,7 +31,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "adresse")
+    @Column(name = "adresse", nullable = false)
     public long getAdresse() {
         return adresse;
     }
@@ -40,7 +41,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "technicien")
+    @Column(name = "technicien", nullable = true)
     public Integer getTechnicien() {
         return technicien;
     }
@@ -50,7 +51,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "categorie")
+    @Column(name = "categorie", nullable = false, length = 50)
     public String getCategorie() {
         return categorie;
     }
@@ -60,7 +61,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "statut")
+    @Column(name = "statut", nullable = false, length = 50)
     public String getStatut() {
         return statut;
     }
@@ -70,7 +71,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "objet")
+    @Column(name = "objet", nullable = false, length = 255)
     public String getObjet() {
         return objet;
     }
@@ -80,7 +81,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "description")
+    @Column(name = "description", nullable = false, length = 2000)
     public String getDescription() {
         return description;
     }
@@ -90,7 +91,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     public Timestamp getDate() {
         return date;
     }
@@ -100,7 +101,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "demandeur")
+    @Column(name = "demandeur", nullable = false)
     public int getDemandeur() {
         return demandeur;
     }
@@ -110,7 +111,7 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "type")
+    @Column(name = "type", nullable = false, length = 100)
     public String getType() {
         return type;
     }
@@ -120,13 +121,23 @@ public class TicketEntity {
     }
 
     @Basic
-    @Column(name = "Ticket")
+    @Column(name = "Ticket", nullable = false)
     public int getTicket() {
         return ticket;
     }
 
     public void setTicket(int ticket) {
         this.ticket = ticket;
+    }
+
+    @Basic
+    @Column(name = "priorite", nullable = false)
+    public byte getPriorite() {
+        return priorite;
+    }
+
+    public void setPriorite(byte priorite) {
+        this.priorite = priorite;
     }
 
     @Override
@@ -138,6 +149,7 @@ public class TicketEntity {
                 adresse == that.adresse &&
                 demandeur == that.demandeur &&
                 ticket == that.ticket &&
+                priorite == that.priorite &&
                 Objects.equals(technicien, that.technicien) &&
                 Objects.equals(categorie, that.categorie) &&
                 Objects.equals(statut, that.statut) &&
@@ -149,6 +161,6 @@ public class TicketEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket);
+        return Objects.hash(id, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket, priorite);
     }
 }

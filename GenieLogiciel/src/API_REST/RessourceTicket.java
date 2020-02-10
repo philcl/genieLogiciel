@@ -257,6 +257,13 @@ public class RessourceTicket {
             //Execution de la commande update
             tx =  session.beginTransaction();
             //le replace permet d'echapper le token '
+
+            TicketEntity ticketEntity;
+            ticketEntity = (TicketEntity) session.createQuery("FROM TicketEntity t WHERE t.id = " + ticket.id).getSingleResult();
+            //session.evict(ticketEntity);
+            ticketEntity.setObjet(ticket.objet);
+            session.update(ticketEntity);
+            /*
             String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet.replace("'", "''") + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description.replace("'", "''") + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticket.id;
             Query update = session.createQuery(request);
             int nbLignes = update.executeUpdate();
@@ -264,11 +271,12 @@ public class RessourceTicket {
             request = "UPDATE TicketEntity t SET t.adresse = " + client.getSiret() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + " WHERE t.id = " + ticket.id;
             update = session.createQuery(request);
             nbLignes += update.executeUpdate();
+            */
             tx.commit();
             session.clear();
 
-            if(nbLignes != 2)
-                return ReponseType.getNOTOK("Erreur lors de l'execution de la requete", true, null, session);
+            //if(nbLignes != 2)
+            //    return ReponseType.getNOTOK("Erreur lors de l'execution de la requete", true, null, session);
             session.close();
         }catch (HibernateException e){
             if (tx != null) tx.rollback();

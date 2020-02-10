@@ -13,7 +13,7 @@ public class AdresseEntity {
     private String ville;
 
     @Id
-    @Column(name = "idAdresse")
+    @Column(name = "idAdresse", nullable = false)
     public int getIdAdresse() {
         return idAdresse;
     }
@@ -23,7 +23,7 @@ public class AdresseEntity {
     }
 
     @Basic
-    @Column(name = "numero")
+    @Column(name = "numero", nullable = true)
     public Integer getNumero() {
         return numero;
     }
@@ -33,7 +33,7 @@ public class AdresseEntity {
     }
 
     @Basic
-    @Column(name = "rue")
+    @Column(name = "rue", nullable = false, length = 100)
     public String getRue() {
         return rue;
     }
@@ -43,7 +43,7 @@ public class AdresseEntity {
     }
 
     @Basic
-    @Column(name = "codePostal")
+    @Column(name = "codePostal", nullable = false, length = 50)
     public String getCodePostal() {
         return codePostal;
     }
@@ -53,7 +53,7 @@ public class AdresseEntity {
     }
 
     @Basic
-    @Column(name = "ville")
+    @Column(name = "ville", nullable = false, length = 100)
     public String getVille() {
         return ville;
     }

@@ -10,7 +10,7 @@ public class CompetencesEntity {
     private String competence;
 
     @Id
-    @Column(name = "idCompetences")
+    @Column(name = "idCompetences", nullable = false)
     public int getIdCompetences() {
         return idCompetences;
     }
@@ -20,7 +20,7 @@ public class CompetencesEntity {
     }
 
     @Basic
-    @Column(name = "competence")
+    @Column(name = "competence", nullable = false, length = 100)
     public String getCompetence() {
         return competence;
     }

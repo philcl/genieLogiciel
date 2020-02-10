@@ -12,7 +12,7 @@ public class StatutTicketEntity {
     private String idStatusTicket;
 
     @Id
-    @Column(name = "idStatusTicket")
+    @Column(name = "idStatusTicket", nullable = false, length = 50)
     public String getIdStatusTicket() {
         return idStatusTicket;
     }

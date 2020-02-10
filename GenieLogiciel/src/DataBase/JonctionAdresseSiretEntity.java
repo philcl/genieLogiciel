@@ -11,7 +11,7 @@ public class JonctionAdresseSiretEntity {
     private byte actif;
 
     @Id
-    @Column(name = "SIRET")
+    @Column(name = "SIRET", nullable = false)
     public long getSiret() {
         return siret;
     }
@@ -21,7 +21,7 @@ public class JonctionAdresseSiretEntity {
     }
 
     @Basic
-    @Column(name = "idAdresse")
+    @Column(name = "idAdresse", nullable = false)
     public int getIdAdresse() {
         return idAdresse;
     }
@@ -31,7 +31,7 @@ public class JonctionAdresseSiretEntity {
     }
 
     @Basic
-    @Column(name = "actif")
+    @Column(name = "actif", nullable = false)
     public byte getActif() {
         return actif;
     }

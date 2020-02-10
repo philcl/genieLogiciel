@@ -16,7 +16,7 @@ public class InterventionEntity {
     private Timestamp dureeEstimee;
 
     @Id
-    @Column(name = "ID")
+    @Column(name = "ID", nullable = false)
     public int getId() {
         return id;
     }
@@ -26,7 +26,7 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "debut")
+    @Column(name = "debut", nullable = false)
     public Timestamp getDebut() {
         return debut;
     }
@@ -36,7 +36,7 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "fin")
+    @Column(name = "fin", nullable = false)
     public Timestamp getFin() {
         return fin;
     }
@@ -46,7 +46,7 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "etat")
+    @Column(name = "etat", nullable = false)
     public int getEtat() {
         return etat;
     }
@@ -56,7 +56,7 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "technicien")
+    @Column(name = "technicien", nullable = false)
     public int getTechnicien() {
         return technicien;
     }
@@ -66,7 +66,7 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "ticket")
+    @Column(name = "ticket", nullable = false)
     public int getTicket() {
         return ticket;
     }
@@ -76,7 +76,7 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "dureeEstimee")
+    @Column(name = "dureeEstimee", nullable = true)
     public Timestamp getDureeEstimee() {
         return dureeEstimee;
     }
