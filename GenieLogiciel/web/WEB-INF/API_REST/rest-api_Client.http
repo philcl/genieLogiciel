@@ -16,7 +16,7 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/client/create
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":"20","nom":"test","adresse":{"numero":500,"rue":"rue des saucissons","ville":"Jambon","codePostal":"25811"}}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":21,"nom":"tst","adresse":{"numero":500,"rue":"rue des saucissons","ville":"Jambon","codePostal":"25811"}}}
 
 
 ###
@@ -24,7 +24,7 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/client/modify
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":"20","nom":"testouille","adresse":{"numero":258,"rue":"rue des fromages","ville":"Saint Nectaire","codePostal":"25811"}}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des fromages","ville":"Saint Nectaire","codePostal":"25811"}}}
 
 ###
 ### GenieLogiciel_war_exploded -> GenieLog sur le drive
