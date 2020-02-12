@@ -98,7 +98,7 @@ public class RessourceClient {
                     myClient.adresse.rue = adresseEntity.getRue();
                     myClient.adresse.ville = adresseEntity.getVille();
 
-                    clientList.add(myClient);
+                    clients.add(myClient);
                 }
             }
             tx.commit();
