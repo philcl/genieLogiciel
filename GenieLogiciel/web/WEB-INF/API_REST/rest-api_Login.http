@@ -22,10 +22,3 @@ Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
-### Init staff
-POST http://localhost:8080/GenieLogiciel_war_exploded/user/init
-Content-Type: text/plain
-
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staffId":11}
-
-###
