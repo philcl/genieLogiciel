@@ -192,8 +192,9 @@ public class RessourceClient {
             if (adresse == null) {
                 System.err.println("L'adresse est mal formee");
                 return null;
-            } else if (!client.adresse.getFromJSON(adresse))
-                return null;
+            } /*else if (!client.adresse.getFromJSON(adresse))
+                return null;*/
+
 
         } catch (NullPointerException e) {
             System.err.println("Erreur lors de la recuperation du client depuis un json parse impossible");

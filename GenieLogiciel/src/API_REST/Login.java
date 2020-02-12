@@ -470,8 +470,9 @@ public class Login {
             if(adresse == null)
                 return null;
 
-            if(!staff.staffAdress.getFromJSON(adresse))
-                return null;
+            /*if(!staff.staffAdress.getFromJSON(adresse))
+                return null;*/
+            staff.staffAdress = null;
 
 
             //Ajout du reste de l'objet staff

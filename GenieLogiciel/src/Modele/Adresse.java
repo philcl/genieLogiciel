@@ -77,7 +77,7 @@ public class Adresse {
         return true;
     }
 
-    public boolean getFromJSON(JSONObject adr) {
+    /*public boolean getFromJSON(JSONObject adr) {
         numero = -1;
         numero = Integer.parseInt(((Long) adr.get("numero")).toString());
         codePostal = (String) adr.get("codePostal");
@@ -88,5 +88,5 @@ public class Adresse {
             return false;
         else
             return true;
-    }
+    }*/
 }
