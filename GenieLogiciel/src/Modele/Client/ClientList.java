@@ -1,4 +1,6 @@
-package Modele;
+package Modele.Client;
+
+import Modele.Adresse;
 
 import java.util.ArrayList;
 

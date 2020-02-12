@@ -132,6 +132,8 @@ public class Login {
 
         //Recuperation du staffEntity
         StaffEntity user = setStaffEntity(p, true);
+        if(user == null)
+            return ReponseType.getNOTOK("Impossible de rajouter l'adresse du user", false, null, null);
 
         //Recuperation des competences
         ArrayList<JonctionStaffCompetenceEntity> competenceToAdd = getCompetences(p, user.getId());
@@ -221,6 +223,9 @@ public class Login {
 
         //Recuperation du staffEntity
         StaffEntity user = setStaffEntity(p, false);
+
+        if(user == null)
+            return ReponseType.getNOTOK("Impossible de rajouter l'adresse du user", false, null, null);
 
         //Recuperation des competences
         ArrayList<JonctionStaffCompetenceEntity> competenceToAdd = getCompetences(p, user.getId());
@@ -462,14 +467,12 @@ public class Login {
         try {
             //ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("staffAdress");
-            staff.staffAdress.numero = -1;
-            staff.staffAdress.numero = Integer.parseInt(((Long) adresse.get("numero")).toString());
-            staff.staffAdress.codePostal = (String) adresse.get("codePostal");
-            staff.staffAdress.rue = (String) adresse.get("rue");
-            staff.staffAdress.ville = (String) adresse.get("ville");
-
-            if(staff.staffAdress.numero == -1 || staff.staffAdress.codePostal == null ||staff.staffAdress.rue == null ||staff.staffAdress.ville == null)
+            if(adresse == null)
                 return null;
+
+            if(!staff.staffAdress.getFromJSON(adresse))
+                return null;
+
 
             //Ajout du reste de l'objet staff
             if(creation) {
@@ -508,7 +511,7 @@ public class Login {
 
     /**
      * @param p
-     * @return Renvoie le staffEntity initialise avec p
+     * @return Renvoie le staffEntity initialise avec p ou null si l'adresse n'a oas pu s'ajouter
      */
     private StaffEntity setStaffEntity(Staff p, boolean creation) {
         Transaction tx = null;
@@ -535,16 +538,8 @@ public class Login {
             //Ajout de l'adresse
             int adr = p.staffAdress.getId();
             if(adr == -1) //L'adresse n'existe pas lors de la modification ou de l'ajout d'un staff alors ajout direct de l'adresse
-            {
-                AdresseEntity adresseEntity = new AdresseEntity();
-                adresseEntity.setCodePostal(p.staffAdress.codePostal);
-                adresseEntity.setNumero(p.staffAdress.numero);
-                adresseEntity.setRue(p.staffAdress.rue);
-                adresseEntity.setVille(p.staffAdress.ville);
-                id = (int) session.createQuery("SELECT MAX(a.idAdresse) FROM AdresseEntity a").getSingleResult();
-                adresseEntity.setIdAdresse(id+1);
-                session.save(adresseEntity);
-            }
+                if(!p.staffAdress.addAdresse())
+                    return null;
             tx.commit();
             session.clear();
             session.close();
