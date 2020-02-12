@@ -88,7 +88,31 @@ public class RessourceClient {
                     ClientList myClient = new ClientList();
                     myClient.name = client.getNom();
                     myClient.SIREN = client.getSiren();
-                    //todo completer avec l'adresse
+
+                    List temp = session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse()).list();
+
+                    if(temp.isEmpty())
+                    {
+                        //throw new Exception("Pas d'adresse pour ce client");
+                        System.out.println("Pas d'adresse pour ce client");
+                    }
+                    else if(temp.size()!=1)
+                    {
+                        System.out.println("ID adresse dupliquée");
+                    }
+                    else
+                    {
+                        for (Object p : temp)
+                        {
+                            AdresseEntity adresseEntity = (AdresseEntity) p;
+                            myClient.adresse.numero = adresseEntity.getNumero();
+                            myClient.adresse.codePostal = adresseEntity.getCodePostal();
+                            myClient.adresse.rue = adresseEntity.getRue();
+                            myClient.adresse.ville = adresseEntity.getVille();
+                        }
+                    }
+
+                    clients.add(myClient);
                 }
             }
             tx.commit();
