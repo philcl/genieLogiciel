@@ -70,7 +70,7 @@ public class RessourceTicket {
             //Recuperation de la liste des demandeurs
             result = session.createQuery("FROM PersonneEntity p WHERE p.siret LIKE '" + IdClient + "%'").list();
             for(Object o : result) {
-                PersonneEntity demandeurEntity = (PersonneEntity) o;
+                DemandeurEntity demandeurEntity = (DemandeurEntity) o;
                 answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
             }
 
@@ -178,8 +178,8 @@ public class RessourceTicket {
         try(Session session = CreateSession.getSession()) {
             //Ajout de l'adresse (SIRET) des ID du demandeur et du technicien
             tx = session.beginTransaction();
-            PersonneEntity demandeur;
-            try{demandeur = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
+            DemandeurEntity demandeur;
+            try{demandeur = (DemandeurEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur avec l'id " + ticket.demandeur.id + " n'existe pas", true, tx, session);}
             ticketEntity.setAdresse(demandeur.getSiret());
             ticketEntity.setDemandeur(demandeur.getIdPersonne());
@@ -248,8 +248,8 @@ public class RessourceTicket {
             catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien n'existe pas", true, tx, session);}
 
             //Recuperation du demandeur
-            PersonneEntity demandeur;
-            try{demandeur = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
+            DemandeurEntity demandeur;
+            try{demandeur = (DemandeurEntity) session.createQuery("FROM PersonneEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur n'existe pas", true, tx, session);}
 
             //Recuperation du client
@@ -391,7 +391,7 @@ public class RessourceTicket {
             ticketEntity = (TicketEntity) result.get(0);
 
             //Recuperation du nom et prenom du demandeur et du technicien
-            PersonneEntity demandeurEntity = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur()).getSingleResult();
+            DemandeurEntity demandeurEntity = (DemandeurEntity) session.createQuery("FROM PersonneEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur()).getSingleResult();
             StaffEntity technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien()).getSingleResult();
 
             Personne demandeur, technicien;

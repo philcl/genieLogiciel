@@ -12,11 +12,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.persistence.NoResultException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.NoResultException;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 
 @Path("/client")
 public class RessourceClient {
@@ -31,8 +34,8 @@ public class RessourceClient {
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
-            token = (String)json.get("token");
-            clientName = (String)json.get("clientName");
+            token = (String) json.get("token");
+            clientName = (String) json.get("clientName");
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
             return ReponseType.getNOTOK("Il manque des parametres (token, clientName)", false, null, null);
@@ -51,7 +54,9 @@ public class RessourceClient {
             if(tx != null)
                 tx.rollback();
             e.printStackTrace();
-        } catch (NoResultException e) {return ReponseType.getNOTOK("Le client " + clientName + " n'existe pas", false, null, null);}
+        } catch (NoResultException e) {
+            return ReponseType.getNOTOK("Le client " + clientName + " n'existe pas", false, null, null);
+        }
 
         return ReponseType.getOK(clientId);
     }
@@ -85,7 +90,15 @@ public class RessourceClient {
                     ClientList myClient = new ClientList();
                     myClient.name = client.getNom();
                     myClient.SIREN = client.getSiren();
-                    //todo completer avec l'adresse
+
+                    AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse()).getSingleResult();
+
+                    myClient.adresse.numero = adresseEntity.getNumero();
+                    myClient.adresse.codePostal = adresseEntity.getCodePostal();
+                    myClient.adresse.rue = adresseEntity.getRue();
+                    myClient.adresse.ville = adresseEntity.getVille();
+
+                    clientList.add(myClient);
                 }
             }
             tx.commit();

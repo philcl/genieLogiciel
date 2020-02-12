@@ -4,14 +4,15 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Personne", schema = "GenieLog", catalog = "")
-public class PersonneEntity {
+@Table(name = "Demandeur", schema = "GenieLog", catalog = "")
+public class DemandeurEntity {
     private int idPersonne;
     private String prenom;
     private String nom;
+    private String sexe;
     private String mail;
-    private byte actif;
     private long siret;
+    private byte actif;
 
     @Id
     @Column(name = "idPersonne", nullable = false)
@@ -44,6 +45,16 @@ public class PersonneEntity {
     }
 
     @Basic
+    @Column(name = "sexe", nullable = false, length = 5)
+    public String getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(String sexe) {
+        this.sexe = sexe;
+    }
+
+    @Basic
     @Column(name = "mail", nullable = true, length = 100)
     public String getMail() {
         return mail;
@@ -51,16 +62,6 @@ public class PersonneEntity {
 
     public void setMail(String mail) {
         this.mail = mail;
-    }
-
-    @Basic
-    @Column(name = "actif", nullable = false)
-    public byte getActif() {
-        return actif;
-    }
-
-    public void setActif(byte actif) {
-        this.actif = actif;
     }
 
     @Basic
@@ -73,21 +74,32 @@ public class PersonneEntity {
         this.siret = siret;
     }
 
+    @Basic
+    @Column(name = "actif", nullable = false)
+    public byte getActif() {
+        return actif;
+    }
+
+    public void setActif(byte actif) {
+        this.actif = actif;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PersonneEntity that = (PersonneEntity) o;
+        DemandeurEntity that = (DemandeurEntity) o;
         return idPersonne == that.idPersonne &&
-                actif == that.actif &&
                 siret == that.siret &&
+                actif == that.actif &&
                 Objects.equals(prenom, that.prenom) &&
                 Objects.equals(nom, that.nom) &&
+                Objects.equals(sexe, that.sexe) &&
                 Objects.equals(mail, that.mail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret);
+        return Objects.hash(idPersonne, prenom, nom, sexe, mail, siret, actif);
     }
 }

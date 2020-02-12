@@ -10,6 +10,7 @@ public class StaffEntity {
     private int id;
     private String login;
     private byte[] mdp;
+    private String sexe;
     private int adresse;
     private String telephone;
     private String mail;
@@ -45,6 +46,16 @@ public class StaffEntity {
 
     public void setMdp(byte[] mdp) {
         this.mdp = mdp;
+    }
+
+    @Basic
+    @Column(name = "sexe", nullable = false, length = 5)
+    public String getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(String sexe) {
+        this.sexe = sexe;
     }
 
     @Basic
@@ -117,6 +128,7 @@ public class StaffEntity {
                 actif == that.actif &&
                 Objects.equals(login, that.login) &&
                 Arrays.equals(mdp, that.mdp) &&
+                Objects.equals(sexe, that.sexe) &&
                 Objects.equals(telephone, that.telephone) &&
                 Objects.equals(mail, that.mail) &&
                 Objects.equals(prenom, that.prenom) &&
@@ -125,7 +137,7 @@ public class StaffEntity {
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, login, adresse, telephone, mail, prenom, nom, actif);
+        int result = Objects.hash(id, login, sexe, adresse, telephone, mail, prenom, nom, actif);
         result = 31 * result + Arrays.hashCode(mdp);
         return result;
     }
