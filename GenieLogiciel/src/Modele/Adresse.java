@@ -83,10 +83,10 @@ public class Adresse {
         codePostal = (String) adr.get("codePostal");
         rue = (String) adr.get("rue");
         ville = (String) adr.get("ville");
+        return this.isEmpty();
+    }
 
-        if(numero == -1 || codePostal == null || rue == null || ville == null)
-            return false;
-        else
-            return true;
+    public boolean isEmpty() {
+        return numero == -1 || ville.isEmpty() || codePostal.isEmpty() || rue.isEmpty();
     }
 }

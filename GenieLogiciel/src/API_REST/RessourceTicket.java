@@ -126,7 +126,6 @@ public class RessourceTicket {
 
             //Ajout du ticket si son id est present
             if(IdTicket != -1) {
-                //todo : verifier que le clientId et le client du ticket sont bien les mêmes
                 answer.ticket = recuperationTicket(session, IdTicket);
                 if(answer.ticket == null)
                     return ReponseType.getNOTOK("Le ticket avec l'id " + IdTicket + " n'existe pas", true, null, session);
@@ -436,7 +435,7 @@ public class RessourceTicket {
             System.err.println("Erreur lors du parsing de l'objet");
         }
         try {
-            //todo tester a null si oui renvoyer null
+            //todo mettre des tests sur null pour etre sur que les chanps soient presents de plsu verifier qu'ils sont bien remplis avec == ""
             int priorite  = -1;
             priorite = Integer.parseInt(((Long) json.get("priorite")).toString());
             if(priorite == -1)
@@ -462,10 +461,8 @@ public class RessourceTicket {
             Adresse adresse = new Adresse(Integer.parseInt(((Long) adresseJSON.get("numero")).toString()), (String) adresseJSON.get("codePostal"), (String) adresseJSON.get("rue"), (String) adresseJSON.get("ville"));
             int id = -1;
             //Test avec null pointeur exception pour verifier que id existe dans si non nous sommes en creation
-            try {
-                id = Integer.parseInt(((Long) json.get("id")).toString());
-            } catch (NullPointerException ignored) {
-            }
+            try {id = Integer.parseInt(((Long) json.get("id")).toString());}
+            catch (NullPointerException ignored) {}
 
             Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id, priorite);
             return ticket;

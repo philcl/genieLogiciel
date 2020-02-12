@@ -359,8 +359,9 @@ public class Login {
           JSONParser parser = new JSONParser();
           JSONObject obj = (JSONObject) parser.parse(jsonStr);
           token = (String) obj.get("token");
-        } catch (ParseException e) {
+        } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque un parametre (token)", false, null, null);
         }
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
@@ -373,7 +374,8 @@ public class Login {
 
             for(Object o : result) {
                 StaffEntity staff = (StaffEntity) o;
-                staffList.add(getStaff(session, staff.getId()));
+                System.err.println("add of " + staff.getId());
+                 staffList.add(getStaff(session, staff.getId()));
             }
             session.close();
         } catch (HibernateException e) {
@@ -415,6 +417,8 @@ public class Login {
         staff.staffAdress.ville = adresseEntity.getVille();
         staff.staffAdress.rue = adresseEntity.getRue();
         staff.staffRole.addAll(getPoste(session, idStaff));
+
+        System.err.println("staff add " + staff.staffId);
 
         tx.commit();
         session.clear();
@@ -470,9 +474,8 @@ public class Login {
             if(adresse == null)
                 return null;
 
-            if(!staff.staffAdress.getFromJSON(adresse))
+            if(staff.staffAdress.getFromJSON(adresse))
                 return null;
-
 
             //Ajout du reste de l'objet staff
             if(creation) {
@@ -500,7 +503,7 @@ public class Login {
             staff.staffRole.addAll((ArrayList<String>) json.get("staffRole"));
             staff.staffCompetency.addAll((ArrayList<String>) json.get("staffCompetency"));
 
-            if(staff.staffUserName == null || staff.staffPassword == null || staff.staffRole == null || staff.staffCompetency == null)
+            if(staff.staffUserName == null || staff.staffPassword == null)
                 return null;
         } catch (NullPointerException e) {
             System.err.println("renvoi null le format du json du staff n'est pas correct");

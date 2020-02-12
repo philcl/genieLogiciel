@@ -1,10 +1,9 @@
 package API_REST;
 
-import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
-import Modele.Adresse;
 import Modele.Client.Client;
 import Modele.Client.ClientList;
+import Modele.Client.Demandeur;
 import Modele.Staff.Token;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -13,10 +12,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -108,15 +105,17 @@ public class RessourceClient {
         String token = "";
         JSONObject clientJSON = null;
         Transaction tx = null;
+        ArrayList<JSONObject> demandeurJSON = null;
 
         try{
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String) json.get("token");
             clientJSON = (JSONObject) json.get("client");
+            try{demandeurJSON = (ArrayList<JSONObject>) json.get("demanandeurs");} catch(NullPointerException ignored){}
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des parametres (token, client)", false, null, null);
+            return ReponseType.getNOTOK("Il manque des parametres (token, client, 'optionnel demandeurs')", false, null, null);
         }
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
@@ -125,16 +124,14 @@ public class RessourceClient {
         if(client == null)
             return ReponseType.getNOTOK("Le JSON du client est mal forme veuillez verifier", false, null, null);
 
+        ArrayList<Demandeur> demandeurs = getDemandeursFromJSON(demandeurJSON);
+        if(demandeurs == null || demandeurs.isEmpty())
+            return ReponseType.getNOTOK("La liste des demandeurs est mal initialisee veuillez verifier", false, null,null);
+
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setActif((byte) 1);
         clientEntity.setNom(client.nom);
         clientEntity.setSiren(client.SIREN);
-
-        int adresseId = client.adresse.getId();
-        if(adresseId == -1)
-            if(!client.adresse.addAdresse())
-                return ReponseType.getNOTOK("Impossible de rajouter l'adresse sur la base", false, null, null);
-        clientEntity.setAdresse(adresseId);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -149,9 +146,27 @@ public class RessourceClient {
                 return ReponseType.getNOTOK("Le client " + client.nom + " existe deja veuillez le changer", true, tx, session);
             } catch (NoResultException ignored) {}
 
+            //Ajout de l'adresse apres pour etre sur de ne rajouter que des adresses appartenant a des clients
+            int adresseId = client.adresse.getId();
+            if(adresseId == -1)
+                if(!client.adresse.addAdresse())
+                    return ReponseType.getNOTOK("Impossible de rajouter l'adresse sur la base", false, null, null);
+            clientEntity.setAdresse(adresseId);
+
             session.save(clientEntity);
             tx.commit();
             session.clear();
+
+            //todo Finaliser l'ajout d'es demandeurs
+            for(Demandeur demandeur : demandeurs) {
+                if(demandeur.adresse.getId() == -1)
+                    if(!demandeur.adresse.addAdresse())
+                        return ReponseType.getNOTOK("Impossible de rajouter l'adresse", false, null, null);
+                if(demandeur.demandeur.verifyIdExistance())
+                    return ReponseType.getNOTOK("Le demandeur " + demandeur.demandeur.prenom + " " + demandeur.demandeur.nom + " existe deja impossible de le rajouter", false, null, null);
+
+            }
+
             session.close();
         } catch (HibernateException e) {
             if(tx != null)
@@ -159,6 +174,14 @@ public class RessourceClient {
             e.printStackTrace();
             return ReponseType.getNOTOK("Impossible de sauvegarder le client sur la base", false, null, null);
         }
+        return ReponseType.getOK("");
+    }
+
+    @Path("/modify")
+    @POST
+    @Consumes("text/plain")
+    public Response modifyClient(String jsonStr) {
+
         return ReponseType.getOK("");
     }
 
@@ -192,5 +215,15 @@ public class RessourceClient {
         return client;
     }
 
+    private ArrayList<Demandeur> getDemandeursFromJSON(ArrayList<JSONObject> demandeursJSON) {
+        ArrayList<Demandeur> demandeurs = new ArrayList<>();
 
+        for(JSONObject json : demandeursJSON) {
+            Demandeur demandeur = new Demandeur();
+            if(demandeur.getDemandeurFromJSON(json) == null || demandeur.isEmpty())
+                return null;
+            demandeurs.add(demandeur);
+        }
+        return demandeurs;
+    }
 }
