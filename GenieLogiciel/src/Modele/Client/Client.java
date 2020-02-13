@@ -20,7 +20,7 @@ public class Client {
         adresse = new Adresse();
     }
 
-    public boolean getClient(int SIREN)
+    public boolean recupererClient(int SIREN)
     {
         Transaction tx = null;
 
@@ -34,7 +34,7 @@ public class Client {
                 this.SIREN = clientEntity.getSiren();
                 this.nom = clientEntity.getNom();
 
-                AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT a FROM AdresseEntity a WHERE a.idAdresse = " + clientEntity.getAdresse());
+                AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + clientEntity.getAdresse()).getSingleResult();
 
                 this.adresse.ville = adresseEntity.getVille();
                 this.adresse.rue = adresseEntity.getRue();

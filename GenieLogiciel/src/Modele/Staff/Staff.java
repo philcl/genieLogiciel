@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Staff {
     public int staffId;
-    public String staffSurname, staffName, staffTel, staffUserName, staffPassword, staffMail;
+    public String staffSurname, staffName, staffTel, staffUserName, staffPassword, staffMail, staffSexe;
     public ArrayList<String> staffCompetency, staffRole;
     public Adresse staffAdress;
 

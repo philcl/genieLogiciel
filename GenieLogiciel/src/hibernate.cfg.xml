@@ -25,6 +25,7 @@
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
         <mapping class="DataBase.PersonneEntity"/>
         <mapping class="DataBase.PosteEntity"/>
+        <mapping class="DataBase.SexeEntity"/>
         <mapping class="DataBase.StaffEntity"/>
         <mapping class="DataBase.StatutTicketEntity"/>
         <mapping class="DataBase.TicketEntity"/>

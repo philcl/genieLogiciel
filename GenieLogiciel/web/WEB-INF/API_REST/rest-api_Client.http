@@ -28,9 +28,9 @@ Content-Type: text/plain
 
 ###
 ### Init Client
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/list
+POST http://localhost:8080/GenieLogiciel_war_exploded/client/init
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","SIREN":21}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","SIREN":123456789}
 
 ###

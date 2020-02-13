@@ -1,12 +1,16 @@
 package Modele.Client;
 
 import API_REST.CreateSession;
+import DataBase.AdresseEntity;
+import DataBase.PersonneEntity;
 import Modele.Adresse;
 import Modele.Personne;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
+
+import javax.persistence.NoResultException;
 
 public class Demandeur {
     public long SIRET = -1;
@@ -45,6 +49,57 @@ public class Demandeur {
             return null;
         }
         return this;
+    }
+
+    public boolean verifyDemandeurExistance(long SIRET) {
+        Transaction tx = null;
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            try{session.createQuery("FROM PersonneEntity p WHERE p.siret = " + SIRET).getSingleResult();}
+            catch(NoResultException e) {
+                tx.commit();
+                session.clear();
+                session.close();
+                return false;
+            }
+        } catch (HibernateException e) {
+            if(tx == null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public boolean recupererDemandeur(long SIRET) {
+        Transaction tx = null;
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            if(verifyDemandeurExistance(SIRET)) {
+                PersonneEntity p = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.siret = " + SIRET).getSingleResult();
+
+                this.SIRET = SIRET;
+                this.telephone = "1";
+                //Init demandeur
+                this.demandeur.prenom = p.getPrenom();
+                this.demandeur.nom = p.getNom();
+                this.demandeur.id = p.getIdPersonne();
+                this.demandeur.sexe = p.getSexe();
+
+                int idAdr = (int) session.createQuery("SELECT j.idAdresse FROM JonctionAdresseSiretEntity j WHERE j.siret = " + SIRET).getSingleResult();
+                if(!this.adresse.recupererAdresse(idAdr))
+                    return  false;
+            }
+            else
+                return false;
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public boolean addDemandeur() {

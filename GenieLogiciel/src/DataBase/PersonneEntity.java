@@ -12,6 +12,8 @@ public class PersonneEntity {
     private String mail;
     private byte actif;
     private long siret;
+    private String telephone;
+    private String sexe;
 
     @Id
     @Column(name = "idPersonne", nullable = false)
@@ -73,6 +75,26 @@ public class PersonneEntity {
         this.siret = siret;
     }
 
+    @Basic
+    @Column(name = "telephone", nullable = false, length = 20)
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    @Basic
+    @Column(name = "sexe", nullable = false, length = 10)
+    public String getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(String sexe) {
+        this.sexe = sexe;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,11 +105,13 @@ public class PersonneEntity {
                 siret == that.siret &&
                 Objects.equals(prenom, that.prenom) &&
                 Objects.equals(nom, that.nom) &&
-                Objects.equals(mail, that.mail);
+                Objects.equals(mail, that.mail) &&
+                Objects.equals(telephone, that.telephone) &&
+                Objects.equals(sexe, that.sexe);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret);
+        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret, telephone, sexe);
     }
 }

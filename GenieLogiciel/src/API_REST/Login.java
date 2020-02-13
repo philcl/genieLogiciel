@@ -58,22 +58,12 @@ public class Login {
             tx = session.beginTransaction();
             StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("staffUserName")).getSingleResult();
             if (userEntity == null)
-                return Response.status(406)
-                        .header("Access-Control-Allow-Origin", "*")
-                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                        .allow("OPTIONS")
-                        .entity("user not found")
-                        .build();
+                return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);
 
             if (Arrays.equals(bytes, userEntity.getMdp()))
                 user = getUser(userEntity.getId());
             else
-                return Response.status(401)
-                        .header("Access-Control-Allow-Origin", "*")
-                        .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-                        .allow("OPTIONS")
-                        .entity(new String("Wrong password "))
-                        .build();
+                return ReponseType.getNOTOK("Mauvais mot de passe", true, tx, session);
 
             tx.commit();
             session.clear();
@@ -319,6 +309,7 @@ public class Login {
                 staffInit.staff.staffName = staffEntity.getNom();
                 staffInit.staff.staffSurname = staffEntity.getPrenom();
                 staffInit.staff.staffId = staffId;
+                staffInit.staff.staffSexe = staffEntity.getSexe();
 
                 //Recuperation de l'adresse
                 staffInit.staff.staffAdress.ville = adresse.getVille();
@@ -483,6 +474,7 @@ public class Login {
             staff.staffName = (String) json.get("staffName");
             staff.staffTel = (String) json.get("staffTel");
             staff.staffMail = (String) json.get("staffMail");
+            staff.staffSexe = (String) json.get("staffSexe");
 
             if(staff.staffSurname == null || staff.staffName == null ||staff.staffTel == null || staff.staffMail == null)
                 return null;
@@ -519,6 +511,7 @@ public class Login {
         user.setNom(p.staffName);
         user.setPrenom(p.staffSurname);
         user.setTelephone(p.staffTel);
+        user.setSexe(p.staffSexe);
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();

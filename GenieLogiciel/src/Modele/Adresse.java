@@ -22,6 +22,30 @@ public class Adresse {
         this.ville = ville;
     }
 
+    public boolean recupererAdresse(int id) {
+        Transaction tx = null;
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            AdresseEntity adr;
+            try{ adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + id).getSingleResult();}
+            catch(NoResultException e) {return false;}
+
+            this.numero = adr.getNumero();
+            this.rue = adr.getRue();
+            this.codePostal = adr.getCodePostal();
+            this.ville = adr.getVille();
+
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public int getId() {
         Transaction tx = null;
         int id = -1;

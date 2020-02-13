@@ -8,13 +8,13 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/create
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffUserName":"try2","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Philippe","staffName":"CLAUDE","staffTel":"0504070105","staffCompetency":["Electricien","Frigoriste"],"staffRole":["Admin","RespTech"]}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffUserName":"try2","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Philippe","staffName":"CLAUDE","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Electricien","Frigoriste"],"staffRole":["Admin","RespTech"]}}
 ###
 ### modify User
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/modify
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":10,"staffUserName":"11","staffPassword":"5678","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Philippe","staffName":"CLAUDE","staffTel":"0504070105","staffCompetency":["Electricien","Frigoriste"],"staffRole":["Admin","RespTech"]}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":10,"staffUserName":"11","staffPassword":"5678","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Philippe","staffName":"CLAUDE","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Electricien","Frigoriste"],"staffRole":["Admin","RespTech"]}}
 ###
 ### list User
 POST http://localhost:8080/GenieLogiciel_war_exploded/user/list

@@ -16,6 +16,7 @@ public class StaffEntity {
     private String prenom;
     private String nom;
     private int actif;
+    private String sexe;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -107,6 +108,16 @@ public class StaffEntity {
         this.actif = actif;
     }
 
+    @Basic
+    @Column(name = "sexe", nullable = false, length = 10)
+    public String getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(String sexe) {
+        this.sexe = sexe;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -120,12 +131,13 @@ public class StaffEntity {
                 Objects.equals(telephone, that.telephone) &&
                 Objects.equals(mail, that.mail) &&
                 Objects.equals(prenom, that.prenom) &&
-                Objects.equals(nom, that.nom);
+                Objects.equals(nom, that.nom) &&
+                Objects.equals(sexe, that.sexe);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, login, adresse, telephone, mail, prenom, nom, actif);
+        int result = Objects.hash(id, login, adresse, telephone, mail, prenom, nom, actif, sexe);
         result = 31 * result + Arrays.hashCode(mdp);
         return result;
     }
