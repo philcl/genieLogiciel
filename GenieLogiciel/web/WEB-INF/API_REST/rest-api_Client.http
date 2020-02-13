@@ -31,6 +31,6 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/client/list
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","clientSIREN":"21"}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","clientSIREN":21}
 
 ###
