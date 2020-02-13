@@ -1,6 +1,7 @@
 package Modele.Client;
 
 import Modele.Adresse;
+import Modele.Personne;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ public class ClientList {
     public Adresse adresse;
     public String name;
     public int nbTicket;
-    public ArrayList<Adresse> demandeurs;
+    public ArrayList<Personne> demandeurs;
 
     public ClientList() {
         adresse = new Adresse();

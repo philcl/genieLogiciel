@@ -1,37 +1,31 @@
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
+POST http://localhost:8080/GenieLogiciel_war_exploded/user/modify
 Content-Type: text/plain
 
 {
-   "clientId":123456789,
-   "token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"
-   "ticket":{
-      "categorie":"Etude",
-      "competences":[
-         "Electricien",
-         "Frigoriste"
-      ],
-      "demandeur":{
-         "id":10,
-         "nom":"ALAINE",
-         "prenom":"Catherine"
-      },
-      "nomClient":"Boucherie ALAINE",
-      "objet":"Installation d'une nouvelle vitrine réfrigérée",
-      "statut":"En cours",
-      "technicien":{
-         "id":7,
-         "nom":"DURAND",
-         "prenom":"Michel"
-      },
-      "type":"Demande",
-      "id":3,
-      "adresse":{
-         "numero":32,
-         "rue":"RUE ALAINE",
-         "ville":"LYON",
-         "codePostal":"69000"
-      }
-   }
+  "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "staff": {
+    "staffSexe": "M",
+    "staffUserName": "1",
+    "staffPassword": "",
+    "staffMail": "philippe.claude@u-psud.fr",
+    "staffAdress": {
+      "numero": 12,
+      "empty": false
+      "rue": "avenue des champs",
+      "ville": "PARIS",
+      "codePostal": "75000"
+    },
+    "staffSurname": "Irteza",
+    "staffName": "CLAUDE",
+    "staffTel": "0612345678",
+    "staffCompetency": [
+      "Electricien"
+    ],
+    "staffRole": [
+      "Admin"
+    ],
+    "staffId": 1
+  }
 }
 
 ###

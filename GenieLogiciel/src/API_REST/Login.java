@@ -9,6 +9,7 @@ import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.omg.CORBA.TRANSACTION_MODE;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -23,6 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,7 +58,7 @@ public class Login {
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
-            StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("staffUserName")).getSingleResult();
+            StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("staffUserName") + " and s.actif = 1").getSingleResult();
             if (userEntity == null)
                 return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);
 
@@ -231,7 +233,8 @@ public class Login {
             catch(NoResultException e) {return ReponseType.getNOTOK("Staff non trouve " + user.getId(), true, tx, session);}
 
             staffEntity.setAdresse(user.getAdresse());
-            staffEntity.setMdp(user.getMdp());
+            if(user.getMdp() != null)
+                staffEntity.setMdp(user.getMdp());
             staffEntity.setTelephone(user.getTelephone());
             staffEntity.setMail(user.getMail());
             staffEntity.setActif(user.getActif());
@@ -370,6 +373,46 @@ public class Login {
         return ReponseType.getOK(staffList);
     }
 
+    @Path("/delete")
+    @POST
+    @Consumes("text/plain")
+    public Response deleteStaff(String jsonStr) {
+        String token = "", staffUserName = "";
+        JSONObject json;
+        Transaction tx = null;
+        try{
+            JSONParser parser = new JSONParser();
+            json = (JSONObject) parser.parse(jsonStr);
+            token = (String) json.get("token");
+            staffUserName = (String) json.get("staffUserName");
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (token, staffUserName)", false, null, null);
+        }
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            StaffEntity staffEntity;
+
+            try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = '" + staffUserName + "' and s.actif = 1").getSingleResult();}
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le staff avec le login : " + staffUserName + " n'existe pas", true, tx, session);}
+
+            staffEntity.setActif(0);
+            session.update(staffEntity);
+
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return ReponseType.getOK("");
+    }
+
     private byte[] encrypt(String toEncrypt) {
         byte[] bytes = null;
         SecretKeySpec specification = new SecretKeySpec(key.getBytes(), "AES");
@@ -452,8 +495,10 @@ public class Login {
         try {
             //ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("staffAdress");
-            if(adresse == null)
+            if(adresse == null) {
+                System.err.println("l'adresse est mal remplie");
                 return null;
+            }
 
             if(!staff.staffAdress.RecupererAdresseDepuisJson(adresse))
                 return null;
@@ -470,6 +515,8 @@ public class Login {
                 if(staff.staffId == -1)
                     return null;
             }
+            System.err.println("ok1");
+
             staff.staffSurname = (String) json.get("staffSurname");
             staff.staffName = (String) json.get("staffName");
             staff.staffTel = (String) json.get("staffTel");
@@ -486,12 +533,18 @@ public class Login {
             staff.staffRole.addAll((ArrayList<String>) json.get("staffRole"));
             staff.staffCompetency.addAll((ArrayList<String>) json.get("staffCompetency"));
 
-            if(staff.staffUserName == null || staff.staffPassword == null || staff.staffRole == null || staff.staffCompetency == null)
+            System.err.println("ok2");
+
+            System.err.println("userName : " + staff.staffUserName + " pwd : " + staff.staffPassword + " role : " + staff.staffRole.isEmpty() + " competences : " + staff.staffCompetency.isEmpty());
+
+            //Pas de verification sur le password pour ne pas le changer.
+            if(staff.staffUserName == null || staff.staffRole == null || staff.staffCompetency == null)
                 return null;
         } catch (NullPointerException e) {
             System.err.println("renvoi null le format du json du staff n'est pas correct");
             return null;
         }
+        System.err.println("ok3");
         return staff;
     }
 
@@ -505,7 +558,8 @@ public class Login {
 
         //Set du staff pour ajout
         user.setLogin(p.staffUserName); //Seulement pour la création
-        user.setMdp(encrypt(p.staffPassword));
+        if(p.staffPassword != null)
+            user.setMdp(encrypt(p.staffPassword));
         user.setActif(1);
         user.setMail(p.staffMail);
         user.setNom(p.staffName);

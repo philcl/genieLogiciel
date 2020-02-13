@@ -34,3 +34,10 @@ Content-Type: text/plain
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","SIREN":123456789}
 
 ###
+### Delete Client
+POST http://localhost:8080/GenieLogiciel_war_exploded/client/delete
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","SIREN":21}
+
+###

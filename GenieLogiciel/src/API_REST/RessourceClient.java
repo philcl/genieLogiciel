@@ -89,7 +89,7 @@ public class RessourceClient {
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            List clients = session.createQuery("FROM ClientEntity ").list();
+            List clients = session.createQuery("FROM ClientEntity c WHERE c.actif = 1").list();
             for (Object o : clients) {
                 ClientEntity client = (ClientEntity) o;
                 if (client.getActif() == 1) {
@@ -124,7 +124,7 @@ public class RessourceClient {
                             return ReponseType.getNOTOK("Wesh y a pas de siret bro", true, tx, session);
                         }
 
-                        myClient.demandeurs.add(new Adresse(adresseEntity1.getNumero(),adresseEntity1.getCodePostal(),adresseEntity1.getRue(),adresseEntity1.getVille()));
+                        myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
                     }
 
                     clientList.add(myClient);
@@ -259,6 +259,50 @@ public class RessourceClient {
 
 
         return ReponseType.getOK(clientInit);
+    }
+
+    @Path("/delete")
+    @POST
+    @Consumes("text/plain")
+    public Response deleteClient(String jsonStr) {
+        String token = "";
+        int SIREN = -1;
+        JSONObject json;
+        Transaction tx = null;
+
+        try{
+            JSONParser parser = new JSONParser();
+            json = (JSONObject) parser.parse(jsonStr);
+            token = (String) json.get("token");
+            SIREN = Integer.parseInt(((Long) json.get("SIREN")).toString());
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (token, SIREN)", false, null, null);
+        }
+        if(!Token.tryToken(token))
+            return Token.tokenNonValide();
+
+        ClientEntity p;
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+
+            try{p = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN).getSingleResult();}
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren : " + SIREN + " n'existe pas", true, tx, session);}
+
+            p.setActif((byte) 0);
+
+            session.update(p);
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+
+        return ReponseType.getOK("");
     }
 
     private Client getClientFromJSON(JSONObject json) {

@@ -21,6 +21,13 @@ public class Personne {
         this.sexe = "M";
     }
 
+    public Personne(String nom, String prenom, int id, String sexe) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.id = id;
+        this.sexe = sexe;
+    }
+
     public Personne RecupererPersonDepuisJson(JSONObject personneJSON) {
         try {
             nom = (String) personneJSON.get("nom");
