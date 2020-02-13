@@ -12,6 +12,7 @@ public class Demandeur {
     public long SIRET = -1;
     public Adresse adresse;
     public Personne demandeur;
+    public String telephone="1";
 
     public Demandeur() {
         adresse = new Adresse();
