@@ -34,5 +34,5 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "userId":2}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "userId":7}
 ###
