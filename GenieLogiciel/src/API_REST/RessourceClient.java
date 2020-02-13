@@ -2,12 +2,10 @@ package API_REST;
 
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
+import DataBase.JonctionAdresseSiretEntity;
 import DataBase.PersonneEntity;
 import Modele.Adresse;
-import Modele.Client.Client;
-import Modele.Client.ClientInit;
-import Modele.Client.ClientList;
-import Modele.Client.Demandeur;
+import Modele.Client.*;
 import Modele.Personne;
 import Modele.Staff.Token;
 import org.hibernate.HibernateException;
@@ -232,6 +230,15 @@ public class RessourceClient {
                     return ReponseType.getNOTOK("Impossible de lister les demandeurs du SIREN " + SIREN, true, tx, session);
 
                 clientInit.demandeurList.add(demandeur);
+            }
+
+            result = session.createQuery("FROM JonctionAdresseSiretEntity j WHERE j.siret LIKE '" + SIREN + "%'").list();
+
+            for(Object o : result) {
+                JonctionAdresseSiretEntity j = (JonctionAdresseSiretEntity) o;
+                ClientSite clientSite = new ClientSite();
+                clientSite.recupererClientSite(j.getSiret());
+                clientInit.clientSiteList.add(clientSite);
             }
 
             tx.commit();
