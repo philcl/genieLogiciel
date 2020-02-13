@@ -255,7 +255,11 @@ public class RessourceTicket {
 
             //Recuperation du client
             JonctionAdresseSiretEntity client = null;
-            try{client = (JonctionAdresseSiretEntity) session.createQuery("FROM JonctionAdresseSiretEntity ac WHERE ac.siret LIKE '" + IdClient + "%'").getSingleResult();}
+            String SIRET = Long.toString(demandeur.getSiret());
+            if(!SIRET.substring(0,9).equals(Long.toString(IdClient)))
+                return ReponseType.getNOTOK("Le client : " + IdClient + " n'a pas le demandeur : " + SIRET + " veuillez verifier", true, tx, session);
+
+            try{client = (JonctionAdresseSiretEntity) session.createQuery("FROM JonctionAdresseSiretEntity ac WHERE ac.siret = " + demandeur.getSiret()).getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le client n'existe pas", true, tx, session);}
 
             tx.commit();

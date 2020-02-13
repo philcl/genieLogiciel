@@ -1,31 +1,38 @@
-POST http://localhost:8080/GenieLogiciel_war_exploded/user/modify
+POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
 Content-Type: text/plain
 
 {
   "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
-  "staff": {
-    "staffSexe": "M",
-    "staffUserName": "1",
-    "staffPassword": "",
-    "staffMail": "philippe.claude@u-psud.fr",
-    "staffAdress": {
-      "numero": 12,
-      "empty": false
-      "rue": "avenue des champs",
-      "ville": "PARIS",
-      "codePostal": "75000"
-    },
-    "staffSurname": "Irteza",
-    "staffName": "CLAUDE",
-    "staffTel": "0612345678",
-    "staffCompetency": [
-      "Electricien"
-    ],
-    "staffRole": [
-      "Admin"
-    ],
-    "staffId": 1
-  }
+   "clientId":123456789,
+   "ticket":{
+      "categorie":"Temperature",
+      "competences":[
+         "Electricien",
+         "Frigoriste"
+      ],
+      "priorite":1,
+      "demandeur":{
+         "id":1,
+         "nom":"ALIMI",
+         "prenom":"Jean"
+      },
+      "description":"Bonjour,\n\n Notre meuble vitrine réfrigérée qui nous sert à la présentation des charcuteries n'est plus assez froid, il est impossible de descendre au-delà de 6°.\n ",
+      "nomClient":"A",
+      "objet":"La vitrine réfrigérée n'est plus assez chaude",
+      "statut":"En cours",
+      "technicien":{
+         "id":6,
+         "nom":"SHEIKH",
+         "prenom":"MUHAMMAD"
+      },
+      "type":"Incident",
+      "adresse":{
+         "numero":32,
+         "rue":"RUE ALAINE",
+         "ville":"LYON",
+         "codePostal":"69000"
+      },
+      "id":5
+   }
 }
-
 ###
