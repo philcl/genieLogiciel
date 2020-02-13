@@ -58,9 +58,9 @@ public class Login {
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
-            StaffEntity userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = " + obj.get("staffUserName") + " and s.actif = 1").getSingleResult();
-            if (userEntity == null)
-                return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);
+            StaffEntity userEntity;
+            try{ userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = '" + obj.get("staffUserName") + "' and s.actif = 1").getSingleResult();}
+           catch(NoResultException e) {return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);}
 
             if (Arrays.equals(bytes, userEntity.getMdp()))
                 user = getUser(userEntity.getId());
