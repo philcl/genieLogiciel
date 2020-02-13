@@ -110,20 +110,6 @@ public class RessourceClient {
                     {
                         PersonneEntity personneEntity = (PersonneEntity) p;
 
-                        int idAdresse = -1;
-
-                        AdresseEntity adresseEntity1;
-
-                        try{
-                            idAdresse = (int) session.createQuery("SELECT j.idAdresse FROM JonctionAdresseSiretEntity j WHERE j.siret = " + personneEntity.getSiret()).getSingleResult();
-                            adresseEntity1 = (AdresseEntity) session.createQuery("SELECT a FROM AdresseEntity a WHERE a.id = " + idAdresse).getSingleResult();
-                        }
-                        catch (NoResultException e)
-                        {
-                            e.printStackTrace();
-                            return ReponseType.getNOTOK("Wesh y a pas de siret bro", true, tx, session);
-                        }
-
                         myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
                     }
 

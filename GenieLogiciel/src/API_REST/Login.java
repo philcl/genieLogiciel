@@ -378,16 +378,21 @@ public class Login {
     @Consumes("text/plain")
     public Response deleteStaff(String jsonStr) {
         String token = "", staffUserName = "";
+        int staffId = -1;
         JSONObject json;
         Transaction tx = null;
         try{
             JSONParser parser = new JSONParser();
             json = (JSONObject) parser.parse(jsonStr);
             token = (String) json.get("token");
-            staffUserName = (String) json.get("staffUserName");
+            try{staffUserName = (String) json.get("staffUserName");} catch (NullPointerException ignored){}
+            try{staffId = Integer.parseInt(((Long) json.get("staffId")).toString());} catch (NullPointerException ignored){}
+            if(staffId == -1 && staffUserName.equals(""))
+                throw new NullPointerException();
+
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des parametres (token, staffUserName)", false, null, null);
+            return ReponseType.getNOTOK("Il manque des parametres (token, 'staffUserName ou staffId')", false, null, null);
         }
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
@@ -396,9 +401,14 @@ public class Login {
             tx = session.beginTransaction();
             StaffEntity staffEntity;
 
-            try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = '" + staffUserName + "' and s.actif = 1").getSingleResult();}
-            catch (NoResultException e) {return ReponseType.getNOTOK("Le staff avec le login : " + staffUserName + " n'existe pas", true, tx, session);}
-
+            if(staffUserName != null) {
+                try {staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = '" + staffUserName + "' and s.actif = 1").getSingleResult();}
+                catch (NoResultException e) {return ReponseType.getNOTOK("Le staff avec le login : " + staffUserName + " n'existe pas", true, tx, session);}
+            }
+            else {
+                try {staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = '" + staffId + "' and s.actif = 1").getSingleResult();}
+                catch (NoResultException e) {return ReponseType.getNOTOK("Le staff avec l'id : " + staffId + " n'existe pas", true, tx, session);}
+            }
             staffEntity.setActif(0);
             session.update(staffEntity);
 

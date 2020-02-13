@@ -4,7 +4,7 @@ Accept: */*
 Cache-Control: no-cache
 Content-Type: text/plain
 
-{"clientId":"400000000","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+{"clientId":"123456781","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
 ### Send POST to create Ticket
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/create
