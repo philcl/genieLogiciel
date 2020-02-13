@@ -2,6 +2,8 @@ package API_REST;
 
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
+import DataBase.PersonneEntity;
+import Modele.Adresse;
 import Modele.Client.Client;
 import Modele.Client.ClientList;
 import Modele.Staff.Token;
@@ -21,6 +23,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/client")
 public class RessourceClient {
     @Path("/getId")
@@ -98,10 +101,34 @@ public class RessourceClient {
                     myClient.adresse.rue = adresseEntity.getRue();
                     myClient.adresse.ville = adresseEntity.getVille();
 
+                    List demandeurs = session.createQuery("FROM PersonneEntity p WHERE p.siret LIKE '" + myClient.SIREN + "%'").list();
+
+                    for (Object p : demandeurs)
+                    {
+                        PersonneEntity personneEntity = (PersonneEntity) p;
+
+                        int idAdresse = -1;
+
+                        AdresseEntity adresseEntity1;
+
+                        try{
+                            idAdresse = (int) session.createQuery("SELECT j.idAdresse FROM JonctionAdresseSiretEntity j WHERE j.siret = " + personneEntity.getSiret()).getSingleResult();
+                            adresseEntity1 = (AdresseEntity) session.createQuery("SELECT a FROM AdresseEntity a WHERE a.id = " + idAdresse).getSingleResult();
+                        }
+                        catch (NoResultException e)
+                        {
+                            e.printStackTrace();
+                            return ReponseType.getNOTOK("Wesh y a pas de siret bro", true, tx, session);
+                        }
+
+                        myClient.demandeurs.add(new Adresse(adresseEntity1.getNumero(),adresseEntity1.getCodePostal(),adresseEntity1.getRue(),adresseEntity1.getVille()));
+                    }
+
                     clientList.add(myClient);
                 }
             }
             tx.commit();
+            session.clear();
             session.close();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
