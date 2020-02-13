@@ -3,10 +3,6 @@ package API_REST;
 import DataBase.*;
 import Modele.Staff.*;
 
-import java.sql.Blob;
-
-import javassist.tools.reflect.CannotCreateException;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,7 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -462,7 +457,6 @@ public class Login {
             System.err.println("Impossible de parse le staff");
         }
 
-        //todo mettre des test sur null pour etre sur que les champs soient bien remplis
         //Extraction des informations du JSON
         try {
             //ajout de l'adresse
@@ -470,9 +464,8 @@ public class Login {
             if(adresse == null)
                 return null;
 
-            /*if(!staff.staffAdress.getFromJSON(adresse))
-                return null;*/
-            staff.staffAdress = null;
+            if(!staff.staffAdress.RecupererAdresseDepuisJson(adresse))
+                return null;
 
 
             //Ajout du reste de l'objet staff

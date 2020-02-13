@@ -2,6 +2,7 @@ package API_REST;
 
 import DataBase.*;
 import Modele.*;
+import Modele.Client.Demandeur;
 import Modele.Staff.Token;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

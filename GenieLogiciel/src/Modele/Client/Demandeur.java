@@ -6,7 +6,6 @@ import Modele.Personne;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.transform.CacheableResultTransformer;
 import org.json.simple.JSONObject;
 
 public class Demandeur {
@@ -19,7 +18,13 @@ public class Demandeur {
         demandeur = new Personne();
     }
 
-    public Demandeur getDemandeurFromJSON(JSONObject demandeurJSON) {
+    public Demandeur(long siret, Adresse adresse) {
+        SIRET = siret;
+        this.adresse = adresse;
+        demandeur = new Personne();
+    }
+
+    public Demandeur RecupererDemandandeurDepuisJson(JSONObject demandeurJSON) {
         try {
             SIRET = -1;
             SIRET = (Long) demandeurJSON.get("SIRET");
@@ -28,8 +33,8 @@ public class Demandeur {
             if (SIRET == -1 || adresseJSON == null ||demandeur == null)
                 return null;
 
-            this.adresse.getFromJSON(adresseJSON);
-            this.demandeur.getFromJSON(demandeur);
+            this.adresse.RecupererAdresseDepuisJson(adresseJSON);
+            this.demandeur.RecupererPersonDepuisJson(demandeur);
 
             if(this.adresse == null || this.demandeur == null)
                 return null;

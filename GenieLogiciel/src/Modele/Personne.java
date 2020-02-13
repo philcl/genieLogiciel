@@ -18,10 +18,10 @@ public class Personne {
         this.nom = nom;
         this.prenom = prenom;
         this.id = id;
-        this.sexe = sexe;
+        this.sexe = "M";
     }
 
-    public Personne getFromJSON(JSONObject personneJSON) {
+    public Personne RecupererPersonDepuisJson(JSONObject personneJSON) {
         try {
             nom = (String) personneJSON.get("nom");
             prenom = (String) personneJSON.get("prenom");
@@ -49,6 +49,7 @@ public class Personne {
         return true;
         }
 
+        //todo Voir comment enlever l'element empty du retour d'objet en JSON
     public boolean isEmpty() {
         return id == -1 || nom.isEmpty() || prenom.isEmpty();
     }

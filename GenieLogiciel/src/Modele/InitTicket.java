@@ -1,5 +1,7 @@
 package Modele;
 
+import Modele.Client.Demandeur;
+
 import java.util.ArrayList;
 
 public class InitTicket {
