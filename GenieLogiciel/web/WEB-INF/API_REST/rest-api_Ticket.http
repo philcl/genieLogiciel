@@ -16,7 +16,7 @@ Content-Type: text/plain
 POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
 Content-Type: text/plain
 
-{"clientId":12345678912345,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 12,"nom":"RENARD","prenom":"Maxime"},"objet":"La vitrine réfrigérée n'est plus assez froide","description":"Bonjour,
+{"clientId":123456789,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 12,"nom":"RENARD","prenom":"Maxime"},"objet":"La vitrine réfrigérée n'est plus assez froide","description":"Bonjour,
 
  Notre meuble vitrine réfrigérée qui nous sert à la présentation des charcuteries n'est plus assez froid, il est impossible de descendre au-delà de 6°.
  ","statut":"En cours","technicien":{"id":9,"nom":"LESTOIL","prenom":"Veronique"},"type":"Incident","id":5,"priorite":2}}
