@@ -77,16 +77,16 @@ public class Adresse {
         return true;
     }
 
-    public boolean getFromJSON(JSONObject adr) {
+    /*public boolean getFromJSON(JSONObject adr) {
         numero = -1;
         numero = Integer.parseInt(((Long) adr.get("numero")).toString());
         codePostal = (String) adr.get("codePostal");
         rue = (String) adr.get("rue");
         ville = (String) adr.get("ville");
-        return this.isEmpty();
-    }
 
-    public boolean isEmpty() {
-        return numero == -1 || ville.isEmpty() || codePostal.isEmpty() || rue.isEmpty();
-    }
+        if(numero == -1 || codePostal == null || rue == null || ville == null)
+            return false;
+        else
+            return true;
+    }*/
 }

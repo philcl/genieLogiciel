@@ -1,9 +1,9 @@
 package API_REST;
 
+import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
 import Modele.Client.Client;
 import Modele.Client.ClientList;
-import Modele.Client.Demandeur;
 import Modele.Staff.Token;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -41,17 +41,17 @@ public class RessourceClient {
             return ReponseType.getNOTOK("Il manque des parametres (token, clientName)", false, null, null);
         }
 
-        if(!Token.tryToken(token))
+        if (!Token.tryToken(token))
             return Token.tokenNonValide();
 
-        try(Session session = CreateSession.getSession()) {
+        try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName + "'").getSingleResult();
             tx.commit();
             session.clear();
             session.close();
         } catch (HibernateException e) {
-            if(tx != null)
+            if (tx != null)
                 tx.rollback();
             e.printStackTrace();
         } catch (NoResultException e) {
@@ -78,7 +78,7 @@ public class RessourceClient {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if(!Token.tryToken(token))
+        if (!Token.tryToken(token))
             return Token.tokenNonValide();
 
         try (Session session = CreateSession.getSession()) {
@@ -86,7 +86,7 @@ public class RessourceClient {
             List clients = session.createQuery("FROM ClientEntity ").list();
             for (Object o : clients) {
                 ClientEntity client = (ClientEntity) o;
-                if(client.getActif() == 1) {
+                if (client.getActif() == 1) {
                     ClientList myClient = new ClientList();
                     myClient.name = client.getNom();
                     myClient.SIREN = client.getSiren();
@@ -118,71 +118,55 @@ public class RessourceClient {
         String token = "";
         JSONObject clientJSON = null;
         Transaction tx = null;
-        ArrayList<JSONObject> demandeurJSON = null;
 
-        try{
+        try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String) json.get("token");
             clientJSON = (JSONObject) json.get("client");
-            try{demandeurJSON = (ArrayList<JSONObject>) json.get("demanandeurs");} catch(NullPointerException ignored){}
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des parametres (token, client, 'optionnel demandeurs')", false, null, null);
+            return ReponseType.getNOTOK("Il manque des parametres (token, client)", false, null, null);
         }
-        if(!Token.tryToken(token))
+        if (!Token.tryToken(token))
             return Token.tokenNonValide();
 
         Client client = getClientFromJSON(clientJSON);
-        if(client == null)
+        if (client == null)
             return ReponseType.getNOTOK("Le JSON du client est mal forme veuillez verifier", false, null, null);
-
-        ArrayList<Demandeur> demandeurs = getDemandeursFromJSON(demandeurJSON);
-        if(demandeurs == null || demandeurs.isEmpty())
-            return ReponseType.getNOTOK("La liste des demandeurs est mal initialisee veuillez verifier", false, null,null);
 
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setActif((byte) 1);
         clientEntity.setNom(client.nom);
         clientEntity.setSiren(client.SIREN);
 
-        try(Session session = CreateSession.getSession()) {
+        int adresseId = client.adresse.getId();
+        if (adresseId == -1)
+            if (!client.adresse.addAdresse())
+                return ReponseType.getNOTOK("Impossible de rajouter l'adresse sur la base", false, null, null);
+        clientEntity.setAdresse(adresseId);
+
+        try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
 
-            try{
+            try {
                 session.createQuery("FROM ClientEntity c WHERE c.siren = " + client.SIREN).getSingleResult();
                 return ReponseType.getNOTOK("Le SIREN " + client.SIREN + " existe deja veuillez le changer", true, tx, session);
-            } catch (NoResultException ignored) {}
+            } catch (NoResultException ignored) {
+            }
 
             try {
                 session.createQuery("FROM ClientEntity c WHERE c.nom = '" + client.nom + "'").getSingleResult();
                 return ReponseType.getNOTOK("Le client " + client.nom + " existe deja veuillez le changer", true, tx, session);
-            } catch (NoResultException ignored) {}
-
-            //Ajout de l'adresse apres pour etre sur de ne rajouter que des adresses appartenant a des clients
-            int adresseId = client.adresse.getId();
-            if(adresseId == -1)
-                if(!client.adresse.addAdresse())
-                    return ReponseType.getNOTOK("Impossible de rajouter l'adresse sur la base", false, null, null);
-            clientEntity.setAdresse(adresseId);
+            } catch (NoResultException ignored) {
+            }
 
             session.save(clientEntity);
             tx.commit();
             session.clear();
-
-            //todo Finaliser l'ajout d'es demandeurs
-            for(Demandeur demandeur : demandeurs) {
-                if(demandeur.adresse.getId() == -1)
-                    if(!demandeur.adresse.addAdresse())
-                        return ReponseType.getNOTOK("Impossible de rajouter l'adresse", false, null, null);
-                if(demandeur.demandeur.verifyIdExistance())
-                    return ReponseType.getNOTOK("Le demandeur " + demandeur.demandeur.prenom + " " + demandeur.demandeur.nom + " existe deja impossible de le rajouter", false, null, null);
-
-            }
-
             session.close();
         } catch (HibernateException e) {
-            if(tx != null)
+            if (tx != null)
                 tx.rollback();
             e.printStackTrace();
             return ReponseType.getNOTOK("Impossible de sauvegarder le client sur la base", false, null, null);
@@ -190,36 +174,27 @@ public class RessourceClient {
         return ReponseType.getOK("");
     }
 
-    @Path("/modify")
-    @POST
-    @Consumes("text/plain")
-    public Response modifyClient(String jsonStr) {
-
-        return ReponseType.getOK("");
-    }
-
     private Client getClientFromJSON(JSONObject json) {
         Client client = new Client();
 
-        try{
+        try {
             client.nom = (String) json.get("nom");
             client.SIREN = -1;
             client.SIREN = Integer.parseInt(((Long) json.get("SIREN")).toString());
 
             System.err.println("nom = " + client.nom + " siren = " + client.SIREN);
 
-            if(client.nom == null || client.SIREN == -1)
+            if (client.nom == null || client.SIREN == -1)
                 return null;
 
             //Ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("adresse");
-            if(adresse == null) {
+            if (adresse == null) {
                 System.err.println("L'adresse est mal formee");
                 return null;
-            }
-            else
-                if(!client.adresse.getFromJSON(adresse))
-                    return null;
+            } /*else if (!client.adresse.getFromJSON(adresse))
+                return null;*/
+
 
         } catch (NullPointerException e) {
             System.err.println("Erreur lors de la recuperation du client depuis un json parse impossible");
@@ -228,15 +203,5 @@ public class RessourceClient {
         return client;
     }
 
-    private ArrayList<Demandeur> getDemandeursFromJSON(ArrayList<JSONObject> demandeursJSON) {
-        ArrayList<Demandeur> demandeurs = new ArrayList<>();
 
-        for(JSONObject json : demandeursJSON) {
-            Demandeur demandeur = new Demandeur();
-            if(demandeur.getDemandeurFromJSON(json) == null || demandeur.isEmpty())
-                return null;
-            demandeurs.add(demandeur);
-        }
-        return demandeurs;
-    }
 }
