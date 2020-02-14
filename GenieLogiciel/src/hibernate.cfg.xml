@@ -19,8 +19,8 @@
         <mapping class="DataBase.CompetencesEntity"/>
         <mapping class="DataBase.DemandeurEntity"/>
         <mapping class="DataBase.InterventionEntity"/>
-        <mapping class="DataBase.JonctionAdresseSiretEntity"/>
         <mapping class="DataBase.JonctionInterventionCompetenceEntity"/>
+        <mapping class="DataBase.JonctionSirensiretEntity"/>
         <mapping class="DataBase.JonctionStaffCompetenceEntity"/>
         <mapping class="DataBase.JonctionStaffPosteEntity"/>
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>

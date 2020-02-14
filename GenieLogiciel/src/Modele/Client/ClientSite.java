@@ -1,11 +1,8 @@
 package Modele.Client;
 
-import API_REST.CreateSession;
-import DataBase.JonctionAdresseSiretEntity;
+import DataBase.ClientEntity;
 import Modele.Adresse;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
 
@@ -18,29 +15,12 @@ public class ClientSite {
         adresse = new Adresse();
     }
 
-    public boolean recupererClientSite(long SIRET) {
-        Transaction tx = null;
+    public boolean recupererClientSite(long SIRET, Session session) {
+        ClientEntity clientEntity;
 
-        try(Session session = CreateSession.getSession()) {
-            tx = session.beginTransaction();
-            JonctionAdresseSiretEntity jct;
-
-            try{jct = (JonctionAdresseSiretEntity) session.createQuery("FROM JonctionAdresseSiretEntity  j WHERE j.siret = " + SIRET).getSingleResult();}
-            catch(NoResultException e) {return false;}
-            this.SIRET = SIRET;
-            if(!this.adresse.recupererAdresse(jct.getIdAdresse()))
-                return false;
-
-            tx.commit();
-            session.clear();
-            session.close();
-        } catch (HibernateException e) {
-            if(tx != null)
-                tx.rollback();
-            e.printStackTrace();
-        }
-
-
-        return true;
+        try{clientEntity = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = JonctionSirensiretEntity.siren and JonctionSirensiretEntity.siret = " + SIRET).getSingleResult();}
+        catch(NoResultException e) {return false;}
+        this.SIRET = SIRET;
+        return this.adresse.recupererAdresse(clientEntity.getAdresse());
     }
 }

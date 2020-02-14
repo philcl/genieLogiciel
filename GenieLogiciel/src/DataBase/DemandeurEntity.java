@@ -14,6 +14,7 @@ public class DemandeurEntity {
     private long siret;
     private String telephone;
     private String sexe;
+    private int adresse;
 
     @Id
     @Column(name = "idPersonne", nullable = false)
@@ -95,6 +96,16 @@ public class DemandeurEntity {
         this.sexe = sexe;
     }
 
+    @Basic
+    @Column(name = "adresse", nullable = false)
+    public int getAdresse() {
+        return adresse;
+    }
+
+    public void setAdresse(int adresse) {
+        this.adresse = adresse;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,6 +114,7 @@ public class DemandeurEntity {
         return idPersonne == that.idPersonne &&
                 actif == that.actif &&
                 siret == that.siret &&
+                adresse == that.adresse &&
                 Objects.equals(prenom, that.prenom) &&
                 Objects.equals(nom, that.nom) &&
                 Objects.equals(mail, that.mail) &&
@@ -112,6 +124,6 @@ public class DemandeurEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret, telephone, sexe);
+        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret, telephone, sexe, adresse);
     }
 }

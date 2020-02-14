@@ -2,9 +2,7 @@ package API_REST;
 
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
-import DataBase.JonctionAdresseSiretEntity;
 import DataBase.DemandeurEntity;
-import Modele.Adresse;
 import Modele.Client.*;
 import Modele.Personne;
 import Modele.Staff.Token;
@@ -90,29 +88,34 @@ public class RessourceClient {
             List clients = session.createQuery("FROM ClientEntity c WHERE c.actif = 1").list();
             for (Object o : clients) {
                 ClientEntity client = (ClientEntity) o;
-                if (client.getActif() == 1) {
-                    ClientList myClient = new ClientList();
-                    myClient.name = client.getNom();
-                    myClient.SIREN = client.getSiren();
+                ClientList myClient = new ClientList();
+                myClient.name = client.getNom();
+                myClient.SIREN = client.getSiren();
 
-                    AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse()).getSingleResult();
+                AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse()).getSingleResult();
 
-                    myClient.adresse.numero = adresseEntity.getNumero();
-                    myClient.adresse.codePostal = adresseEntity.getCodePostal();
-                    myClient.adresse.rue = adresseEntity.getRue();
-                    myClient.adresse.ville = adresseEntity.getVille();
+                myClient.adresse.numero = adresseEntity.getNumero();
+                myClient.adresse.codePostal = adresseEntity.getCodePostal();
+                myClient.adresse.rue = adresseEntity.getRue();
+                myClient.adresse.ville = adresseEntity.getVille();
 
-                    List demandeurs = session.createQuery("FROM DemandeurEntity p WHERE p.siret LIKE '" + myClient.SIREN + "%'").list();
+                Long nbTicketActif = 0L;
+                //todo rajouter le lien entre le client et le ticket
+                try{nbTicketActif = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t WHERE  (t.statut = 'Resolu' or t.statut = 'Non Resolu')").getSingleResult();}
+                catch(NoResultException ignored){}
+                myClient.nbTicket = Integer.parseInt(nbTicketActif.toString());
 
-                    for (Object p : demandeurs)
-                    {
-                        DemandeurEntity personneEntity = (DemandeurEntity) p;
+                List demandeurs = session.createQuery("SELECT d FROM DemandeurEntity d, JonctionSirensiretEntity ss WHERE d.siret = ss.siret and ss.siren = " + myClient.SIREN).list();
+                for (Object p : demandeurs)
+                {
+                    DemandeurEntity personneEntity = (DemandeurEntity) p;
 
-                        myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
-                    }
-
-                    clientList.add(myClient);
+                    myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
                 }
+
+
+
+                clientList.add(myClient);
             }
             tx.commit();
             session.clear();
@@ -221,7 +224,7 @@ public class RessourceClient {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
 
-            List result = session.createQuery("FROM DemandeurEntity p WHERE p.siret LIKE '" + SIREN + "%' and p.actif = 1").list();
+            List result = session.createQuery("SELECT d FROM DemandeurEntity d, JonctionSirensiretEntity ss WHERE d.siret = ss.siret and ss.siren = " + SIREN +  " and d.actif = 1").list();
 
             for(Object o : result) {
                 DemandeurEntity p = (DemandeurEntity) o;
@@ -230,15 +233,12 @@ public class RessourceClient {
                     return ReponseType.getNOTOK("Impossible de lister les demandeurs du SIREN " + SIREN, true, tx, session);
 
                 clientInit.demandeurList.add(demandeur);
-            }
 
-            result = session.createQuery("FROM JonctionAdresseSiretEntity j WHERE j.siret LIKE '" + SIREN + "%'").list();
-
-            for(Object o : result) {
-                JonctionAdresseSiretEntity j = (JonctionAdresseSiretEntity) o;
                 ClientSite clientSite = new ClientSite();
-                clientSite.recupererClientSite(j.getSiret());
+                clientSite.adresse = demandeur.adresse;
+                clientSite.SIRET = demandeur.SIRET;
                 clientInit.clientSiteList.add(clientSite);
+
             }
 
             tx.commit();

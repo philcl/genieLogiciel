@@ -1,7 +1,6 @@
 package Modele.Client;
 
 import API_REST.CreateSession;
-import DataBase.AdresseEntity;
 import DataBase.DemandeurEntity ;
 import Modele.Adresse;
 import Modele.Personne;
@@ -85,7 +84,7 @@ public class Demandeur {
                 this.demandeur.id = p.getIdPersonne();
                 this.demandeur.sexe = p.getSexe();
 
-                int idAdr = (int) session.createQuery("SELECT j.idAdresse FROM JonctionAdresseSiretEntity j WHERE j.siret = " + SIRET).getSingleResult();
+                int idAdr = p.getAdresse();
                 if(!this.adresse.recupererAdresse(idAdr))
                     return  false;
             }

@@ -68,24 +68,26 @@ public class RessourceTicket {
                 answer.technicienList.add(new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId()));
             }
 
-            //Recuperation de la liste des demandeurs
-            result = session.createQuery("FROM DemandeurEntity p WHERE p.siret LIKE '" + IdClient + "%'").list();
-            for(Object o : result) {
-                DemandeurEntity demandeurEntity = (DemandeurEntity) o;
-                answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
-            }
+            List siretList;
+            try{
+                 siretList = session.createQuery("SELECT ss.siret FROM JonctionSirensiretEntity ss WHERE ss.siren = " + IdClient).list();
+                 if(siretList == null || siretList.isEmpty())
+                     return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
+            } catch (NoResultException e) {return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);}
 
-            //Recuperation de la liste des sites du client
-            String request = "FROM JonctionAdresseSiretEntity A WHERE A.siret LIKE '" + IdClient + "%'";
-            result = session.createQuery(request).list();
-            if(result == null || result.isEmpty())
-                return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
 
-            for(Object o : result) {
-                JonctionAdresseSiretEntity adresse = (JonctionAdresseSiretEntity) o;
-                if (adresse.getActif() == 1) {
-                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + adresse.getIdAdresse()).getSingleResult();
-                    Demandeur adresseClient = new Demandeur(adresse.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()));
+            for(Object obj : siretList) {
+                long siret = (long) obj;
+
+                //Recuperation de la liste des demandeurs
+                result = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + siret + " and d.actif = 1" ).list();
+                for(Object o : result) {
+                    DemandeurEntity demandeurEntity = (DemandeurEntity) o;
+                    answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
+
+                    //Recuperation de la liste des sites du client
+                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + demandeurEntity.getAdresse()).getSingleResult();
+                    Demandeur adresseClient = new Demandeur(demandeurEntity.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()));
                     answer.clientSiteList.add(adresseClient);
                 }
             }
@@ -182,7 +184,13 @@ public class RessourceTicket {
             DemandeurEntity demandeur;
             try{demandeur = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur avec l'id " + ticket.demandeur.id + " n'existe pas", true, tx, session);}
-            ticketEntity.setAdresse(demandeur.getSiret());
+
+            ClientEntity clientEntity;
+            try{clientEntity = (ClientEntity) session.createQuery("SELECT c FROM ClientEntity c, JonctionSirensiretEntity ss WHERE c.siren = ss.siren and ss.siret = " + demandeur.getSiret()).getSingleResult();}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Le client lie au demandeur avec l'id " + ticket.demandeur.id + " n'existe pas", true, tx, session);}
+
+            ticketEntity.setSiren(clientEntity.getSiren());
+            ticketEntity.setAdresse(clientEntity.getAdresse());
             ticketEntity.setDemandeur(demandeur.getIdPersonne());
 
             StaffEntity tech;
@@ -229,7 +237,7 @@ public class RessourceTicket {
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
             System.err.println("impossible de parse");
-            return ReponseType.getNOTOK("L'un des parametre n'est pas present (clientId, token, ticket)", false, null, null);
+            return ReponseType.getNOTOK("L'un des parametres n'est pas present (clientId, token, ticket)", false, null, null);
         }
 
         //Verification du token
@@ -254,12 +262,12 @@ public class RessourceTicket {
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur n'existe pas", true, tx, session);}
 
             //Recuperation du client
-            JonctionAdresseSiretEntity client = null;
+            ClientEntity client = null;
             String SIRET = Long.toString(demandeur.getSiret());
             //if(!SIRET.substring(0,9).equals(Long.toString(IdClient)))
             //    return ReponseType.getNOTOK("Le client : " + IdClient + " n'a pas le demandeur : " + SIRET + " veuillez verifier", true, tx, session);
 
-            try{client = (JonctionAdresseSiretEntity) session.createQuery("FROM JonctionAdresseSiretEntity ac WHERE ac.siret = " + demandeur.getSiret()).getSingleResult();}
+            try{client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + IdClient + "and c.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le client n'existe pas", true, tx, session);}
 
             tx.commit();
@@ -273,7 +281,7 @@ public class RessourceTicket {
             Query update = session.createQuery(request);
             int nbLignes = update.executeUpdate();
 
-            request = "UPDATE TicketEntity t SET t.adresse = " + client.getSiret() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + ", t.priorite = " + ticket.priorite + " WHERE t.id = " + ticket.id;
+            request = "UPDATE TicketEntity t SET t.siren = " + client.getSiren() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + ", t.priorite = " + ticket.priorite + ", t.adresse = " + client.getAdresse() + " WHERE t.id = " + ticket.id;
             update = session.createQuery(request);
             nbLignes += update.executeUpdate();
 
@@ -404,7 +412,7 @@ public class RessourceTicket {
             technicien = new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId());
 
             //Recuperation du nom de l'entreprise du client
-            int siren = Integer.parseInt(((Long)ticketEntity.getAdresse()).toString().substring(0, 9));
+            int siren = ticketEntity.getSiren();
             ClientEntity client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + siren).getSingleResult();
 
             //Recuperation de l'adresse

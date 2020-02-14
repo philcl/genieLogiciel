@@ -8,7 +8,8 @@ import java.util.Objects;
 @Table(name = "Ticket", schema = "GenieLog", catalog = "")
 public class TicketEntity {
     private int id;
-    private long adresse;
+    private int siren;
+    private int adresse;
     private Integer technicien;
     private String categorie;
     private String statut;
@@ -31,12 +32,22 @@ public class TicketEntity {
     }
 
     @Basic
+    @Column(name = "SIREN", nullable = false)
+    public int getSiren() {
+        return siren;
+    }
+
+    public void setSiren(int siren) {
+        this.siren = siren;
+    }
+
+    @Basic
     @Column(name = "adresse", nullable = false)
-    public long getAdresse() {
+    public int getAdresse() {
         return adresse;
     }
 
-    public void setAdresse(long adresse) {
+    public void setAdresse(int adresse) {
         this.adresse = adresse;
     }
 
@@ -146,6 +157,7 @@ public class TicketEntity {
         if (o == null || getClass() != o.getClass()) return false;
         TicketEntity that = (TicketEntity) o;
         return id == that.id &&
+                siren == that.siren &&
                 adresse == that.adresse &&
                 demandeur == that.demandeur &&
                 ticket == that.ticket &&
@@ -161,6 +173,6 @@ public class TicketEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket, priorite);
+        return Objects.hash(id, siren, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket, priorite);
     }
 }
