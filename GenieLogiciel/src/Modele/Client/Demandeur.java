@@ -2,7 +2,7 @@ package Modele.Client;
 
 import API_REST.CreateSession;
 import DataBase.AdresseEntity;
-import DataBase.PersonneEntity;
+import DataBase.DemandeurEntity ;
 import Modele.Adresse;
 import Modele.Personne;
 import org.hibernate.HibernateException;
@@ -55,7 +55,7 @@ public class Demandeur {
         Transaction tx = null;
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            try{session.createQuery("FROM PersonneEntity p WHERE p.siret = " + SIRET).getSingleResult();}
+            try{session.createQuery("FROM DemandeurEntity p WHERE p.siret = " + SIRET).getSingleResult();}
             catch(NoResultException e) {
                 tx.commit();
                 session.clear();
@@ -75,7 +75,7 @@ public class Demandeur {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             if(verifyDemandeurExistance(SIRET)) {
-                PersonneEntity p = (PersonneEntity) session.createQuery("FROM PersonneEntity p WHERE p.siret = " + SIRET).getSingleResult();
+                DemandeurEntity p = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.siret = " + SIRET).getSingleResult();
 
                 this.SIRET = SIRET;
                 this.telephone = "1";

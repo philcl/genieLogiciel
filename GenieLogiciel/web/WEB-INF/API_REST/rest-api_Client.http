@@ -1,19 +1,19 @@
 ### Send POST to change clientName to clientId
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/getId
+POST http://localhost:8080/genielog/client/getId
 Content-Type: text/plain
 
 {"clientName":"ACCOR","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 
 ###
 ### Liste Client
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/list
+POST http://localhost:8080/genielog/client/list
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 
 ###
 ### Create Client
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/create
+POST http://localhost:8080/genielog/client/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":21,"nom":"tst","adresse":{"numero":500,"rue":"rue des saucissons","ville":"Jambon","codePostal":"25811"}}}
@@ -21,21 +21,21 @@ Content-Type: text/plain
 
 ###
 ### Modify Client
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/modify
+POST http://localhost:8080/genielog/client/modify
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des fromages","ville":"Saint Nectaire","codePostal":"25811"}}}
 
 ###
 ### Init Client
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/init
+POST http://localhost:8080/genielog/client/init
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","SIREN":123456789}
 
 ###
 ### Delete Client
-POST http://localhost:8080/GenieLogiciel_war_exploded/client/delete
+POST http://localhost:8080/genielog/client/delete
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","SIREN":21}

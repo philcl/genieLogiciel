@@ -17,13 +17,13 @@
         <mapping class="DataBase.CategorieEntity"/>
         <mapping class="DataBase.ClientEntity"/>
         <mapping class="DataBase.CompetencesEntity"/>
+        <mapping class="DataBase.DemandeurEntity"/>
         <mapping class="DataBase.InterventionEntity"/>
         <mapping class="DataBase.JonctionAdresseSiretEntity"/>
         <mapping class="DataBase.JonctionInterventionCompetenceEntity"/>
         <mapping class="DataBase.JonctionStaffCompetenceEntity"/>
         <mapping class="DataBase.JonctionStaffPosteEntity"/>
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
-        <mapping class="DataBase.PersonneEntity"/>
         <mapping class="DataBase.PosteEntity"/>
         <mapping class="DataBase.SexeEntity"/>
         <mapping class="DataBase.StaffEntity"/>

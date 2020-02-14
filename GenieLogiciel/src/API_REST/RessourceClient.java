@@ -3,7 +3,7 @@ package API_REST;
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
 import DataBase.JonctionAdresseSiretEntity;
-import DataBase.PersonneEntity;
+import DataBase.DemandeurEntity;
 import Modele.Adresse;
 import Modele.Client.*;
 import Modele.Personne;
@@ -102,11 +102,11 @@ public class RessourceClient {
                     myClient.adresse.rue = adresseEntity.getRue();
                     myClient.adresse.ville = adresseEntity.getVille();
 
-                    List demandeurs = session.createQuery("FROM PersonneEntity p WHERE p.siret LIKE '" + myClient.SIREN + "%'").list();
+                    List demandeurs = session.createQuery("FROM DemandeurEntity p WHERE p.siret LIKE '" + myClient.SIREN + "%'").list();
 
                     for (Object p : demandeurs)
                     {
-                        PersonneEntity personneEntity = (PersonneEntity) p;
+                        DemandeurEntity personneEntity = (DemandeurEntity) p;
 
                         myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
                     }
@@ -221,10 +221,10 @@ public class RessourceClient {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
 
-            List result = session.createQuery("FROM PersonneEntity p WHERE p.siret LIKE '" + SIREN + "%' and p.actif = 1").list();
+            List result = session.createQuery("FROM DemandeurEntity p WHERE p.siret LIKE '" + SIREN + "%' and p.actif = 1").list();
 
             for(Object o : result) {
-                PersonneEntity p = (PersonneEntity) o;
+                DemandeurEntity p = (DemandeurEntity) o;
                 Demandeur demandeur = new Demandeur();
                 if(!demandeur.recupererDemandeur(p.getSiret()))
                     return ReponseType.getNOTOK("Impossible de lister les demandeurs du SIREN " + SIREN, true, tx, session);

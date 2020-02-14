@@ -1,5 +1,5 @@
 ### Send POST to get init info for Ticket
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/init
+POST http://localhost:8080/genielog/ticket/init
 Accept: */*
 Cache-Control: no-cache
 Content-Type: text/plain
@@ -7,13 +7,13 @@ Content-Type: text/plain
 {"clientId":"123456789","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
 ### Send POST to create Ticket
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/create
+POST http://localhost:8080/genielog/ticket/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Etude","competences":[],"demandeur":{"id":12,"nom":"RENARD","prenom":"Maxime"},"objet":"TESTEST","statut":"Resolu","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"},"type":"Demande","priorite":1}}
 ###
 ### Send POST to modify Ticket
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/modify
+POST http://localhost:8080/genielog/ticket/modify
 Content-Type: text/plain
 
 {"clientId":123456789,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 12,"nom":"RENARD","prenom":"Maxime"},"objet":"La vitrine réfrigérée n'est plus assez froide","description":"Bonjour,
@@ -22,19 +22,19 @@ Content-Type: text/plain
  ","statut":"En cours","technicien":{"id":9,"nom":"LESTOIL","prenom":"Veronique"},"type":"Incident","id":5,"priorite":2}}
 ###
 ##Send POST to modify the state
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/state
+POST http://localhost:8080/genielog/ticket/state
 Content-Type: text/plain
 
 {"ticketId":"1","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","statut":"Resolu"}
 ###
 ### Send POST to have all tickets without techId
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
+POST http://localhost:8080/genielog/ticket/list
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
 ### Send POST to have all tickets with techId
-POST http://localhost:8080/GenieLogiciel_war_exploded/ticket/list
+POST http://localhost:8080/genielog/ticket/list
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "userId":7}
