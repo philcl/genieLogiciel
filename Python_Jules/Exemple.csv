@@ -1,0 +1,2 @@
+Code postal;numero;rue;ville;categorie;objet;statut;type;priorite;DemandeurId;DemandeurNom;DemandeurPrenom;TechnicienId;TechnicienNom;TechnicienPrenom
+69000;32;RUE ALAINE;LYON;Etude;TEST;Resolu;Demande;1;12;RENARD;Maxime;2;VITTONE;Jules
