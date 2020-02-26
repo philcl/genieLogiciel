@@ -113,8 +113,6 @@ public class RessourceClient {
                     myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
                 }
 
-
-
                 clientList.add(myClient);
             }
             tx.commit();
@@ -179,6 +177,8 @@ public class RessourceClient {
             }
 
             session.save(clientEntity);
+
+            //todo Ajout des demandeurs
             tx.commit();
             session.clear();
             session.close();
@@ -188,6 +188,61 @@ public class RessourceClient {
             e.printStackTrace();
             return ReponseType.getNOTOK("Impossible de sauvegarder le client sur la base", false, null, null);
         }
+        return ReponseType.getOK("");
+    }
+
+    @Path("/modify")
+    @POST
+    @Consumes("text/plain")
+    public Response modifyClient(String jsonStr) {
+        String token = "";
+        JSONObject json, clientJson;
+        Transaction tx = null;
+
+        try{
+            JSONParser parser = new JSONParser();
+            json = (JSONObject) parser.parse(jsonStr);
+            token = (String) json.get("token");
+            clientJson = (JSONObject) json.get("client");
+        } catch (ParseException |NullPointerException e) {
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (token, client)", false, null, null);
+        }
+
+        Client client = getClientFromJSON(clientJson);
+        if (client == null)
+            return ReponseType.getNOTOK("Le JSON du client est mal forme veuillez verifier", false, null, null);
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            ClientEntity clientEntity;
+
+            try{clientEntity = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + client.SIREN).getSingleResult();}
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le SIREN du client n'existe pas ", true, tx, session);}
+
+            //Recherche puis ajout si elle n'existe pas
+            int adrId = client.adresse.getId();
+            if(adrId == -1)
+                if(!client.adresse.addAdresse())
+                    return ReponseType.getNOTOK("Impossible d'ajouter l'adresse", true, tx, session);
+
+            //Modification du client
+            clientEntity.setAdresse(adrId);
+            clientEntity.setNom(client.nom);
+
+            session.update(clientEntity);
+
+            //todo Ajout des demandeurs
+
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+
         return ReponseType.getOK("");
     }
 

@@ -47,7 +47,7 @@ public class Personne {
     public boolean verifyIdExistance() {
         try(Session session = CreateSession.getSession()) {
             Transaction tx = session.beginTransaction();
-            try{session.createQuery("FROM PersonneEntity p WHERE p.id = " + id).getSingleResult();}
+            try{session.createQuery("FROM DemandeurEntity d WHERE d.id = " + id).getSingleResult();}
             catch (NoResultException e) {return false;}
             tx.commit();
             session.clear();

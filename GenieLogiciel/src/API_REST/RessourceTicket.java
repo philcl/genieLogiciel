@@ -20,6 +20,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+//todo Gerer la securite des string que je reçoit avec le test d'une fonction sur select, from, where, delete, update, insert
+
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/ticket")
 public class RessourceTicket {

@@ -50,22 +50,10 @@ public class Token extends  HashMap<String, Timestamp>{
 //todo controller le user pour redonner le meme token si deja login
 
 //todo :
-//Client Ajout
 //Client Modification
-//Client Suppression
 //
 //Demandeur Ajout
 //Demandeur Modification
 //Demandeur Suppression
 //Demandeur Listing
 //
-//User account Ajout
-//User account Modification
-//User account Suppression
-//User account Listing
-//
-//
-// - Ajout
-//- Modification
-//- Suppression
-//- Listing

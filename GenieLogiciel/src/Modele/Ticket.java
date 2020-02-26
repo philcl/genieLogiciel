@@ -3,7 +3,6 @@ package Modele;
 import java.util.ArrayList;
 
 public class Ticket {
-    //todo ajouter l'id tu ticket
     public String type, objet, description, categorie, statut, clientName;
     public Personne technicien, demandeur;
     public ArrayList<String> competences;
