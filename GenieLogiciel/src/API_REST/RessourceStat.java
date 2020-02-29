@@ -15,6 +15,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+//- temps par compétences/tech
+//- Nombre tickets par clients
+//- Nombre tickets par statut
+//- Nombre de taches avec chaque compétences pour tout les tickets et toutes les
+//compétences.
+
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/stat")
 public class RessourceStat {
