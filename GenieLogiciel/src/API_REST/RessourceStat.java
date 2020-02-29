@@ -7,6 +7,7 @@ import DataBase.StatutTicketEntity;
 import Modele.Client.Client;
 import Modele.Client.ClientList;
 import Modele.Staff.Token;
+import Modele.Stat.ClientTicket;
 import javafx.util.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -38,17 +39,14 @@ public class RessourceStat {
     @Consumes("text/plain")
     @Produces("application/json")
     public Response getTicketParClient(String jsonStr) {
-        String token = "", statistique = "";
-        ArrayList<Pair<Long, Client>> res = new ArrayList<>();
+        String token = "";
+        ClientTicket res = new ClientTicket();
         //int clientId = -1;
         Transaction tx = null;
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String) json.get("token");
-            statistique = (String) json.get("statistique");
-            if (Security.test(statistique) == null)
-                return ReponseType.getNOTOK("Le clientName contient des commandes SQL veuillez corriger", false, null, null);
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
             return ReponseType.getNOTOK("Il manque des parametres (token, statistique)", false, null, null);
@@ -65,22 +63,13 @@ public class RessourceStat {
             for(Object o : clients)
             {
                 ClientEntity client = (ClientEntity) o;
-                Client myClient = new Client();
 
-                myClient.SIREN = client.getSiren();
-
-                AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse()).getSingleResult();
-
-                myClient.adresse.numero = adresseEntity.getNumero();
-                myClient.adresse.codePostal = adresseEntity.getCodePostal();
-                myClient.adresse.rue = adresseEntity.getRue();
-                myClient.adresse.ville = adresseEntity.getVille();
-
-                Long nbTicketActif = 0L;
-                try{nbTicketActif = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t").getSingleResult();}
+                Long nbTicket = 0L;
+                try{nbTicket = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t").getSingleResult();}
                 catch(NoResultException ignored){}
 
-                res.add(new Pair<>(nbTicketActif,myClient));
+                res.doughnutChartLabels.add(client.getNom());
+                res.doughnutChartData.add(nbTicket);
             }
 
             //clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
