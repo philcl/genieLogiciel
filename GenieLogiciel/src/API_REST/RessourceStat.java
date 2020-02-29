@@ -1,13 +1,12 @@
 package API_REST;
 
-import DataBase.AdresseEntity;
-import DataBase.ClientEntity;
-import DataBase.DemandeurEntity;
-import DataBase.StatutTicketEntity;
+import DataBase.*;
 import Modele.Client.Client;
 import Modele.Client.ClientList;
 import Modele.Staff.Token;
 import Modele.Stat.ClientTicket;
+import Modele.Stat.Map;
+import Modele.Stat.StatutTicket;
 import javafx.util.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -23,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 //- temps par compétences/tech : KO
@@ -49,7 +49,7 @@ public class RessourceStat {
             token = (String) json.get("token");
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des parametres (token, statistique)", false, null, null);
+            return ReponseType.getNOTOK("Il manque des parametres (token)", false, null, null);
         }
 
         if (!Token.tryToken(token))
@@ -93,18 +93,15 @@ public class RessourceStat {
     @Produces("application/json")
     public Response getTicketParCategorie(String jsonStr) {
         String token = "", statistique = "";
-        ArrayList<Pair<Long,String>> res = new ArrayList<>();
+        StatutTicket res = new StatutTicket();
         Transaction tx = null;
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String) json.get("token");
-            statistique = (String) json.get("statistique");
-            if (Security.test(statistique) == null)
-                return ReponseType.getNOTOK("Le clientName contient des commandes SQL veuillez corriger", false, null, null);
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des parametres (token, statistique)", false, null, null);
+            return ReponseType.getNOTOK("Il manque des parametres (token)", false, null, null);
         }
 
         if (!Token.tryToken(token))
@@ -115,16 +112,23 @@ public class RessourceStat {
 
             List statuts = session.createQuery("FROM StatutTicketEntity c").list();
 
+            List tickets = session.createQuery("FROM TicketEntity t").list();
+
             for(Object o : statuts)
             {
                 StatutTicketEntity statutTicketEntity = (StatutTicketEntity) o;
-                String statut = statutTicketEntity.getIdStatusTicket();
 
-                Long nbTicketActif = 0L;
-                try{nbTicketActif = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t WHERE t.statut = '" + statut + "'").getSingleResult();}
-                catch(NoResultException ignored){}
+                res.radarChartLabels.add(statutTicketEntity.getIdStatusTicket());
+            }
 
-                res.add(new Pair<>(nbTicketActif,statut));
+            for (Object o : tickets)
+            {
+                TicketEntity ticketEntity = (TicketEntity) o;
+
+                if(!res.radarChartData.contains(ticketEntity.getDate().toLocalDateTime().getYear())
+                {
+                    res.radarChartData.add(new Map(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear())));
+                }
             }
 
             //clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
