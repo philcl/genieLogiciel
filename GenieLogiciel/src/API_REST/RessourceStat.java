@@ -136,6 +136,10 @@ public class RessourceStat {
                 TicketEntity ticketEntity = (TicketEntity) o;
 
                 String statut = ticketEntity.getStatut();
+
+                int pos = res.radarChartLabels.indexOf(statut);
+
+
             }
 
             //clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
