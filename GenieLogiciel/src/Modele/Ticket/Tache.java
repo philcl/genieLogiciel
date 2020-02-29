@@ -45,7 +45,8 @@ public class Tache {
             description = Security.test((String) json.get("description"));
         else
             description = "";
-        ticketParent = Integer.parseInt(((Long) json.get("ticketParent")).toString());
+        try{ticketParent = Integer.parseInt(((Long) json.get("ticketParent")).toString());}
+        catch(NullPointerException ignored) {}
         if(json.get("tempsPasse") != null)
             tempsPasse = Integer.parseInt(((Long) json.get("tempsPasse")).toString());
         else
@@ -64,6 +65,12 @@ public class Tache {
 
         System.err.println("tache en cours = " + this.id + " ----------------------------- objet = " + this.objet + " \n tech = " + technicien.toString() + " ticket = " + ticketParent + " time " + tempsPasse + " statut = " + statut);
 
+        return !statut.isEmpty() && !objet.isEmpty() && ticketParent != -1 && technicien != null;
+    }
+
+    public boolean RecupererTacheDepuisJSON(JSONObject json, int idTicket) {
+        if(!RecupererTacheDepuisJSON(json))
+            ticketParent = idTicket;
         return !statut.isEmpty() && !objet.isEmpty() && ticketParent != -1 && technicien != null;
     }
 
@@ -106,17 +113,22 @@ public class Tache {
         return this.competences != null;
     }
 
-    public static ArrayList<Tache> RecupererListeTacheDepuisJson(ArrayList<JSONObject> json) {
+    public static ArrayList<Tache> RecupererListeTacheDepuisJson(ArrayList<JSONObject> json, int IdTicket) {
         ArrayList<Tache> taches = new ArrayList<>();
+        System.err.println("debut fct getList------------------------------------ json = " + json.size() + " empty = " + json.isEmpty());
         for(JSONObject o : json) {
             Tache tache = new Tache();
-            if(!tache.RecupererTacheDepuisJSON(o)) {
+            System.err.println("object = " + o.toJSONString());
+            if(!tache.RecupererTacheDepuisJSON(o, IdTicket)) {
                 System.err.println("tache non importe -----------------------------------------");
                 return null;
             }
-            else
+            else {
+                System.err.println("tache " + tache.id + " importe ---------------------");
                 taches.add(tache);
+            }
         }
+        System.err.println("taches size = " + taches.size() + " is empty = " + taches.isEmpty());
         return taches;
     }
 

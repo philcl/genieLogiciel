@@ -1,6 +1,7 @@
 package API_REST;
 
 import DataBase.TacheEntity;
+import DataBase.TicketJonctionEntity;
 import Modele.Staff.Token;
 import Modele.Ticket.Tache;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
@@ -78,10 +79,17 @@ public class RessourceTache {
             catch (NoResultException e) {return ReponseType.getNOTOK("Le statut : " + tache.statut + " n'existe pas", true, tx, session);}
             tacheEntity.setStatut(tache.statut);
 
-            int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TacheEntity t").getSingleResult();
-            tacheEntity.setId(maxID+1); //Rajout de l'increment
+            int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TacheEntity t").getSingleResult() +1;
+            tacheEntity.setId(maxID); //Rajout de l'increment
 
             session.save(tacheEntity);
+            TicketJonctionEntity jct = new TicketJonctionEntity();
+
+            jct.setIdEnfant(maxID);
+            jct.setIdParent(tache.ticketParent);
+
+            session.save(jct);
+
             tx.commit();
             session.clear();
             session.close();

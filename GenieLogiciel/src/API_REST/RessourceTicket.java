@@ -78,9 +78,9 @@ public class RessourceTicket {
 
             List siretList;
             try{
-                 siretList = session.createQuery("SELECT ss.siret FROM JonctionSirensiretEntity ss WHERE ss.siren = " + IdClient).list();
-                 if(siretList == null || siretList.isEmpty())
-                     return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
+                siretList = session.createQuery("SELECT ss.siret FROM JonctionSirensiretEntity ss WHERE ss.siren = " + IdClient).list();
+                if(siretList == null || siretList.isEmpty())
+                    return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
             } catch (NoResultException e) {return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);}
 
 
@@ -156,12 +156,15 @@ public class RessourceTicket {
     @Produces("application/json")
     public Response postCreation(String jsonStr) {
         String token = "", ticketJson = "";
+        JSONObject ticketJsonObject = null;
         int ticketParent = 1;
+        Gson gson = new Gson();
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String)json.get("token");
-            ticketJson = ((JSONObject)json.get("ticket")).toJSONString();
+            ticketJsonObject = (JSONObject) json.get("ticket");
+            ticketJson = ticketJsonObject.toJSONString();
             try{ticketParent = Integer.parseInt(((Long)json.get("ticketParent")).toString());} catch(NullPointerException ignored){}
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
@@ -207,20 +210,33 @@ public class RessourceTicket {
             catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien avec l'id " + ticket.technicien.id + " n'existe pas", true, tx, session);}
             ticketEntity.setTechnicien(tech.getId());
 
-            int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult();
-            ticketEntity.setId(maxID+1); //Rajout de l'increment
+            int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult()+1;
+            ticketEntity.setId(maxID); //Rajout de l'increment
+
+            //Ajout en base de donnee du ticket
+            session.save(ticketEntity);
+            tx.commit();
+            session.clear();
+            tx = session.beginTransaction();
+
+            System.err.println("ticket tache = " + ticket.taches.isEmpty() + "ticket objet = " + ticket.objet);
+            ArrayList<Tache> taches;
+
+            if(ticketJsonObject.get("taches") != null) {
+                taches = Tache.RecupererListeTacheDepuisJson((ArrayList<JSONObject>) ticketJsonObject.get("taches"), maxID);
+                if (taches == null)
+                    return ReponseType.getNOTOK("Les taches sont mal formees", true, tx, session);
+                ticket.taches = taches;
+                ticket.id = maxID;
+            }
 
             if(!ticket.taches.isEmpty()) {
-                System.err.println("----------------------------- taille = " + ticket.taches.size());
                 for(Tache tache : ticket.taches) {
-                    System.err.println("---------------------debut for---------------------");
                     SendTache myTask = new SendTache(token, tache);
-                    Gson gsonTask = new Gson();
-                    String str = gsonTask.toJson(myTask);
+                    String str = gson.toJson(myTask);
                     System.err.println("json final = " + str + "------------------------------------------------------");
                     Response resp = RessourceTache.createTache(str);
                     if(resp.getStatus() != 200) {
-                        System.err.println("------------------injection de la tache rate-----------------");
                         return resp;
                     }
                 }
@@ -230,13 +246,16 @@ public class RessourceTicket {
 
             System.err.println("la tache ok ----------------------------");
 
-            //Ajout en base de donnee du ticket
-            session.save(ticketEntity);
             tx.commit();
             session.clear();
             session.close();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
             return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
         }
@@ -246,11 +265,14 @@ public class RessourceTicket {
         list.add(null);
         list.add(ticketEntity);
         System.err.println("tout est bon");
+
+        System.err.println("ticket = " + list.get(0).toString() + " entity = " + list.get(3).toString());
+
         return Response.ok()
                 .header("Access-Control-Allow-Origin", "*")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
                 .allow("OPTIONS")
-                .entity(list)
+                .entity(gson.toJson(list))
                 .build();
     }
 
@@ -525,16 +547,17 @@ public class RessourceTicket {
             try {id = Integer.parseInt(((Long) json.get("id")).toString());}
             catch (NullPointerException ignored) {}
 
-            ArrayList<Tache> taches;
+            ArrayList<Tache> taches = null;
             if(id != -1) {
-                taches = Tache.RecupererListeTacheDepuisJson((ArrayList<JSONObject>) json.get("taches"));
-                System.err.println(taches + "--------------------------------------------------");
-                if(taches == null)
-                    return null;
+                System.err.println("id ticket != -1 --------------------- id = " + id);
+                if(json.get("taches") != null) {
+                    taches = Tache.RecupererListeTacheDepuisJson((ArrayList<JSONObject>) json.get("taches"), id);
+                    if (taches == null)
+                        return null;
+                }
             }
             else {
                 taches = new ArrayList<>();
-                System.err.println("id = -1-------------------------------------------");
             }
 
             Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id, priorite, taches);

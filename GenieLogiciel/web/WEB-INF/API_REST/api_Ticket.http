@@ -16,8 +16,8 @@ Content-Type: text/plain
 POST http://localhost:8080/genielog/ticket/create
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"id":6,"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Etude","competences":[],"demandeur":{"id":1,"nom":"ALIMI","prenom":"Jean"},"objet":"TESTEST","statut":"En cours","technicien":{"id":6,"nom":"SHEIKH MUHAMMAD","prenom":"Irteza"},"type":"Demande","priorite":1,
-"taches":[{"statut":"En cours", "objet":"TEST", "ticketParent":6, "competences":[], "technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"}, "tempsEstime":40}]}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Etude","competences":[],"demandeur":{"id":1,"nom":"ALIMI","prenom":"Jean"},"objet":"TESTEST","statut":"En cours","technicien":{"id":6,"nom":"SHEIKH MUHAMMAD","prenom":"Irteza"},"type":"Demande","priorite":1,
+"taches":[{"statut":"En cours", "objet":"TEST", "competences":[], "technicien":{"id":2,"nom":"VITTONE","prenom":"Jules"}, "tempsEstime":40}]}}
 ###
 
 ### Send POST to modify Ticket without task

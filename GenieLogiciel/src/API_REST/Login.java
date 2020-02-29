@@ -59,7 +59,7 @@ public class Login {
             StaffEntity userEntity;
 
             //Test de securite SQL pour verifier que le string ne contient pas de commande SQL
-            String login = (String) obj.get("StaffUserName");
+            String login = (String) obj.get("staffUserName");
             if(Security.test(login) == null)
                 return ReponseType.getNOTOK("Le login contient des commandes SQL ce n'est pas bien merci de corriger", true, tx, session);
 
