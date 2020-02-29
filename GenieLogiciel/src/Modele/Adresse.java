@@ -1,6 +1,7 @@
 package Modele;
 
 import API_REST.CreateSession;
+import API_REST.Security;
 import DataBase.AdresseEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -104,9 +105,9 @@ public class Adresse {
     public boolean RecupererAdresseDepuisJson(JSONObject adr) {
         numero = -1;
         numero = Integer.parseInt(((Long) adr.get("numero")).toString());
-        codePostal = (String) adr.get("codePostal");
-        rue = (String) adr.get("rue");
-        ville = (String) adr.get("ville");
+        codePostal = Security.test ((String) adr.get("codePostal"));
+        rue = Security.test ((String) adr.get("rue"));
+        ville = Security.test ((String) adr.get("ville"));
 
         if(numero == -1 || codePostal == null || rue == null || ville == null)
             return false;

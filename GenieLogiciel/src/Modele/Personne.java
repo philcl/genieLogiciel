@@ -1,6 +1,7 @@
 package Modele;
 
 import API_REST.CreateSession;
+import API_REST.Security;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -30,8 +31,8 @@ public class Personne {
 
     public Personne RecupererPersonDepuisJson(JSONObject personneJSON) {
         try {
-            nom = (String) personneJSON.get("nom");
-            prenom = (String) personneJSON.get("prenom");
+            nom = Security.test((String) personneJSON.get("nom"));
+            prenom = Security.test((String) personneJSON.get("prenom"));
             id = -1;
             id = Integer.parseInt(((Long) personneJSON.get("id")).toString());
         } catch (NullPointerException e) {

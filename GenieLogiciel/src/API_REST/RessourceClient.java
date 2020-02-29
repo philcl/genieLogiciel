@@ -25,6 +25,7 @@ import java.util.List;
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/client")
 public class RessourceClient {
+
     @Path("/getId")
     @POST
     @Consumes("text/plain")
@@ -38,6 +39,8 @@ public class RessourceClient {
             JSONObject json = (JSONObject) parser.parse(jsonStr);
             token = (String) json.get("token");
             clientName = (String) json.get("clientName");
+            if(Security.test(clientName) == null)
+                return ReponseType.getNOTOK("Le clientName contient des commandes SQL veuillez corriger", false, null, null);
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
             return ReponseType.getNOTOK("Il manque des parametres (token, clientName)", false, null, null);
@@ -48,7 +51,7 @@ public class RessourceClient {
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName + "'").getSingleResult();
+            clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
             tx.commit();
             session.clear();
             session.close();
@@ -100,7 +103,6 @@ public class RessourceClient {
                 myClient.adresse.ville = adresseEntity.getVille();
 
                 Long nbTicketActif = 0L;
-                //todo rajouter le lien entre le client et le ticket
                 try{nbTicketActif = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t WHERE  (t.statut = 'Resolu' or t.statut = 'Non Resolu')").getSingleResult();}
                 catch(NoResultException ignored){}
                 myClient.nbTicket = Integer.parseInt(nbTicketActif.toString());
@@ -125,6 +127,7 @@ public class RessourceClient {
         return ReponseType.getOK(clientList);
     }
 
+    //todo Ajout des demandeurs directement lors de la création avec plusieurs API une pour la création d'un demandeur et une autre pour la création d'un site
     @Path("/create")
     @POST
     @Consumes("text/plain")
@@ -148,7 +151,7 @@ public class RessourceClient {
 
         Client client = getClientFromJSON(clientJSON);
         if (client == null)
-            return ReponseType.getNOTOK("Le JSON du client est mal forme veuillez verifier", false, null, null);
+            return ReponseType.getNOTOK("Le JSON du client est mal forme ou contient des requetes SQL veuillez verifier", false, null, null);
 
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setActif((byte) 1);
@@ -171,7 +174,7 @@ public class RessourceClient {
             }
 
             try {
-                session.createQuery("FROM ClientEntity c WHERE c.nom = '" + client.nom + "'").getSingleResult();
+                session.createQuery("FROM ClientEntity c WHERE c.nom = '" + client.nom.replace("'", "''") + "'").getSingleResult();
                 return ReponseType.getNOTOK("Le client " + client.nom + " existe deja veuillez le changer", true, tx, session);
             } catch (NoResultException ignored) {
             }
@@ -211,7 +214,7 @@ public class RessourceClient {
 
         Client client = getClientFromJSON(clientJson);
         if (client == null)
-            return ReponseType.getNOTOK("Le JSON du client est mal forme veuillez verifier", false, null, null);
+            return ReponseType.getNOTOK("Le JSON du client est mal forme ou contient des requetes SQL veuillez verifier", false, null, null);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -264,7 +267,7 @@ public class RessourceClient {
 
         } catch (ParseException | NullPointerException e) {
             e.printStackTrace();
-            return ReponseType.getNOTOK("Il manque des paramètres (token, clientId)", false, null, null);
+            return ReponseType.getNOTOK("Il manque des paramètres (token, SIREN)", false, null, null);
         }
         ClientInit clientInit = new ClientInit();
 
@@ -272,7 +275,7 @@ public class RessourceClient {
             return Token.tokenNonValide();
 
         if (SIREN == -1)
-            return ReponseType.getNOTOK("Le clientId ne convient pas", false, null, null);
+            return ReponseType.getNOTOK("Le SIREN ne convient pas", false, null, null);
         if(!clientInit.client.recupererClient(SIREN))
             return ReponseType.getNOTOK("Immposible de creer le client avec le SIREN " + SIREN, false, null, null);
 
@@ -357,7 +360,7 @@ public class RessourceClient {
         Client client = new Client();
 
         try {
-            client.nom = (String) json.get("nom");
+            client.nom = Security.test((String) json.get("nom"));
             client.SIREN = -1;
             client.SIREN = Integer.parseInt(((Long) json.get("SIREN")).toString());
 
@@ -369,7 +372,7 @@ public class RessourceClient {
             //Ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("adresse");
             if (adresse == null) {
-                System.err.println("L'adresse est mal formee");
+                System.err.println("L'adresse est mal formee ou contient des requetes SQL");
                 return null;
             } else if (!client.adresse.RecupererAdresseDepuisJson(adresse))
                 return null;

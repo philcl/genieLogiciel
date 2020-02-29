@@ -9,7 +9,7 @@ public class ClientList {
     public int SIREN;
     public Adresse adresse;
     public String name;
-    public int nbTicket;
+    public int nbTicket; //todo nombre de ticket ouvert a rajouter dans le code
     public ArrayList<Personne> demandeurs;
 
     public ClientList() {

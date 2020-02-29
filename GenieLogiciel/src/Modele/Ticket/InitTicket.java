@@ -1,6 +1,7 @@
-package Modele;
+package Modele.Ticket;
 
 import Modele.Client.Demandeur;
+import Modele.Personne;
 
 import java.util.ArrayList;
 

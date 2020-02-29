@@ -1,0 +1,6 @@
+### Send POST create Task
+POST http://localhost:8080/genielog/tache/create
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","tache":{"statut":"En cours","objet":"TEST","description":"","ticketParent":6,"tempsPasse":-1,"id":-1,"pourcentage":0,"tempsEstime":40,"competences":[],"technicien":{"nom":"VITTONE","prenom":"Jules","id":2}}}
+###

@@ -9,7 +9,6 @@
         <property name="hibernate.connection.requireSSL">false</property>
         <property name="hibernate.connection.useSSL">false</property>
 
-        <!-- todo changer avec le bon compte-->
         <property name="hibernate.connection.username">user</property>
         <property name="hibernate.connection.password">Azerty12</property>
 
@@ -18,16 +17,17 @@
         <mapping class="DataBase.ClientEntity"/>
         <mapping class="DataBase.CompetencesEntity"/>
         <mapping class="DataBase.DemandeurEntity"/>
-        <mapping class="DataBase.InterventionEntity"/>
-        <mapping class="DataBase.JonctionInterventionCompetenceEntity"/>
         <mapping class="DataBase.JonctionSirensiretEntity"/>
+        <mapping class="DataBase.JonctionSiretAdresseEntity"/>
         <mapping class="DataBase.JonctionStaffCompetenceEntity"/>
         <mapping class="DataBase.JonctionStaffPosteEntity"/>
+        <mapping class="DataBase.JonctionTacheCompetenceEntity"/>
         <mapping class="DataBase.JonctionTicketCompetenceEntity"/>
         <mapping class="DataBase.PosteEntity"/>
         <mapping class="DataBase.SexeEntity"/>
         <mapping class="DataBase.StaffEntity"/>
         <mapping class="DataBase.StatutTicketEntity"/>
+        <mapping class="DataBase.TacheEntity"/>
         <mapping class="DataBase.TicketEntity"/>
         <mapping class="DataBase.TicketJonctionEntity"/>
         <mapping class="DataBase.TypeDemandesEntity"/>

@@ -5,18 +5,18 @@ import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class JonctionInterventionCompetenceEntityPK implements Serializable {
-    private int intervention;
+public class JonctionTacheCompetenceEntityPK implements Serializable {
+    private int tache;
     private int competence;
 
-    @Column(name = "intervention", nullable = false)
+    @Column(name = "tache", nullable = false)
     @Id
-    public int getIntervention() {
-        return intervention;
+    public int getTache() {
+        return tache;
     }
 
-    public void setIntervention(int intervention) {
-        this.intervention = intervention;
+    public void setTache(int tache) {
+        this.tache = tache;
     }
 
     @Column(name = "competence", nullable = false)
@@ -33,13 +33,13 @@ public class JonctionInterventionCompetenceEntityPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JonctionInterventionCompetenceEntityPK that = (JonctionInterventionCompetenceEntityPK) o;
-        return intervention == that.intervention &&
+        JonctionTacheCompetenceEntityPK that = (JonctionTacheCompetenceEntityPK) o;
+        return tache == that.tache &&
                 competence == that.competence;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(intervention, competence);
+        return Objects.hash(tache, competence);
     }
 }

@@ -5,15 +5,18 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Intervention", schema = "GenieLog", catalog = "")
-public class InterventionEntity {
+@Table(name = "Tache", schema = "GenieLog", catalog = "")
+public class TacheEntity {
     private int id;
     private Timestamp debut;
     private Timestamp fin;
-    private int etat;
+    private String statut;
     private int technicien;
     private int ticket;
-    private Timestamp dureeEstimee;
+    private Integer dureeEstimee;
+    private Integer dureeReelle;
+    private String objet;
+    private String description;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -46,13 +49,13 @@ public class InterventionEntity {
     }
 
     @Basic
-    @Column(name = "etat", nullable = false)
-    public int getEtat() {
-        return etat;
+    @Column(name = "statut", nullable = false, length = 50)
+    public String getStatut() {
+        return statut;
     }
 
-    public void setEtat(int etat) {
-        this.etat = etat;
+    public void setStatut(String statut) {
+        this.statut = statut;
     }
 
     @Basic
@@ -77,30 +80,63 @@ public class InterventionEntity {
 
     @Basic
     @Column(name = "dureeEstimee", nullable = true)
-    public Timestamp getDureeEstimee() {
+    public Integer getDureeEstimee() {
         return dureeEstimee;
     }
 
-    public void setDureeEstimee(Timestamp dureeEstimee) {
+    public void setDureeEstimee(Integer dureeEstimee) {
         this.dureeEstimee = dureeEstimee;
+    }
+
+    @Basic
+    @Column(name = "dureeReelle", nullable = true)
+    public Integer getDureeReelle() {
+        return dureeReelle;
+    }
+
+    public void setDureeReelle(Integer dureeReelle) {
+        this.dureeReelle = dureeReelle;
+    }
+
+    @Basic
+    @Column(name = "objet", nullable = false, length = 255)
+    public String getObjet() {
+        return objet;
+    }
+
+    public void setObjet(String objet) {
+        this.objet = objet;
+    }
+
+    @Basic
+    @Column(name = "description", nullable = false, length = 2000)
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        InterventionEntity that = (InterventionEntity) o;
+        TacheEntity that = (TacheEntity) o;
         return id == that.id &&
-                etat == that.etat &&
                 technicien == that.technicien &&
                 ticket == that.ticket &&
                 Objects.equals(debut, that.debut) &&
                 Objects.equals(fin, that.fin) &&
-                Objects.equals(dureeEstimee, that.dureeEstimee);
+                Objects.equals(statut, that.statut) &&
+                Objects.equals(dureeEstimee, that.dureeEstimee) &&
+                Objects.equals(dureeReelle, that.dureeReelle) &&
+                Objects.equals(objet, that.objet) &&
+                Objects.equals(description, that.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, debut, fin, etat, technicien, ticket, dureeEstimee);
+        return Objects.hash(id, debut, fin, statut, technicien, ticket, dureeEstimee, dureeReelle, objet, description);
     }
 }

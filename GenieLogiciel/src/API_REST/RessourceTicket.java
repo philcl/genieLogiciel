@@ -4,6 +4,12 @@ import DataBase.*;
 import Modele.*;
 import Modele.Client.Demandeur;
 import Modele.Staff.Token;
+import Modele.Ticket.InitTicket;
+import Modele.Ticket.SendTache;
+import Modele.Ticket.Tache;
+import Modele.Ticket.Ticket;
+import com.google.gson.Gson;
+import net.bytebuddy.implementation.bytecode.collection.ArrayAccess;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -20,11 +26,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-//todo Gerer la securite des string que je reçoit avec le test d'une fonction sur select, from, where, delete, update, insert
-
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/ticket")
 public class RessourceTicket {
+
+    //todo ajout du listing des taches
     @Path("/init")
     @POST
     @Consumes("text/plain")
@@ -143,6 +149,7 @@ public class RessourceTicket {
         return ReponseType.getOK(answer);
     }
 
+    //todo ajout des taches
     @Path("/create")
     @POST
     @Consumes("text/plain")
@@ -172,12 +179,12 @@ public class RessourceTicket {
         if(ticket == null)
             return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete ou est mal rempli", false, null, null);
 
-        ticketEntity.setCategorie(ticket.categorie);
+        ticketEntity.setCategorie(ticket.categorie.replace("'", "''"));
         ticketEntity.setDate(Timestamp.from(Instant.now()));
-        ticketEntity.setDescription(ticket.description);
-        ticketEntity.setObjet(ticket.objet);
-        ticketEntity.setStatut(ticket.statut);
-        ticketEntity.setType(ticket.type);
+        ticketEntity.setDescription(ticket.description.replace("'", "''"));
+        ticketEntity.setObjet(ticket.objet.replace("'", "''"));
+        ticketEntity.setStatut(ticket.statut.replace("'", "''"));
+        ticketEntity.setType(ticket.type.replace("'", "''"));
         ticketEntity.setTicket(ticketParent);
 
         try(Session session = CreateSession.getSession()) {
@@ -203,6 +210,26 @@ public class RessourceTicket {
             int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult();
             ticketEntity.setId(maxID+1); //Rajout de l'increment
 
+            if(!ticket.taches.isEmpty()) {
+                System.err.println("----------------------------- taille = " + ticket.taches.size());
+                for(Tache tache : ticket.taches) {
+                    System.err.println("---------------------debut for---------------------");
+                    SendTache myTask = new SendTache(token, tache);
+                    Gson gsonTask = new Gson();
+                    String str = gsonTask.toJson(myTask);
+                    System.err.println("json final = " + str + "------------------------------------------------------");
+                    Response resp = RessourceTache.createTache(str);
+                    if(resp.getStatus() != 200) {
+                        System.err.println("------------------injection de la tache rate-----------------");
+                        return resp;
+                    }
+                }
+            }
+            else
+                return ReponseType.getNOTOK("Pas fait" + ticket.taches.toString(), true, tx, session);
+
+            System.err.println("la tache ok ----------------------------");
+
             //Ajout en base de donnee du ticket
             session.save(ticketEntity);
             tx.commit();
@@ -211,11 +238,14 @@ public class RessourceTicket {
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
+            return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
         }
         list.add(ticket);
+        System.err.println("ticket rajouté sur la liste");
         list.add(null);
         list.add(null);
         list.add(ticketEntity);
+        System.err.println("tout est bon");
         return Response.ok()
                 .header("Access-Control-Allow-Origin", "*")
                 .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
@@ -224,6 +254,7 @@ public class RessourceTicket {
                 .build();
     }
 
+    //todo ajout du modify des taches + suppression des taches enlever et ajout des taches create (verifier les id si present modify si non present ajout si supprimer delete)
     @Path("/modify")
     @POST
     @Consumes("text/plain")
@@ -272,6 +303,9 @@ public class RessourceTicket {
             try{client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + IdClient + "and c.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le client n'existe pas", true, tx, session);}
 
+            try{session.createQuery("FROM TicketEntity t WHERE t.id = " + ticket.id + " and t.statut != 'Non resolu' and t.statut != 'Resolu'").getSingleResult();}
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le ticket n'existe pas ou est déja fermé", true, tx, session);}
+
             tx.commit();
             session.clear();
 
@@ -279,7 +313,7 @@ public class RessourceTicket {
             tx =  session.beginTransaction();
 
             //le replace permet d'echapper le token '
-            String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet.replace("'", "''") + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description.replace("'", "''") + "', t.statut ='" + ticket.statut + "', t.type = '" + ticket.type + "' WHERE t.id = " + ticket.id;
+            String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet.replace("'", "''") + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description.replace("'", "''") + "', t.statut ='" + ticket.statut.replace("'", "''") + "', t.type = '" + ticket.type.replace("'", "''") + "' WHERE t.id = " + ticket.id;
             Query update = session.createQuery(request);
             int nbLignes = update.executeUpdate();
 
@@ -300,6 +334,7 @@ public class RessourceTicket {
         return ReponseType.getOK("");
     }
 
+    //todo possible seuleemnt si aucune tache
     @Path("/state")
     @POST
     @Consumes("text/plain")
@@ -314,6 +349,8 @@ public class RessourceTicket {
                 ticketId = Integer.parseInt((String) json.get("ticketId"));
                 token = (String) json.get("token");
                 statut = (String) json.get("statut");
+                if(Security.test(statut) == null)
+                    return ReponseType.getNOTOK("Le statut contient des requetes SQL veuillez corriger", false, null, null);
             } catch (ParseException | NullPointerException e) {
                 e.printStackTrace();
                 return  ReponseType.getNOTOK("Il manque des parametres (ticketId, token, statut)", false, null, null);
@@ -333,7 +370,7 @@ public class RessourceTicket {
 
             try {
                 tx = session.beginTransaction();
-                Query update = session.createQuery("UPDATE TicketEntity T set T.statut = '" + statut + "' WHERE T.id = " + ticketId);
+                Query update = session.createQuery("UPDATE TicketEntity T set T.statut = '" + statut.replace("'", "''") + "' WHERE T.id = " + ticketId);
                 int nbLignes = update.executeUpdate();
                 if (nbLignes != 1)
                     return ReponseType.getNOTOK("Erreur lors de la requete en base de donnees", true, tx, session);
@@ -374,14 +411,14 @@ public class RessourceTicket {
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             if(techId == -1) {
-                List result = session.createQuery("SELECT t.id FROM TicketEntity t").list();
+                List result = session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.statut != 'Non resolu' and t.statut != 'Resolu'").list();
                 tx.commit();
                 session.clear();
                 for (Object o : result)
                     tickets.add(recuperationTicket(session, (int) o));
             }
             else {
-                List result = session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.technicien = " + techId).list();
+                List result = session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.technicien = " + techId + "and t.statut != 'Non resolu' and t.statut != 'Resolu'").list();
                 tx.commit();
                 session.clear();
                 for(Object o : result)
@@ -420,6 +457,9 @@ public class RessourceTicket {
             //Recuperation de l'adresse
             AdresseEntity adresse = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + client.getAdresse()).getSingleResult();
 
+            //Recuperation des taches associees au tickets s'il y en a
+
+
             //Recuperation des competences
             ArrayList<String> competences = new ArrayList<>();
             String request = "SELECT c.competence FROM CompetencesEntity c, JonctionTicketCompetenceEntity jtc WHERE jtc.idTicket = " + IdTicket + " and jtc.competence = c.idCompetences";
@@ -431,13 +471,14 @@ public class RessourceTicket {
 
             Adresse adresseClient = new Adresse(adresse.getNumero(), adresse.getCodePostal(), adresse.getRue(), adresse.getVille());
             ticket = new Ticket(ticketEntity.getType(), ticketEntity.getObjet(), ticketEntity.getDescription(), ticketEntity.getCategorie(),
-                    ticketEntity.getStatut(), technicien, demandeur, competences, adresseClient, ticketEntity.getId(), ticketEntity.getPriorite(), client.getNom());
+                    ticketEntity.getStatut(), technicien, demandeur, competences, adresseClient, ticketEntity.getId(), ticketEntity.getPriorite(), client.getNom(), Tache.getListTaskFromTicket(IdTicket));
         }
         tx.commit();
         session.clear();
         return ticket;
     }
 
+    //todo Gerer la securite des string que je reçoit avec le test d'une fonction sur select, from, where, delete, update, insert
     private Ticket createObjectFromJson(String jsonStr) {
         Personne technicien = null;
         String description;
@@ -450,23 +491,28 @@ public class RessourceTicket {
             System.err.println("Erreur lors du parsing de l'objet");
         }
         try {
-            //todo mettre des tests sur null pour etre sur que les chanps soient presents de plsu verifier qu'ils sont bien remplis avec == ""
+            //todo mettre des tests sur null pour etre sur que les chanps soient presents de plus verifier qu'ils sont bien remplis avec == ""
             int priorite  = -1;
             priorite = Integer.parseInt(((Long) json.get("priorite")).toString());
             if(priorite == -1)
                 return null;
             JSONObject demandeurJson = (JSONObject) json.get("demandeur");
-            Personne demandeur = new Personne((String) demandeurJson.get("nom"), (String) demandeurJson.get("prenom"), Integer.parseInt(((Long) demandeurJson.get("id")).toString()));
-            String objet = (String) json.get("objet");
+            Personne demandeur = new Personne();
+            demandeur = demandeur.RecupererPersonDepuisJson(demandeurJson);
+            if(demandeur == null)
+                return null;
+
+            String objet = Security.test((String) json.get("objet"));
             if (json.get("description") != null)
-                description = (String) json.get("description");
+                description = Security.test((String) json.get("description"));
             else
                 description = "";
 
-            ArrayList<String> competences = (ArrayList<String>) json.get("competences");
-            String categorie = (String) json.get("categorie");
-            String type = (String) json.get("type");
-            String statut = (String) json.get("statut");
+            ArrayList<String> competences = Security.testArray((ArrayList<String>) json.get("competences"));
+            String categorie = Security.test((String) json.get("categorie"));
+            String type = Security.test((String) json.get("type"));
+            String statut = Security.test((String) json.get("statut"));
+            //todo continuer
             if (json.get("technicien") != null) {
                 JSONObject technicienJSON = (JSONObject) json.get("technicien");
                 technicien = new Personne((String) technicienJSON.get("nom"), (String) technicienJSON.get("prenom"), Integer.parseInt(((Long) technicienJSON.get("id")).toString()));
@@ -479,7 +525,19 @@ public class RessourceTicket {
             try {id = Integer.parseInt(((Long) json.get("id")).toString());}
             catch (NullPointerException ignored) {}
 
-            Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id, priorite);
+            ArrayList<Tache> taches;
+            if(id != -1) {
+                taches = Tache.RecupererListeTacheDepuisJson((ArrayList<JSONObject>) json.get("taches"));
+                System.err.println(taches + "--------------------------------------------------");
+                if(taches == null)
+                    return null;
+            }
+            else {
+                taches = new ArrayList<>();
+                System.err.println("id = -1-------------------------------------------");
+            }
+
+            Ticket ticket = new Ticket(type, objet, description, categorie, statut, technicien, demandeur, competences, adresse, id, priorite, taches);
             return ticket;
         } catch (NullPointerException e) {
             return null;

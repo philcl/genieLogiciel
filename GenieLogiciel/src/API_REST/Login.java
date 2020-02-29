@@ -51,14 +51,18 @@ public class Login {
             JSONObject obj = (JSONObject) parser.parse(jsonStr);
             String pass = obj.get("userPassword").toString();
 
-            System.err.println("Votre password est " + pass);
-
             //Chiffrage du mot de passe d'origine pour verification sur la base de donnees
             bytes = encrypt(pass);
 
             //Debut de la partie requete SQL (test de l'ID et du password)
             tx = session.beginTransaction();
             StaffEntity userEntity;
+
+            //Test de securite SQL pour verifier que le string ne contient pas de commande SQL
+            String login = (String) obj.get("StaffUserName");
+            if(Security.test(login) == null)
+                return ReponseType.getNOTOK("Le login contient des commandes SQL ce n'est pas bien merci de corriger", true, tx, session);
+
             try{ userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = '" + obj.get("staffUserName") + "' and s.actif = 1").getSingleResult();}
            catch(NoResultException e) {return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);}
 
@@ -109,7 +113,7 @@ public class Login {
 
         p = getStaffFromJSON(obj.toJSONString(), true); //Transformation du json en modele Staff
         if (p == null)
-            return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli veuillez verifier", false, null, null);
+            return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli ou contient des commandes SQL veuillez verifier", false, null, null);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -197,7 +201,7 @@ public class Login {
 
         p = getStaffFromJSON(obj.toJSONString(), false); //Transformation du json en modele Staff
         if (p == null)
-            return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli veuillez verifier", false, null, null);
+            return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli ou contient des commandes SQL veuillez verifier", false, null, null);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -527,21 +531,27 @@ public class Login {
             }
             System.err.println("ok1");
 
-            staff.staffSurname = (String) json.get("staffSurname");
-            staff.staffName = (String) json.get("staffName");
-            staff.staffTel = (String) json.get("staffTel");
-            staff.staffMail = (String) json.get("staffMail");
-            staff.staffSexe = (String) json.get("staffSexe");
+            staff.staffSurname = Security.test ((String) json.get("staffSurname"));
+            staff.staffName = Security.test ((String) json.get("staffName"));
+            staff.staffTel = Security.test ((String) json.get("staffTel"));
+            staff.staffMail = Security.test ((String) json.get("staffMail"));
+            staff.staffSexe = Security.test ((String) json.get("staffSexe"));
 
             if(staff.staffSurname == null || staff.staffName == null ||staff.staffTel == null || staff.staffMail == null)
                 return null;
 
-            staff.staffUserName = (String) json.get("staffUserName");
+            staff.staffUserName = Security.test ((String) json.get("staffUserName"));
             String password = (String) json.get("staffPassword");
             if(!password.equals("") || creation)
                 staff.staffPassword = password;
-            staff.staffRole.addAll((ArrayList<String>) json.get("staffRole"));
-            staff.staffCompetency.addAll((ArrayList<String>) json.get("staffCompetency"));
+
+            ArrayList<String> roles = Security.testArray((ArrayList<String>) json.get("staffRole"));
+            ArrayList<String> competences = Security.testArray((ArrayList<String>) json.get("staffCompetency"));
+            if(roles == null || competences == null)
+                return null;
+
+            staff.staffRole.addAll(roles);
+            staff.staffCompetency.addAll(competences);
 
             System.err.println("ok2");
 
