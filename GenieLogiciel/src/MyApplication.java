@@ -19,6 +19,7 @@ public class MyApplication extends Application{
         h.add(RessourceTache.class);
         h.add(RessourceDemandeur.class);
         h.add(RessourceAjoutBase.class);
+        h.add(RessourceStat.class);
         return h;
     }
 }
