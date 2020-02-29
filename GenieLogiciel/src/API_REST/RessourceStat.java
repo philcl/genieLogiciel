@@ -125,10 +125,17 @@ public class RessourceStat {
             {
                 TicketEntity ticketEntity = (TicketEntity) o;
 
-                if(!res.radarChartData.contains(ticketEntity.getDate().toLocalDateTime().getYear())
+                if(!res.radarChartData.contains(ticketEntity.getDate().toLocalDateTime().getYear()))
                 {
                     res.radarChartData.add(new Map(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear())));
                 }
+            }
+
+            for (Object o : tickets)
+            {
+                TicketEntity ticketEntity = (TicketEntity) o;
+
+                String statut = ticketEntity.getStatut();
             }
 
             //clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
