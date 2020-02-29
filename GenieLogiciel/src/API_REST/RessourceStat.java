@@ -41,7 +41,6 @@ public class RessourceStat {
     public Response getTicketParClient(String jsonStr) {
         String token = "";
         ClientTicket res = new ClientTicket();
-        //int clientId = -1;
         Transaction tx = null;
         try {
             JSONParser parser = new JSONParser();
