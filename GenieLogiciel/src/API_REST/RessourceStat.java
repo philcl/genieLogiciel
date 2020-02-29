@@ -65,7 +65,7 @@ public class RessourceStat {
                 ClientEntity client = (ClientEntity) o;
 
                 Long nbTicket = 0L;
-                try{nbTicket = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t").getSingleResult();}
+                try{nbTicket = (Long) session.createQuery("SELECT COUNT(t.id) FROM TicketEntity t WHERE t.siren = '" + client.getSiren() + "'").getSingleResult();}
                 catch(NoResultException ignored){}
 
                 res.doughnutChartLabels.add(client.getNom());
