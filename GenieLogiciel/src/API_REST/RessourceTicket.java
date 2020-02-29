@@ -178,7 +178,7 @@ public class RessourceTicket {
         ArrayList<Object> list = new ArrayList<>();
         Transaction tx = null;
         TicketEntity ticketEntity = new TicketEntity();
-        Ticket ticket = createObjectFromJson(ticketJson);
+        Ticket ticket = createTicketFromJson(ticketJson);
 
         if(ticket == null)
             return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete ou est mal rempli", false, null, null);
@@ -302,7 +302,7 @@ public class RessourceTicket {
             return Token.tokenNonValide();
 
         Transaction tx = null;
-        Ticket ticket = createObjectFromJson(ticketJson);
+        Ticket ticket = createTicketFromJson(ticketJson);
         if(ticket == null)
             return ReponseType.getNOTOK("Le ticket n'est pas present dans la requete ou est mal rempli", false, null, null);
 
@@ -362,42 +362,6 @@ public class RessourceTicket {
                     session.saveOrUpdate(jct);
                 }
             }
-
-            if(ticket.taches != null && !ticket.taches.isEmpty()) {
-                HashMap<Integer, Tache> map = new HashMap<>();
-                ArrayList<Tache> taches = Tache.getListTaskFromTicket(ticket.id);
-                if(taches != null) {
-                    for(Tache tache : taches) {
-                        map.put(tache.id, tache);
-                    }
-
-                    for(Tache tache : ticket.taches) {
-                        //Si la tache existe deja on la met a jour soit pour modifier soit pour supprimer via la mise a jour du statut
-                        if(map.containsKey(tache.id)) {
-                            SendTache myTask = new SendTache(token, tache);
-                            String str = gson.toJson(myTask);
-                            System.err.println("json final = " + str + "------------------------------------------------------");
-                            Response resp = RessourceTache.modifyTask(str);
-                            if(resp.getStatus() != 200) {
-                                return resp;
-                            }
-                        }
-                        //Sinon on la creer
-                        else {
-                            Response resp = CreateTaskWithTicket(token, tache);
-                            if (resp != null) return resp;
-                        }
-                    }
-                }
-                else {
-                    for(Tache tache : ticket.taches) {
-                        Response resp = CreateTaskWithTicket(token, tache);
-                        if (resp != null) return resp;
-                    }
-                }
-
-            }
-
             tx.commit();
             session.clear();
 
@@ -407,6 +371,43 @@ public class RessourceTicket {
         }catch (HibernateException e){
             if (tx != null) tx.rollback();
             e.printStackTrace();
+        }
+
+        if(ticket.taches != null && !ticket.taches.isEmpty()) {
+            HashMap<Integer, Tache> map = new HashMap<>();
+            ArrayList<Tache> taches = Tache.getListTaskFromTicket(ticket.id);
+            if(taches != null) {
+                for(Tache tache : taches) {
+                    map.put(tache.id, tache);
+                    System.err.println("id in map = " + tache.id);
+                }
+
+                for(Tache tache : ticket.taches) {
+                    //Si la tache existe deja on la met a jour soit pour modifier soit pour supprimer via la mise a jour du statut
+                    System.err.println("id de la tache = " + tache.id);
+                    if(map.containsKey(tache.id)) {
+                        SendTache myTask = new SendTache(token, tache);
+                        String str = gson.toJson(myTask);
+                        System.err.println("json final = " + str + "------------------------------------------------------");
+                        Response resp = RessourceTache.modifyTask(str);
+                        if(resp.getStatus() != 200) {
+                            return resp;
+                        }
+                    }
+                    //Sinon on la creer
+                    else {
+                        Response resp = CreateTaskWithTicket(token, tache);
+                        if (resp != null) return resp;
+                    }
+                }
+            }
+            else {
+                for(Tache tache : ticket.taches) {
+                    Response resp = CreateTaskWithTicket(token, tache);
+                    if (resp != null) return resp;
+                }
+            }
+
         }
         return ReponseType.getOK("");
     }
@@ -556,7 +557,7 @@ public class RessourceTicket {
     }
 
     //todo Gerer la securite des string que je reçoit avec le test d'une fonction sur select, from, where, delete, update, insert
-    private Ticket createObjectFromJson(String jsonStr) {
+    private Ticket createTicketFromJson(String jsonStr) {
         Personne technicien = null;
         String description;
         JSONObject json = null;
@@ -600,7 +601,9 @@ public class RessourceTicket {
             int id = -1;
             //Test avec null pointeur exception pour verifier que id existe dans si non nous sommes en creation
             try {id = Integer.parseInt(((Long) json.get("id")).toString());}
-            catch (NullPointerException ignored) {}
+            catch (NullPointerException ignored) {
+                System.err.println("pas d'id trouve sur le ticket");
+            }
 
             ArrayList<Tache> taches = null;
             if(id != -1) {

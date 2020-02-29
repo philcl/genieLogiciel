@@ -1,5 +1,6 @@
 package API_REST;
 
+import DataBase.JonctionTacheCompetenceEntity;
 import DataBase.TacheEntity;
 import DataBase.TicketJonctionEntity;
 import Modele.Staff.Token;
@@ -19,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 
 //todo competences des taches associé au ticket
 //todo modification des competences du ticket seulement si aucune taches
@@ -37,7 +39,6 @@ public class RessourceTache {
     @Consumes("text/plain")
     @Produces("application/json")
     public static Response createTache(String jsonStr) {
-        Tache tache = new Tache();
         Transaction tx = null;
         Response resp = getInitTask(jsonStr);
         if(resp != null)
@@ -62,11 +63,22 @@ public class RessourceTache {
             tacheEntity.setId(maxID); //Rajout de l'increment
 
             session.save(tacheEntity);
+
+            for(String competence : tache.competences) {
+                int idCompetence;
+                try{idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();}
+                catch (NoResultException e) {return ReponseType.getNOTOK("La competence " + competence + " n'existe pas",true, tx, session);}
+
+                JonctionTacheCompetenceEntity jct = new JonctionTacheCompetenceEntity();
+                jct.setCompetence(idCompetence);
+                jct.setTache(maxID);
+                session.save(jct);
+            }
+
             TicketJonctionEntity jct = new TicketJonctionEntity();
 
             jct.setIdEnfant(maxID);
             jct.setIdParent(tache.ticketParent);
-
             session.save(jct);
 
             tx.commit();
@@ -113,6 +125,23 @@ public class RessourceTache {
                 tacheEntity.setFin(Timestamp.from(Instant.now()));
 
             session.update(tacheEntity);
+            tx.commit();
+            session.clear();
+
+            tx = session.beginTransaction();
+
+            for(String competence : tache.competences) {
+                @SuppressWarnings("DuplicatedCode")
+                int idCompetence;
+                try{idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();}
+                catch (NoResultException e) {return ReponseType.getNOTOK("La competence " + competence + " n'existe pas",true, tx, session);}
+
+                JonctionTacheCompetenceEntity jct = new JonctionTacheCompetenceEntity();
+                jct.setCompetence(idCompetence);
+                jct.setTache(tacheEntity.getId());
+                session.saveOrUpdate(jct);
+            }
+
             tx.commit();
             session.clear();
             session.close();
@@ -178,6 +207,8 @@ public class RessourceTache {
 
         if(!tache.RecupererTacheDepuisJSON(tacheJSON))
             return ReponseType.getNOTOK("Parsing de la tache non reussi veuillez le format de la tache", false, null, null);
+
+        System.err.println("--------------tikectParent = " + tache.ticketParent + "-------------------");
         return null;
     }
 
