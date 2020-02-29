@@ -9,7 +9,7 @@ public class StatutTicket {
     public boolean contient(String valueOf) {
         for(Map map : radarChartData)
         {
-            if(map.label==valueOf)
+            if(map.label.equals(valueOf))
             {
                 return true;
             }
