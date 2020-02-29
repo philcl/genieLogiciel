@@ -124,9 +124,12 @@ public class RessourceStat {
             {
                 TicketEntity ticketEntity = (TicketEntity) o;
 
-                if(!res.contient(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear())))
+                String string = String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear());
+
+                if(!res.contient(string))
                 {
-                    res.radarChartData.add(new Map(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear()),res.radarChartLabels.size()));
+                    System.err.println("J'ajoute un élément");
+                    res.radarChartData.add(new Map(string,res.radarChartLabels.size()));
                 }
             }
 
@@ -136,11 +139,13 @@ public class RessourceStat {
 
                 String statut = ticketEntity.getStatut();
 
+                String string = String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear());
+
                 int pos = res.radarChartLabels.indexOf(statut);
 
                 for(Map map : res.radarChartData)
                 {
-                    if(map.label==String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear()))
+                    if(map.label==string)
                     {
                         map.data.set(pos,map.data.get(pos)+1);
                     }
