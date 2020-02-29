@@ -9,7 +9,6 @@ import Modele.Ticket.SendTache;
 import Modele.Ticket.Tache;
 import Modele.Ticket.Ticket;
 import com.google.gson.Gson;
-import net.bytebuddy.implementation.bytecode.collection.ArrayAccess;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -24,11 +23,14 @@ import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/ticket")
 public class RessourceTicket {
+
+    public Gson gson = new Gson();
 
     //todo ajout du listing des taches
     @Path("/init")
@@ -146,7 +148,7 @@ public class RessourceTicket {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
-        return ReponseType.getOK(answer);
+        return ReponseType.getOK(gson.toJson(answer));
     }
 
     //todo ajout des taches
@@ -158,7 +160,6 @@ public class RessourceTicket {
         String token = "", ticketJson = "";
         JSONObject ticketJsonObject = null;
         int ticketParent = 1;
-        Gson gson = new Gson();
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
@@ -219,7 +220,22 @@ public class RessourceTicket {
             session.clear();
             tx = session.beginTransaction();
 
-            System.err.println("ticket tache = " + ticket.taches.isEmpty() + "ticket objet = " + ticket.objet);
+            //Rajout des competences
+            if(!ticket.competences.isEmpty()) {
+                for (String competence : ticket.competences) {
+                    int idCompetence;
+                    try {
+                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();
+                    } catch (NoResultException e) {
+                        return ReponseType.getNOTOK("La competence " + competence + " n'existe pas", true, tx, session);
+                    }
+                    JonctionTicketCompetenceEntity jct = new JonctionTicketCompetenceEntity();
+                    jct.setIdTicket(maxID);
+                    jct.setCompetence(idCompetence);
+                    session.save(jct);
+                }
+            }
+
             ArrayList<Tache> taches;
 
             if(ticketJsonObject.get("taches") != null) {
@@ -232,30 +248,16 @@ public class RessourceTicket {
 
             if(!ticket.taches.isEmpty()) {
                 for(Tache tache : ticket.taches) {
-                    SendTache myTask = new SendTache(token, tache);
-                    String str = gson.toJson(myTask);
-                    System.err.println("json final = " + str + "------------------------------------------------------");
-                    Response resp = RessourceTache.createTache(str);
-                    if(resp.getStatus() != 200) {
-                        return resp;
-                    }
+                    Response resp = CreateTaskWithTicket(token, tache);
+                    if (resp != null) return resp;
                 }
             }
-            else
-                return ReponseType.getNOTOK("Pas fait" + ticket.taches.toString(), true, tx, session);
-
-            System.err.println("la tache ok ----------------------------");
 
             tx.commit();
             session.clear();
             session.close();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
-            e.printStackTrace();
-            return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
-        }
-        catch(Exception e)
-        {
             e.printStackTrace();
             return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
         }
@@ -319,6 +321,7 @@ public class RessourceTicket {
             //Recuperation du client
             ClientEntity client = null;
             String SIRET = Long.toString(demandeur.getSiret());
+            //todo verifier si le demandeur fait parti du client
             //if(!SIRET.substring(0,9).equals(Long.toString(IdClient)))
             //    return ReponseType.getNOTOK("Le client : " + IdClient + " n'a pas le demandeur : " + SIRET + " veuillez verifier", true, tx, session);
 
@@ -342,6 +345,58 @@ public class RessourceTicket {
             request = "UPDATE TicketEntity t SET t.siren = " + client.getSiren() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + ", t.priorite = " + ticket.priorite + ", t.adresse = " + client.getAdresse() + " WHERE t.id = " + ticket.id;
             update = session.createQuery(request);
             nbLignes += update.executeUpdate();
+
+            //todo faire en sorte de pouvoir supprimer des competences
+
+            if(!ticket.competences.isEmpty() && (ticket.taches == null || ticket.taches.isEmpty())) {
+                for (String competence : ticket.competences) {
+                    int idCompetence;
+                    try {
+                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();
+                    } catch (NoResultException e) {
+                        return ReponseType.getNOTOK("La competence " + competence + " n'existe pas", true, tx, session);
+                    }
+                    JonctionTicketCompetenceEntity jct = new JonctionTicketCompetenceEntity();
+                    jct.setIdTicket(ticket.id);
+                    jct.setCompetence(idCompetence);
+                    session.saveOrUpdate(jct);
+                }
+            }
+
+            if(ticket.taches != null && !ticket.taches.isEmpty()) {
+                HashMap<Integer, Tache> map = new HashMap<>();
+                ArrayList<Tache> taches = Tache.getListTaskFromTicket(ticket.id);
+                if(taches != null) {
+                    for(Tache tache : taches) {
+                        map.put(tache.id, tache);
+                    }
+
+                    for(Tache tache : ticket.taches) {
+                        //Si la tache existe deja on la met a jour soit pour modifier soit pour supprimer via la mise a jour du statut
+                        if(map.containsKey(tache.id)) {
+                            SendTache myTask = new SendTache(token, tache);
+                            String str = gson.toJson(myTask);
+                            System.err.println("json final = " + str + "------------------------------------------------------");
+                            Response resp = RessourceTache.modifyTask(str);
+                            if(resp.getStatus() != 200) {
+                                return resp;
+                            }
+                        }
+                        //Sinon on la creer
+                        else {
+                            Response resp = CreateTaskWithTicket(token, tache);
+                            if (resp != null) return resp;
+                        }
+                    }
+                }
+                else {
+                    for(Tache tache : ticket.taches) {
+                        Response resp = CreateTaskWithTicket(token, tache);
+                        if (resp != null) return resp;
+                    }
+                }
+
+            }
 
             tx.commit();
             session.clear();
@@ -453,7 +508,7 @@ public class RessourceTicket {
                 tx.rollback();
             e.printStackTrace();
         }
-        return ReponseType.getOK(tickets);
+        return ReponseType.getOK(gson.toJson(tickets));
     }
 
     private Ticket recuperationTicket(Session session, int IdTicket) {
@@ -565,5 +620,16 @@ public class RessourceTicket {
         } catch (NullPointerException e) {
             return null;
         }
+    }
+
+    private Response CreateTaskWithTicket(String token, Tache tache) {
+        SendTache myTask = new SendTache(token, tache);
+        String str = gson.toJson(myTask);
+        System.err.println("json final = " + str + "------------------------------------------------------");
+        Response resp = RessourceTache.createTache(str);
+        if(resp.getStatus() != 200) {
+            return resp;
+        }
+        return null;
     }
 }

@@ -9,10 +9,12 @@ import javax.persistence.NoResultException;
 public class ClientSite {
     public long SIRET;
     public Adresse adresse;
+    public int idAdresse;
 
     public ClientSite() {
         SIRET = -1;
         adresse = new Adresse();
+        idAdresse = -1;
     }
 
     public boolean recupererClientSite(long SIRET, Session session) {
@@ -21,6 +23,11 @@ public class ClientSite {
         try{clientEntity = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = JonctionSirensiretEntity.siren and JonctionSirensiretEntity.siret = " + SIRET).getSingleResult();}
         catch(NoResultException e) {return false;}
         this.SIRET = SIRET;
-        return this.adresse.recupererAdresse(clientEntity.getAdresse());
+        if(!this.adresse.recupererAdresse(clientEntity.getAdresse()))
+            return false;
+        this.idAdresse = this.adresse.getId();
+        if(this.idAdresse == -1)
+            return false;
+        return true;
     }
 }

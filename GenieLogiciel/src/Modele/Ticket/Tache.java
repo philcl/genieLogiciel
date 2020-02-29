@@ -63,8 +63,6 @@ public class Tache {
         competences = (ArrayList<String>) json.get("competences");
         technicien.RecupererPersonDepuisJson((JSONObject) json.get("technicien"));
 
-        System.err.println("tache en cours = " + this.id + " ----------------------------- objet = " + this.objet + " \n tech = " + technicien.toString() + " ticket = " + ticketParent + " time " + tempsPasse + " statut = " + statut);
-
         return !statut.isEmpty() && !objet.isEmpty() && ticketParent != -1 && technicien != null;
     }
 
@@ -95,8 +93,12 @@ public class Tache {
         catch (NoResultException e) {return false;}
 
         //Remplissage des champs
-        this.tempsEstime = tacheEntity.getDureeEstimee();
-        this.tempsPasse = tacheEntity.getDureeReelle();
+        try{this.tempsEstime = tacheEntity.getDureeEstimee();}
+        catch (NullPointerException e) {this.tempsEstime = -1;}
+
+        try{this.tempsPasse = tacheEntity.getDureeReelle();}
+        catch(NullPointerException e) {this.tempsPasse = 0;}
+
         this.description = tacheEntity.getDescription();
         this.objet = tacheEntity.getObjet();
         this.statut = tacheEntity.getStatut();
@@ -115,20 +117,15 @@ public class Tache {
 
     public static ArrayList<Tache> RecupererListeTacheDepuisJson(ArrayList<JSONObject> json, int IdTicket) {
         ArrayList<Tache> taches = new ArrayList<>();
-        System.err.println("debut fct getList------------------------------------ json = " + json.size() + " empty = " + json.isEmpty());
         for(JSONObject o : json) {
             Tache tache = new Tache();
-            System.err.println("object = " + o.toJSONString());
             if(!tache.RecupererTacheDepuisJSON(o, IdTicket)) {
-                System.err.println("tache non importe -----------------------------------------");
                 return null;
             }
             else {
-                System.err.println("tache " + tache.id + " importe ---------------------");
                 taches.add(tache);
             }
         }
-        System.err.println("taches size = " + taches.size() + " is empty = " + taches.isEmpty());
         return taches;
     }
 
@@ -142,7 +139,7 @@ public class Tache {
             try{session.createQuery("FROM TicketEntity t WHERE t.id = " + idTicket + " and t.statut != 'Resolu' and t.statut != 'Non Resolu'").getSingleResult();}
             catch (NoResultException e) { return null;}
 
-            List result = session.createQuery("FROM TicketJonctionEntity j WHERE j.idParent = " + idTicket).list();
+            List result = session.createQuery(" SELECT j.idEnfant FROM TicketJonctionEntity j WHERE j.idParent = " + idTicket).list();
 
             for(Object o : result) {
                 int idTask = (int)o;

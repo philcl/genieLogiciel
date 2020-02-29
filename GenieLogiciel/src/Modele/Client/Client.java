@@ -1,7 +1,6 @@
 package Modele.Client;
 
 import API_REST.CreateSession;
-import API_REST.ReponseType;
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
 import Modele.Adresse;
