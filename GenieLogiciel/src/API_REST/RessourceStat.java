@@ -126,10 +126,13 @@ public class RessourceStat {
 
                 String string = String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear());
 
-                if(!res.contient(string))
+                if(!(res.contient(string)))
                 {
-                    System.err.println("J'ajoute un élément");
+                    System.err.println("J'ajoute un élément : " + string);
                     res.radarChartData.add(new Map(string,res.radarChartLabels.size()));
+                }
+                else {
+                    System.err.println("J'ajoute PAS d'élément : " + string);
                 }
             }
 
@@ -145,7 +148,7 @@ public class RessourceStat {
 
                 for(Map map : res.radarChartData)
                 {
-                    if(map.label==string)
+                    if(map.label.equals(string))
                     {
                         map.data.set(pos,map.data.get(pos)+1);
                     }
