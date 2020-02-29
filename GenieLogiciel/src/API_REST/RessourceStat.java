@@ -124,9 +124,9 @@ public class RessourceStat {
             {
                 TicketEntity ticketEntity = (TicketEntity) o;
 
-                if(!res.radarChartData.contains(ticketEntity.getDate().toLocalDateTime().getYear()))
+                if(!res.contient(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear())))
                 {
-                    res.radarChartData.add(new Map(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear())));
+                    res.radarChartData.add(new Map(String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear()),res.radarChartLabels.size()));
                 }
             }
 
@@ -138,7 +138,13 @@ public class RessourceStat {
 
                 int pos = res.radarChartLabels.indexOf(statut);
 
-
+                for(Map map : res.radarChartData)
+                {
+                    if(map.label==String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear()))
+                    {
+                        map.data.set(pos,map.data.get(pos)+1);
+                    }
+                }
             }
 
             //clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
