@@ -4,15 +4,16 @@ import API_REST.CreateSession;
 import API_REST.Security;
 import DataBase.DemandeurEntity ;
 import DataBase.JonctionSirensiretEntity;
-import Modele.Adresse;
 import Modele.Personne;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.NoResultException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Demandeur {
     public long SIRET = -1;
@@ -86,6 +87,7 @@ public class Demandeur {
                 if(tx != null)
                     tx.rollback();
                 e.printStackTrace();
+                return  false;
             }
         }
         else
@@ -176,6 +178,20 @@ public class Demandeur {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public static ArrayList<Demandeur> getDemandeurFromClient(int SIREN, Session session) {
+        ArrayList<Demandeur> demandeurs = new ArrayList<>();
+
+        List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN).list();
+        for(Object o : result) {
+            long SIRET = (long) o;
+            Demandeur demandeur = new Demandeur();
+            if(!demandeur.recupererDemandeur(SIRET))
+                return null;
+            demandeurs.add(demandeur);
+        }
+        return demandeurs;
     }
 
     public boolean isEmpty() {

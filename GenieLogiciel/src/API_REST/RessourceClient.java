@@ -6,6 +6,8 @@ import DataBase.DemandeurEntity;
 import Modele.Client.*;
 import Modele.Personne;
 import Modele.Staff.Token;
+import Modele.Ticket.SendTache;
+import Modele.Ticket.Tache;
 import com.google.gson.Gson;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -21,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
@@ -110,12 +113,14 @@ public class RessourceClient {
                 catch(NoResultException ignored){}
                 myClient.nbTicket = Integer.parseInt(nbTicketActif.toString());
 
-                List demandeurs = session.createQuery("SELECT d FROM DemandeurEntity d, JonctionSirensiretEntity ss WHERE d.siret = ss.siret and ss.siren = " + myClient.SIREN).list();
+                List demandeurs = session.createQuery("SELECT d FROM DemandeurEntity d, JonctionSirensiretEntity ss WHERE d.siret = ss.siret and ss.siren = " + myClient.SIREN + " and d.actif = 1").list();
                 for (Object p : demandeurs)
                 {
                     DemandeurEntity personneEntity = (DemandeurEntity) p;
+                    Demandeur demandeur = new Demandeur();
+                    demandeur.recupererDemandeur(personneEntity.getSiret());
 
-                    myClient.demandeurs.add(new Personne(personneEntity.getNom(), personneEntity.getPrenom(), personneEntity.getIdPersonne(), personneEntity.getSexe()));
+                    myClient.demandeurs.add(demandeur);
                 }
 
                 clientList.add(myClient);
@@ -209,10 +214,6 @@ public class RessourceClient {
                 if(response != null) return response;
             }
         }
-
-        //todo Tester l'ajout des demandeurs
-        //todo ajout des demandeurs dans la table de jonction SIREN/SIRET
-
         return ReponseType.getOK("");
     }
 
@@ -258,6 +259,44 @@ public class RessourceClient {
             session.update(clientEntity);
 
             //todo Ajout des demandeurs
+
+            if(client.demandeurs != null && !client.demandeurs.isEmpty()) {
+                HashMap<Integer, Demandeur> map = new HashMap<>();
+                ArrayList<Demandeur> demandeurs = Demandeur.getDemandeurFromClient(client.SIREN, session);
+                if( demandeurs != null) {
+                    for(Demandeur demandeur : demandeurs) {
+                        map.put(demandeur.demandeur.id, demandeur);
+                        System.err.println("id in map = " + demandeur.demandeur.id);
+                    }
+
+                    for(Demandeur demandeur : client.demandeurs) {
+                        //Si le demandeur existe deja on le met a jour soit pour modifier soit pour supprimer via la mise a jour du statut
+                        //todo supprimer le demandeur si non présent dans la mise à jour
+                        System.err.println("id du demandeur = " + demandeur.demandeur.id);
+                        if(map.containsKey(demandeur.demandeur.id)) {
+                            SendDemandeur myDemandeur = new SendDemandeur(token, demandeur, client.SIREN);
+                            String str = gson.toJson(myDemandeur);
+                            System.err.println("json final = " + str + "------------------------------------------------------");
+                            Response resp = RessourceDemandeur.modifyDemandeurs(str);
+                            if(resp.getStatus() != 200) {
+                                return resp;
+                            }
+                        }
+                        //Sinon on le creer
+                        else {
+                            Response resp = CreateDemandeurForClient(token, demandeur, client.SIREN);
+                            if (resp != null) return resp;
+                        }
+                    }
+                }
+                else {
+                    for(Demandeur demandeur : client.demandeurs) {
+                        Response resp = CreateDemandeurForClient(token, demandeur, client.SIREN);
+                        if (resp != null) return resp;
+                    }
+                }
+
+            }
 
             tx.commit();
             session.clear();
@@ -335,6 +374,7 @@ public class RessourceClient {
         return ReponseType.getOK(clientInit);
     }
 
+    //todo delete les demandeurs
     @Path("/delete")
     @POST
     @Consumes("text/plain")
@@ -391,14 +431,19 @@ public class RessourceClient {
 
             if (client.nom == null || client.SIREN == -1)
                 return null;
+            System.err.println("--------------before adresse");
 
             //Ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("adresse");
             if (adresse == null) {
                 System.err.println("L'adresse est mal formee ou contient des requetes SQL");
                 return null;
-            } else if (!client.adresse.RecupererAdresseDepuisJson(adresse))
+            } else if (!client.adresse.RecupererAdresseDepuisJson(adresse)) {
+                System.err.println("impossible de recupérer l'adresse depuis le json " + adresse);
                 return null;
+            }
+
+            System.err.println("-----------------after");
 
             ArrayList<JSONObject> demandeursJSON;
             try{

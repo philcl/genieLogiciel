@@ -105,14 +105,18 @@ public class Adresse {
     public boolean RecupererAdresseDepuisJson(JSONObject adr) {
         numero = -1;
         numero = Integer.parseInt(((Long) adr.get("numero")).toString());
-        codePostal = Security.test ((String) adr.get("codePostal"));
-        rue = Security.test ((String) adr.get("rue"));
-        ville = Security.test ((String) adr.get("ville"));
+        codePostal = Security.test((String) adr.get("codePostal"));
+        rue = Security.test((String) adr.get("rue"));
+        ville = Security.test((String) adr.get("ville"));
 
         if(numero == -1 || codePostal == null || rue == null || ville == null)
             return false;
         else
             return true;
+    }
+
+    public String toString() {
+        return numero + " " + rue + " " + codePostal + " " + ville;
     }
 
     public boolean isEmpty() {

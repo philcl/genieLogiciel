@@ -10,7 +10,7 @@ public class ClientList {
     public Adresse adresse;
     public String name;
     public int nbTicket;
-    public ArrayList<Personne> demandeurs;
+    public ArrayList<Demandeur> demandeurs;
 
     public ClientList() {
         adresse = new Adresse();

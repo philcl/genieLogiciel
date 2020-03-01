@@ -7,6 +7,7 @@ import Modele.Staff.Token;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.exception.ConstraintViolationException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -41,7 +42,6 @@ public class RessourceDemandeur {
         demandeurEntity.setNom(demandeur.demandeur.nom);
         demandeurEntity.setPrenom(demandeur.demandeur.prenom);
         demandeurEntity.setSexe(demandeur.demandeur.sexe);
-        demandeurEntity.setTelephone(demandeur.telephone);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -53,8 +53,19 @@ public class RessourceDemandeur {
             }
             demandeurEntity.setAdresse(idAdresse);
 
+            try{
+                session.createQuery("FROM DemandeurEntity d WHERE d.telephone = '" + demandeur.telephone + "'").getSingleResult();
+                return ReponseType.getNOTOK("Le telephone "+ demandeur.telephone + " appartient deja a un demandeur veuillez le changer", true, tx, session);
+            }
+            catch (NoResultException e) {demandeurEntity.setTelephone(demandeur.telephone);}
+
             int maxID = (int) session.createQuery("SELECT MAX(d.id) FROM DemandeurEntity d").getSingleResult()+1;
             demandeurEntity.setIdPersonne(maxID);
+
+            tx = createJonctionSiretSiren(tx, session);
+            System.err.println("Ajout du SIREN  = " + clientSIREN + " SIRET = " + demandeur.SIRET);
+
+            demandeurEntity.setSiret(demandeur.SIRET);
 
             session.save(demandeurEntity);
             tx.commit();
@@ -64,6 +75,7 @@ public class RessourceDemandeur {
         catch (HibernateException e) {
             if(tx != null)
                 tx.rollback();
+            System.err.println("erreur sur la sauvegarde du demandeur pour la creation SIRET = " + demandeur.SIRET + " SIREN = " + clientSIREN);
             e.printStackTrace();
         }
         return ReponseType.getOK("");
@@ -73,7 +85,7 @@ public class RessourceDemandeur {
     @POST
     @Consumes("text/plain")
     @Produces("application/json")
-    public Response modifyDemandeurs(String jsonStr) {
+    public static Response modifyDemandeurs(String jsonStr) {
         Transaction tx = null;
 
         Response response = doInitDemandeur(jsonStr);
@@ -90,18 +102,15 @@ public class RessourceDemandeur {
             catch (NoResultException e) {return ReponseType.getNOTOK("L'adresse " + demandeur.idAdresse + " n'existe pas", true, tx, session);}
             demandeurEntity.setAdresse(demandeur.idAdresse);
 
-            try{session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + demandeur.SIRET + " and j.siren = " + clientSIREN).getSingleResult();}
-            catch (NoResultException e) {
-                JonctionSirensiretEntity j = new JonctionSirensiretEntity();
-                j.setSiren(clientSIREN);
-                j.setSiret(demandeur.SIRET);
-                session.save(j);
-                tx.commit();
-                session.clear();
-                tx = session.beginTransaction();
-            }
+            tx = createJonctionSiretSiren(tx, session);
 
-            demandeurEntity.setTelephone(demandeur.telephone);
+            try{
+                DemandeurEntity demandeurEntity1 = (DemandeurEntity) session.createQuery("FROM DemandeurEntity d WHERE d.telephone = '" + demandeur.telephone + "' and d.actif = 1").getSingleResult();
+                if(demandeurEntity1.getIdPersonne() != demandeurEntity.getIdPersonne())
+                    return ReponseType.getNOTOK("Le telephone " + demandeur.telephone + " existe deja veuillez le changer", true, tx, session);
+            }
+            catch (NoResultException e) {demandeurEntity.setTelephone(demandeur.telephone);}
+
             demandeurEntity.setSiret(demandeur.SIRET);
             demandeurEntity.setPrenom(demandeur.demandeur.prenom);
             demandeurEntity.setNom(demandeur.demandeur.nom);
@@ -119,6 +128,20 @@ public class RessourceDemandeur {
             return ReponseType.getNOTOK("Le demandeur avec l'id " + demandeur.demandeur.id + " n'a pas pu etre modifier", false, null, null);
         }
         return ReponseType.getOK("");
+    }
+
+    private static Transaction createJonctionSiretSiren(Transaction tx, Session session) {
+        try{session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + demandeur.SIRET + " and j.siren = " + clientSIREN).getSingleResult();}
+        catch (NoResultException e) {
+            JonctionSirensiretEntity j = new JonctionSirensiretEntity();
+            j.setSiren(clientSIREN);
+            j.setSiret(demandeur.SIRET);
+            session.save(j);
+            tx.commit();
+            session.clear();
+            tx = session.beginTransaction();
+        }
+        return tx;
     }
 
     private static Response doInitDemandeur(String jsonStr) {

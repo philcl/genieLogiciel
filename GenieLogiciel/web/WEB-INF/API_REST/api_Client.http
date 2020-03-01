@@ -30,9 +30,16 @@ Content-Type: text/plain
 POST http://localhost:8080/genielog/client/modify
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des fromages","ville":"Saint Nectaire","codePostal":"25811"},
-"demandeurs":[{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"nom":"essaie","prenom":"je suis","sexe":"M"}, "telephone":"0645789878"}]}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des frotages","ville":"Saint Nectaire","codePostal":"25811"}}}
 ###
+### Modify Client with Demandeur
+POST http://localhost:8080/genielog/client/modify
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des frotages","ville":"Saint Nectaire","codePostal":"25811"},
+"demandeurs":[{"SIRET":12345678912310, "idAdresse":12, "demandeur":{"nom":"essaie","prenom":"je suis","sexe":"M","id":14}, "telephone":"0645789879"}]}}
+###
+
 ### Init Client
 POST http://localhost:8080/genielog/client/init
 Content-Type: text/plain
