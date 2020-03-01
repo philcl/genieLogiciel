@@ -258,7 +258,7 @@ public class RessourceClient {
 
             session.update(clientEntity);
 
-            if(client.demandeurs != null && !client.demandeurs.isEmpty()) {
+            if(client.demandeurs != null) {
                 HashMap<Integer, Demandeur> map = new HashMap<>();
                 ArrayList<Demandeur> demandeurs = Demandeur.getDemandeurFromClient(client.SIREN, session);
                 if( demandeurs != null) {
@@ -276,14 +276,24 @@ public class RessourceClient {
                             String str = gson.toJson(myDemandeur);
                             System.err.println("json final = " + str + "------------------------------------------------------");
                             Response resp = RessourceDemandeur.modifyDemandeurs(str);
-                            if(resp.getStatus() != 200) {
+                            if(resp.getStatus() != 200)
                                 return resp;
-                            }
+                            map.remove(demandeur.demandeur.id);
                         }
                         //Sinon on le creer
                         else {
                             Response resp = CreateDemandeurForClient(token, demandeur, client.SIREN);
                             if (resp != null) return resp;
+                        }
+                    }
+                    //suppression des demandeurs qui etaitent la auparavant
+                    if(!map.isEmpty()) {
+                        for(int id : map.keySet()) {
+                            System.err.println("le demandeur supprimer de la liste est " + id);
+                            SendDeleteDemandeur myDemandeur = new SendDeleteDemandeur(0, id, token);
+                            Response resp = RessourceDemandeur.deleteDemandeurAPI(gson.toJson(myDemandeur));
+                            if(resp.getStatus() != 200)
+                                return resp;
                         }
                     }
                 }

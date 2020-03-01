@@ -54,7 +54,7 @@ public class RessourceDemandeur {
             demandeurEntity.setAdresse(idAdresse);
 
             try{
-                session.createQuery("FROM DemandeurEntity d WHERE d.telephone = '" + demandeur.telephone + "'").getSingleResult();
+                session.createQuery("FROM DemandeurEntity d WHERE d.telephone = '" + demandeur.telephone + "' and d.actif = 1").getSingleResult();
                 return ReponseType.getNOTOK("Le telephone "+ demandeur.telephone + " appartient deja a un demandeur veuillez le changer", true, tx, session);
             }
             catch (NoResultException e) {demandeurEntity.setTelephone(demandeur.telephone);}
@@ -63,7 +63,6 @@ public class RessourceDemandeur {
             demandeurEntity.setIdPersonne(maxID);
 
             tx = createJonctionSiretSiren(tx, session);
-            System.err.println("Ajout du SIREN  = " + clientSIREN + " SIRET = " + demandeur.SIRET);
 
             demandeurEntity.setSiret(demandeur.SIRET);
 

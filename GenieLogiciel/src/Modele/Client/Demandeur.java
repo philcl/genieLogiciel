@@ -38,7 +38,6 @@ public class Demandeur {
             this.telephone = (String) demandeurJSON.get("telephone");
             if (SIRET == -1 || demandeur == null || telephone.isEmpty())
                 return false;
-            System.err.println("-----------------------great---------------------");
             if(Security.test(telephone) == null)
                 return false;
 
@@ -60,21 +59,14 @@ public class Demandeur {
             Transaction tx = null;
             try(Session session = CreateSession.getSession()) {
                 tx = session.beginTransaction();
-                try {
-                    session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN).getSingleResult();
-                } catch (NoResultException e) {
-                    System.err.println("no client " + SIREN);
-                    return false;
-                }
+                try {session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN).getSingleResult();}
+                catch (NoResultException e) {return false;}
 
-                try {
-                    session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN).getSingleResult();
-                    System.err.println("jct found with SIREN = " + SIREN + " SIRET = " + SIRET);
-                } catch (NoResultException e) {
+                try {session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN).getSingleResult();}
+                catch (NoResultException e) {
                     JonctionSirensiretEntity j = new JonctionSirensiretEntity();
                     j.setSiren(SIREN);
                     j.setSiret(SIRET);
-                    System.err.println("SIREN = " + SIREN + " SIRET = " + SIRET);
                     session.save(j);
                 }
 
@@ -89,8 +81,6 @@ public class Demandeur {
                 return  false;
             }
         }
-        else
-            System.err.println("----------------------prob-----------------");
         return demandeur == null && !telephone.isEmpty() && idAdresse != -1 && SIRET != -1;
     }
 
@@ -99,16 +89,11 @@ public class Demandeur {
 
         for(JSONObject jsonObject : demandeursJSON) {
             Demandeur demandeur = new Demandeur();
-            System.err.println("--------------------- json = " + jsonObject);
-            if(!demandeur.RecupererDemandandeurDepuisJson(jsonObject, SIREN) && demandeur.demandeur.id != -1 && demandeur.SIRET == -1) {
+            if(!demandeur.RecupererDemandandeurDepuisJson(jsonObject, SIREN) && demandeur.demandeur.id != -1 && demandeur.SIRET == -1)
                 return null;
-            }
-            else {
+            else
                 demandeurs.add(demandeur);
-                System.err.println("demandeur ajouter");
-            }
         }
-
         return demandeurs;
     }
 
@@ -176,25 +161,6 @@ public class Demandeur {
             session.close();
         }
         catch (HibernateException e) {
-            if(tx != null)
-                tx.rollback();
-            e.printStackTrace();
-        }
-        return true;
-    }
-
-    public boolean addDemandeur() {
-        Transaction tx = null;
-
-        //todo faire l'ajout d'un demandeur (voir si je verifie l'adresse ici ou avant dans RessourceClient
-        try(Session session = CreateSession.getSession()) {
-            tx = session.beginTransaction();
-
-
-            tx.commit();
-            session.clear();
-            session.close();
-        } catch (HibernateException e) {
             if(tx != null)
                 tx.rollback();
             e.printStackTrace();
