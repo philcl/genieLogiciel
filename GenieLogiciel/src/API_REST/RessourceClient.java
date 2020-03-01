@@ -3,6 +3,7 @@ package API_REST;
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
 import DataBase.DemandeurEntity;
+import DataBase.JonctionSirensiretEntity;
 import Modele.Client.*;
 import Modele.Personne;
 import Modele.Staff.Token;
@@ -169,7 +170,7 @@ public class RessourceClient {
         if (adresseId == -1)
             if (client.adresse.addAdresse() == -1)
                 return ReponseType.getNOTOK("Impossible de rajouter l'adresse sur la base", false, null, null);
-        clientEntity.setAdresse(adresseId);
+        clientEntity.setAdresse(client.adresse.getId());
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -192,34 +193,46 @@ public class RessourceClient {
             }
             catch (NoResultException ignored) {}
 
-
             session.save(clientEntity);
             tx.commit();
             session.clear();
+
+            ArrayList<JSONObject> demandeursJSON;
+            try{
+                demandeursJSON = (ArrayList<JSONObject>) clientJSON.get("demandeurs");
+                ArrayList<Demandeur> demandeurs = Demandeur.recupererListDemandeurDepuisJSON(demandeursJSON, client.SIREN);
+                if(demandeurs == null) {
+                    tx = session.beginTransaction();
+                    session.delete(clientEntity);
+                    tx.commit();
+                    session.clear();
+                    session.close();
+                    return ReponseType.getNOTOK("Les Demandeurs sont mal former", false, null, null);
+                }
+                client.demandeurs = demandeurs;
+            }
+            catch (NullPointerException ignored) {
+                System.err.println("dans le null pointeur except");
+            }
+
+            System.err.println("client demandeurs = " + client.demandeurs.isEmpty());
+
+            if(client.demandeurs != null && !client.demandeurs.isEmpty()) {
+                for(Demandeur demandeur : client.demandeurs) {
+                    System.err.println("--------------demandeur = " + demandeur.toString());
+                    Response response = CreateDemandeurForClient(token, demandeur, client.SIREN);
+                    if(response != null) {
+
+                        return response;
+                    }
+                }
+            }
             session.close();
         } catch (HibernateException e) {
             if (tx != null)
                 tx.rollback();
             e.printStackTrace();
             return ReponseType.getNOTOK("Impossible de sauvegarder le client sur la base", false, null, null);
-        }
-
-        ArrayList<JSONObject> demandeursJSON;
-        try{
-            demandeursJSON = (ArrayList<JSONObject>) clientJSON.get("demandeurs");
-            ArrayList<Demandeur> demandeurs = Demandeur.recupererListDemandeurDepuisJSON(demandeursJSON, client.SIREN);
-            System.err.println("--------------dem = " + demandeurs);
-            if(demandeurs == null)
-                return ReponseType.getNOTOK("Les Demandeurs sont mal former", false, null, null);
-            client.demandeurs = demandeurs;
-        }
-        catch (NullPointerException ignored) {}
-
-        if(client.demandeurs != null && !client.demandeurs.isEmpty()) {
-            for(Demandeur demandeur : client.demandeurs) {
-                Response response = CreateDemandeurForClient(token, demandeur, client.SIREN);
-                if(response != null) return response;
-            }
         }
         return ReponseType.getOK("");
     }
@@ -455,11 +468,8 @@ public class RessourceClient {
             client.SIREN = -1;
             client.SIREN = Integer.parseInt(((Long) json.get("SIREN")).toString());
 
-            System.err.println("nom = " + client.nom + " siren = " + client.SIREN);
-
             if (client.nom == null || client.SIREN == -1)
                 return null;
-            System.err.println("--------------before adresse");
 
             //Ajout de l'adresse
             JSONObject adresse = (JSONObject) json.get("adresse");
@@ -471,20 +481,16 @@ public class RessourceClient {
                 return null;
             }
 
-            System.err.println("-----------------after");
-
             ArrayList<JSONObject> demandeursJSON;
             try{
                 demandeursJSON = (ArrayList<JSONObject>) json.get("demandeurs");
                 System.err.println("-------------------------ok------------------- size" + demandeursJSON.size() + "--------");
                 ArrayList<Demandeur> demandeurs = Demandeur.recupererListDemandeurDepuisJSON(demandeursJSON, client.SIREN);
-                System.err.println("--------------ok2------------------ demandeur = " + demandeurs);
                 if(demandeurs != null)
                     client.demandeurs = demandeurs;
             }
             catch (NullPointerException ignored) {}
 
-            System.err.println("-------------------ok12----------------------------");
         } catch (NullPointerException e) {
             System.err.println("Erreur lors de la recuperation du client depuis un json parse impossible");
             return null;

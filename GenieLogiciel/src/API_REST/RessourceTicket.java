@@ -3,6 +3,7 @@ package API_REST;
 import DataBase.*;
 import Modele.*;
 import Modele.Client.ClientSite;
+import Modele.Client.SendDeleteDemandeur;
 import Modele.Staff.Token;
 import Modele.Ticket.InitTicket;
 import Modele.Ticket.SendTache;
@@ -398,6 +399,16 @@ public class RessourceTicket {
                         if (resp != null) return resp;
                     }
                 }
+                //suppression des taches qui etaitent la auparavant
+                if(!map.isEmpty()) {
+                    for(int id : map.keySet()) {
+                        System.err.println("la tache supprimer de la liste est " + id);
+                        SendTache myTask = new SendTache(token, map.get(id));
+                        Response resp = RessourceTache.deleteTask(gson.toJson(myTask));
+                        if(resp.getStatus() != 200)
+                            return resp;
+                    }
+                }
             }
             else {
                 for(Tache tache : ticket.taches) {
@@ -405,7 +416,6 @@ public class RessourceTicket {
                     if (resp != null) return resp;
                 }
             }
-
         }
         return ReponseType.getOK("");
     }
