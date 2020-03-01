@@ -118,7 +118,7 @@ public class RessourceClient {
                 {
                     DemandeurEntity personneEntity = (DemandeurEntity) p;
                     Demandeur demandeur = new Demandeur();
-                    demandeur.recupererDemandeur(personneEntity.getSiret());
+                    demandeur.recupererDemandeur(personneEntity.getIdPersonne());
 
                     myClient.demandeurs.add(demandeur);
                 }
@@ -346,7 +346,7 @@ public class RessourceClient {
         if (SIREN == -1)
             return ReponseType.getNOTOK("Le SIREN ne convient pas", false, null, null);
         if(!clientInit.client.recupererClient(SIREN))
-            return ReponseType.getNOTOK("Immposible de creer le client avec le SIREN " + SIREN, false, null, null);
+            return ReponseType.getNOTOK("Immposible de recuperer le client avec le SIREN " + SIREN, false, null, null);
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
@@ -356,7 +356,7 @@ public class RessourceClient {
             for(Object o : result) {
                 DemandeurEntity p = (DemandeurEntity) o;
                 Demandeur demandeur = new Demandeur();
-                if(!demandeur.recupererDemandeur(p.getSiret()))
+                if(!demandeur.recupererDemandeur(p.getIdPersonne()))
                     return ReponseType.getNOTOK("Impossible de lister les demandeurs du SIREN " + SIREN, true, tx, session);
 
                 clientInit.demandeurList.add(demandeur);

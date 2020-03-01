@@ -97,11 +97,11 @@ public class Demandeur {
         return demandeurs;
     }
 
-    public boolean verifyDemandeurExistance(long SIRET) {
+    public boolean verifyDemandeurExistance(int idDemandeur) {
         Transaction tx = null;
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            try{session.createQuery("FROM DemandeurEntity p WHERE p.siret = " + SIRET).getSingleResult();}
+            try{session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + idDemandeur).getSingleResult();}
             catch(NoResultException e) {
                 tx.commit();
                 session.clear();
@@ -116,15 +116,15 @@ public class Demandeur {
         return true;
     }
 
-    public boolean recupererDemandeur(long SIRET) {
+    public boolean recupererDemandeur(int idDemandeur) {
         Transaction tx = null;
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            if(verifyDemandeurExistance(SIRET)) {
-                DemandeurEntity p = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.siret = " + SIRET).getSingleResult();
+            if(verifyDemandeurExistance(idDemandeur)) {
+                DemandeurEntity p = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + idDemandeur).getSingleResult();
 
-                this.SIRET = SIRET;
-                this.telephone = "1";
+                this.SIRET = p.getSiret();
+                this.telephone = p.getTelephone();
                 //Init demandeur
                 this.demandeur.prenom = p.getPrenom();
                 this.demandeur.nom = p.getNom();
@@ -174,10 +174,16 @@ public class Demandeur {
         List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN).list();
         for(Object o : result) {
             long SIRET = (long) o;
-            Demandeur demandeur = new Demandeur();
-            if(!demandeur.recupererDemandeur(SIRET))
-                return null;
-            demandeurs.add(demandeur);
+            List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET).list();
+
+            for(Object obj : res) {
+                DemandeurEntity demandeurEntity = (DemandeurEntity) obj;
+                Demandeur demandeur = new Demandeur();
+                if(!demandeur.recupererDemandeur(demandeurEntity.getIdPersonne()))
+                    return null;
+                demandeurs.add(demandeur);
+            }
+
         }
         return demandeurs;
     }
