@@ -16,3 +16,9 @@ Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
+### Temps par compétence par technicien
+POST http://localhost:8080/genielog/stat/statTempsParCompetences
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+###
