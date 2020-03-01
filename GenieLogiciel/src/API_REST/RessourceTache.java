@@ -156,7 +156,7 @@ public class RessourceTache {
     @POST
     @Consumes("text/plain")
     @Produces("application/json")
-    public Response deleteTask(String jsonStr) {
+    public static Response deleteTask(String jsonStr) {
         Transaction tx = null;
 
         Response resp =  getInitTask(jsonStr);

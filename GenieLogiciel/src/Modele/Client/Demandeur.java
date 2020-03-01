@@ -42,7 +42,10 @@ public class Demandeur {
                 return false;
 
             this.idAdresse = Integer.parseInt(((Long) demandeurJSON.get("idAdresse")).toString());
-            this.demandeur.RecupererPersonDepuisJson(demandeur);
+            if(this.demandeur.RecupererPersonDepuisJson(demandeur) == null)
+                return false;
+            System.err.println("demandeur personne = " + demandeur);
+            System.err.println("demandeur apres construct = " + this.demandeur.toString());
 
             if(this.idAdresse == -1 || this.demandeur == null)
                 return false;
@@ -86,13 +89,17 @@ public class Demandeur {
 
     public static ArrayList<Demandeur> recupererListDemandeurDepuisJSON(ArrayList<JSONObject> demandeursJSON, int SIREN) {
         ArrayList<Demandeur> demandeurs = new ArrayList<>();
+        System.err.println("list demandeurs = " + demandeursJSON);
 
         for(JSONObject jsonObject : demandeursJSON) {
             Demandeur demandeur = new Demandeur();
-            if(!demandeur.RecupererDemandandeurDepuisJson(jsonObject, SIREN) && demandeur.demandeur.id != -1 && demandeur.SIRET == -1)
+            if(!demandeur.RecupererDemandandeurDepuisJson(jsonObject, SIREN) && demandeur.demandeur.id != -1 && demandeur.SIRET == -1) {
+                System.err.println("n'a pas trouve de demandeurs");
                 return null;
-            else
+            }
+            else {
                 demandeurs.add(demandeur);
+            }
         }
         return demandeurs;
     }
@@ -183,12 +190,20 @@ public class Demandeur {
                     return null;
                 demandeurs.add(demandeur);
             }
-
         }
         return demandeurs;
     }
 
     public boolean isEmpty() {
         return SIRET == -1 || idAdresse == -1 || demandeur.isEmpty();
+    }
+
+    public String toString() {
+        String str = "";
+        str += "SIRET = " + SIRET;
+        str += " adresse : " + idAdresse;
+        str += " telephone = " + telephone;
+        str+= " demandeur = " + demandeur.toString();
+        return str;
     }
 }

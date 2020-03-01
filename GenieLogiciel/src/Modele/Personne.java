@@ -34,6 +34,25 @@ public class Personne {
             nom = Security.test((String) personneJSON.get("nom"));
             prenom = Security.test((String) personneJSON.get("prenom"));
             sexe = Security.test((String) personneJSON.get("sexe"));
+
+            Transaction tx = null;
+            try(Session session = CreateSession.getSession()) {
+                tx = session.beginTransaction();
+                try{session.createQuery("FROM SexeEntity s WHERE s.sexe = '" + sexe + "'").getSingleResult();}
+                catch (NoResultException e) {
+                    System.err.println("sexe non valide");
+                    return null;
+                }
+                tx.commit();
+                session.clear();
+                session.close();
+            }
+            catch (HibernateException e) {
+                if(tx != null)
+                    tx.rollback();
+                e.printStackTrace();
+            }
+
             id = -1;
             try{id = Integer.parseInt(((Long) personneJSON.get("id")).toString());}
             catch (NullPointerException ignored) {}
@@ -41,7 +60,7 @@ public class Personne {
             System.err.println("La personne est mal formee");
             return null;
         }
-        if(nom.isEmpty() || prenom.isEmpty() || id == -1 || sexe.isEmpty())
+        if(nom.isEmpty() || prenom.isEmpty() || sexe.isEmpty())
             return null;
         else
             return this;
@@ -61,5 +80,9 @@ public class Personne {
 
     public boolean isEmpty() {
         return id == -1 || nom.isEmpty() || prenom.isEmpty() || sexe.isEmpty();
+    }
+
+    public String toString() {
+        return "id = " + id + " prenom :" + prenom + " nom :" + nom + " sexe :" + sexe;
     }
 }
