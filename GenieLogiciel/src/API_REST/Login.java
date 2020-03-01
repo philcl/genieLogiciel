@@ -599,7 +599,7 @@ public class Login {
             //Ajout de l'adresse
             int adr = p.staffAdress.getId();
             if(adr == -1) //L'adresse n'existe pas lors de la modification ou de l'ajout d'un staff alors ajout direct de l'adresse
-                if(!p.staffAdress.addAdresse())
+                if(p.staffAdress.addAdresse() == -1)
                     return null;
             tx.commit();
             session.clear();

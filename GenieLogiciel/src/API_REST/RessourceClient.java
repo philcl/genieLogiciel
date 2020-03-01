@@ -167,7 +167,7 @@ public class RessourceClient {
 
         int adresseId = client.adresse.getId();
         if (adresseId == -1)
-            if (!client.adresse.addAdresse())
+            if (client.adresse.addAdresse() == -1)
                 return ReponseType.getNOTOK("Impossible de rajouter l'adresse sur la base", false, null, null);
         clientEntity.setAdresse(adresseId);
 
@@ -249,7 +249,7 @@ public class RessourceClient {
             //Recherche puis ajout si elle n'existe pas
             int adrId = client.adresse.getId();
             if(adrId == -1)
-                if(!client.adresse.addAdresse())
+                if(client.adresse.addAdresse() == -1)
                     return ReponseType.getNOTOK("Impossible d'ajouter l'adresse", true, tx, session);
 
             //Modification du client
@@ -369,8 +369,6 @@ public class RessourceClient {
                 tx.rollback();
             e.printStackTrace();
         }
-
-
         return ReponseType.getOK(clientInit);
     }
 

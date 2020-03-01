@@ -71,13 +71,16 @@ public class Adresse {
         return  id;
     }
 
-    public boolean addAdresse() {
+    public int addAdresse() {
         Transaction tx = null;
+        int id;
         if(codePostal.isEmpty() || numero == -1 || ville.isEmpty() || rue.isEmpty()) {
             System.err.println("L'adresse est mal remplie");
             System.err.println("code postal = " + codePostal + " numero = " + numero + " ville = " + ville + " rue = " + rue);
-            return false;
+            return -1;
         }
+        if(this.verifyAdresseExistance() != -1)
+            return this.getId();
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             AdresseEntity adresseEntity = new AdresseEntity();
@@ -86,7 +89,7 @@ public class Adresse {
             adresseEntity.setRue(rue);
             adresseEntity.setVille(ville);
 
-            int id = (int) session.createQuery("SELECT MAX(a.idAdresse) FROM AdresseEntity a").getSingleResult();
+            id = (int) session.createQuery("SELECT MAX(a.idAdresse) FROM AdresseEntity a").getSingleResult();
             adresseEntity.setIdAdresse(id+1);
             session.save(adresseEntity);
             tx.commit();
@@ -97,9 +100,29 @@ public class Adresse {
                 tx.rollback();
             e.printStackTrace();
             System.err.println("Erreur lors de l'ajout d'une adresse sur la base");
-            return false;
+            return -1;
         }
-        return true;
+        return id;
+    }
+
+    public int verifyAdresseExistance() {
+        Transaction tx = null;
+        int id = -1;
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            try{id = (int) session.createQuery("SELECT a.idAdresse FROM AdresseEntity a WHERE a.numero = " + numero + " and a.rue = '" + rue + "' and a.codePostal = '" + codePostal + "' and a.ville = '" + ville + "'").getSingleResult();}
+            catch (NoResultException e) {return -1;}
+            tx.commit();
+            session.clear();
+            session.close();
+        }
+        catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return id;
     }
 
     public boolean RecupererAdresseDepuisJson(JSONObject adr) {
