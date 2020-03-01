@@ -258,8 +258,6 @@ public class RessourceClient {
 
             session.update(clientEntity);
 
-            //todo Ajout des demandeurs
-
             if(client.demandeurs != null && !client.demandeurs.isEmpty()) {
                 HashMap<Integer, Demandeur> map = new HashMap<>();
                 ArrayList<Demandeur> demandeurs = Demandeur.getDemandeurFromClient(client.SIREN, session);
@@ -402,8 +400,21 @@ public class RessourceClient {
             try{p = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN).getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren : " + SIREN + " n'existe pas", true, tx, session);}
 
-            p.setActif((byte) 0);
+            List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN).list();
 
+            for(Object o : result) {
+                long SIRET = (long) o;
+
+                List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET).list();
+                for(Object obj : res) {
+                    DemandeurEntity demandeurEntity = (DemandeurEntity) obj;
+                    SendDeleteDemandeur delete = new SendDeleteDemandeur(0, demandeurEntity.getIdPersonne(), token);
+                    Response resp = RessourceDemandeur.deleteDemandeurAPI(gson.toJson(delete));
+                    if (resp.getStatus() != 200)
+                        return resp;
+                }
+            }
+            p.setActif((byte) 0);
             session.update(p);
             tx.commit();
             session.clear();

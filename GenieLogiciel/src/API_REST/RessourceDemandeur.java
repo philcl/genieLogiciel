@@ -130,6 +130,35 @@ public class RessourceDemandeur {
         return ReponseType.getOK("");
     }
 
+    @Path("/delete")
+    @POST
+    @Consumes("text/plain")
+    @Produces("application/json")
+    public static Response deleteDemandeurAPI(String jsonStr) {
+        String token = "";
+        int actif = -1, idDemandeur = -1;
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            token = (String) json.get("token");
+            actif = Integer.parseInt(((Long) json.get("actif")).toString());
+            idDemandeur = Integer.parseInt(((Long) json.get("idDemandeur")).toString());
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (token, actif, idDemandeur)", false, null, null);
+        }
+        if (!Token.tryToken(token))
+            return Token.tokenNonValide();
+        if(actif != 0)
+            return ReponseType.getNOTOK("Le parametre actif ne permet pas la suppression", false, null, null);
+
+        if(!Demandeur.deleteDemandeur(idDemandeur))
+            return ReponseType.getNOTOK("Impossible de delete le demandeur avec l'id " + idDemandeur, false, null, null);
+
+        return ReponseType.getOK("");
+    }
+
     private static Transaction createJonctionSiretSiren(Transaction tx, Session session) {
         try{session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + demandeur.SIRET + " and j.siren = " + clientSIREN).getSingleResult();}
         catch (NoResultException e) {

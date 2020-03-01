@@ -8,7 +8,6 @@ import Modele.Personne;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.exception.ConstraintViolationException;
 import org.json.simple.JSONObject;
 
 import javax.persistence.NoResultException;
@@ -154,6 +153,29 @@ public class Demandeur {
             session.clear();
             session.close();
         } catch (HibernateException e) {
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    public static boolean deleteDemandeur(int idDemandeur) {
+        Transaction tx = null;
+        DemandeurEntity demandeurEntity;
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+            try{demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity d WHERE d.idPersonne = " + idDemandeur).getSingleResult();}
+            catch (NoResultException e) {return false;}
+
+            demandeurEntity.setActif((byte) 0);
+            session.update(demandeurEntity);
+            tx.commit();
+            session.clear();
+            session.close();
+        }
+        catch (HibernateException e) {
             if(tx != null)
                 tx.rollback();
             e.printStackTrace();

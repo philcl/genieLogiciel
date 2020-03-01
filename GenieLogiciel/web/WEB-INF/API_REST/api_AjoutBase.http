@@ -1,4 +1,4 @@
-### Modify Client without Demandeur
+### Ajout d'une adresse a la volee
 POST http://localhost:8080/genielog/ajoutBase/adresse
 Content-Type: text/plain
 
