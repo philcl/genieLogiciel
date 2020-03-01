@@ -2,7 +2,7 @@ package API_REST;
 
 import DataBase.*;
 import Modele.*;
-import Modele.Client.Demandeur;
+import Modele.Client.ClientSite;
 import Modele.Staff.Token;
 import Modele.Ticket.InitTicket;
 import Modele.Ticket.SendTache;
@@ -32,7 +32,6 @@ public class RessourceTicket {
 
     public Gson gson = new Gson();
 
-    //todo ajout du listing des taches
     @Path("/init")
     @POST
     @Consumes("text/plain")
@@ -97,7 +96,7 @@ public class RessourceTicket {
 
                     //Recuperation de la liste des sites du client
                     AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + demandeurEntity.getAdresse()).getSingleResult();
-                    Demandeur adresseClient = new Demandeur(demandeurEntity.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()));
+                    ClientSite adresseClient = new ClientSite(demandeurEntity.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()), adr.getIdAdresse());
                     answer.clientSiteList.add(adresseClient);
                 }
             }
@@ -151,7 +150,6 @@ public class RessourceTicket {
         return ReponseType.getOK(gson.toJson(answer));
     }
 
-    //todo ajout des taches
     @Path("/create")
     @POST
     @Consumes("text/plain")
@@ -278,7 +276,7 @@ public class RessourceTicket {
                 .build();
     }
 
-    //todo ajout du modify des taches + suppression des taches enlever et ajout des taches create (verifier les id si present modify si non present ajout si supprimer delete)
+    //todo ajout du modify des taches + suppression des taches enlever(verifier les id si present modify si non present ajout si supprimer delete)
     @Path("/modify")
     @POST
     @Consumes("text/plain")
@@ -412,7 +410,7 @@ public class RessourceTicket {
         return ReponseType.getOK("");
     }
 
-    //todo possible seuleemnt si aucune tache
+    //todo possible seulemnet si aucune tache
     @Path("/state")
     @POST
     @Consumes("text/plain")

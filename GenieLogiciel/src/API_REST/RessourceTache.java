@@ -20,10 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
-
-//todo competences des taches associé au ticket
-//todo modification des competences du ticket seulement si aucune taches
 
 //todo mettre la date de fin à -1 si le statut n'est pas en Resolu
 

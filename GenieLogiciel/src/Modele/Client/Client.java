@@ -9,13 +9,16 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import javax.persistence.NoResultException;
+import java.util.ArrayList;
 
 public class Client {
     public int SIREN;
     public Adresse adresse;
     public String nom;
+    public ArrayList<Demandeur> demandeurs;
 
     public Client() {
+        demandeurs = new ArrayList<>();
         adresse = new Adresse();
     }
 

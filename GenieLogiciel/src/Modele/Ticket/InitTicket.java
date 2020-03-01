@@ -1,5 +1,6 @@
 package Modele.Ticket;
 
+import Modele.Client.ClientSite;
 import Modele.Client.Demandeur;
 import Modele.Personne;
 
@@ -9,7 +10,7 @@ public class InitTicket {
     public ArrayList<String> skillsList ;
     public ArrayList<String> statusList ;
     public ArrayList<String> demandeTypeList ;
-    public ArrayList<Demandeur> clientSiteList ;
+    public ArrayList<ClientSite> clientSiteList ;
     public ArrayList<String> categorieList ;
     public ArrayList<Personne> technicienList ;
     public ArrayList<Personne> demandeurList ;

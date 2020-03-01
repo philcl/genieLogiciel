@@ -13,7 +13,7 @@ import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.List;
 
-//todo asscoié les compétences de la tâche au ticket parent/tache parente (recursif)
+//todo asscoié les compétences de la tâche au ticket parent/tache parente
 //todo check lors d'un update d'une tache vers resolu si toutes les tache d'un ticket sont resolu alors le ticket est resolu
 
 public class Tache {
@@ -119,12 +119,10 @@ public class Tache {
         ArrayList<Tache> taches = new ArrayList<>();
         for(JSONObject o : json) {
             Tache tache = new Tache();
-            if(!tache.RecupererTacheDepuisJSON(o, IdTicket)) {
+            if(!tache.RecupererTacheDepuisJSON(o, IdTicket))
                 return null;
-            }
-            else {
+            else
                 taches.add(tache);
-            }
         }
         return taches;
     }

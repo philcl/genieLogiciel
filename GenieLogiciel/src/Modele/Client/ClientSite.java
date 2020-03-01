@@ -17,6 +17,12 @@ public class ClientSite {
         idAdresse = -1;
     }
 
+    public ClientSite(long SIRET, Adresse adresse, int idAdresse) {
+        this.SIRET = SIRET;
+        this.adresse = adresse;
+        this.idAdresse = idAdresse;
+    }
+
     public boolean recupererClientSite(long SIRET, Session session) {
         ClientEntity clientEntity;
 

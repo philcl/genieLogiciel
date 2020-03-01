@@ -33,13 +33,15 @@ public class Personne {
         try {
             nom = Security.test((String) personneJSON.get("nom"));
             prenom = Security.test((String) personneJSON.get("prenom"));
+            sexe = Security.test((String) personneJSON.get("sexe"));
             id = -1;
-            id = Integer.parseInt(((Long) personneJSON.get("id")).toString());
+            try{id = Integer.parseInt(((Long) personneJSON.get("id")).toString());}
+            catch (NullPointerException ignored) {}
         } catch (NullPointerException e) {
             System.err.println("La personne est mal formee");
             return null;
         }
-        if(nom.isEmpty() || prenom.isEmpty() || id == -1)
+        if(nom.isEmpty() || prenom.isEmpty() || id == -1 || sexe.isEmpty())
             return null;
         else
             return this;
@@ -57,8 +59,7 @@ public class Personne {
         return true;
         }
 
-        //todo Voir comment enlever l'element empty du retour d'objet en JSON
     public boolean isEmpty() {
-        return id == -1 || nom.isEmpty() || prenom.isEmpty();
+        return id == -1 || nom.isEmpty() || prenom.isEmpty() || sexe.isEmpty();
     }
 }

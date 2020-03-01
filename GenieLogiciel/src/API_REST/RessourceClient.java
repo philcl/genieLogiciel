@@ -6,6 +6,7 @@ import DataBase.DemandeurEntity;
 import Modele.Client.*;
 import Modele.Personne;
 import Modele.Staff.Token;
+import com.google.gson.Gson;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -25,6 +26,8 @@ import java.util.List;
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/client")
 public class RessourceClient {
+
+    public Gson gson = new Gson();
 
     @Path("/getId")
     @POST
@@ -127,7 +130,6 @@ public class RessourceClient {
         return ReponseType.getOK(clientList);
     }
 
-    //todo Ajout des demandeurs directement lors de la création avec plusieurs API une pour la création d'un demandeur et une autre pour la création d'un site
     @Path("/create")
     @POST
     @Consumes("text/plain")
@@ -180,8 +182,6 @@ public class RessourceClient {
             }
 
             session.save(clientEntity);
-
-            //todo Ajout des demandeurs
             tx.commit();
             session.clear();
             session.close();
@@ -191,6 +191,28 @@ public class RessourceClient {
             e.printStackTrace();
             return ReponseType.getNOTOK("Impossible de sauvegarder le client sur la base", false, null, null);
         }
+
+        ArrayList<JSONObject> demandeursJSON;
+        try{
+            demandeursJSON = (ArrayList<JSONObject>) clientJSON.get("demandeurs");
+            ArrayList<Demandeur> demandeurs = Demandeur.recupererListDemandeurDepuisJSON(demandeursJSON, client.SIREN);
+            System.err.println("--------------dem = " + demandeurs);
+            if(demandeurs == null)
+                return ReponseType.getNOTOK("Les Demandeurs sont mal former", false, null, null);
+            client.demandeurs = demandeurs;
+        }
+        catch (NullPointerException ignored) {}
+
+        if(client.demandeurs != null && !client.demandeurs.isEmpty()) {
+            for(Demandeur demandeur : client.demandeurs) {
+                Response response = CreateDemandeurForClient(token, demandeur, client.SIREN);
+                if(response != null) return response;
+            }
+        }
+
+        //todo Tester l'ajout des demandeurs
+        //todo ajout des demandeurs dans la table de jonction SIREN/SIRET
+
         return ReponseType.getOK("");
     }
 
@@ -293,8 +315,9 @@ public class RessourceClient {
                 clientInit.demandeurList.add(demandeur);
 
                 ClientSite clientSite = new ClientSite();
-                clientSite.adresse = demandeur.adresse;
+                clientSite.adresse.recupererAdresse(demandeur.idAdresse);
                 clientSite.SIRET = demandeur.SIRET;
+                clientSite.idAdresse = demandeur.idAdresse;
                 clientInit.clientSiteList.add(clientSite);
 
             }
@@ -377,7 +400,18 @@ public class RessourceClient {
             } else if (!client.adresse.RecupererAdresseDepuisJson(adresse))
                 return null;
 
+            ArrayList<JSONObject> demandeursJSON;
+            try{
+                demandeursJSON = (ArrayList<JSONObject>) json.get("demandeurs");
+                System.err.println("-------------------------ok------------------- size" + demandeursJSON.size() + "--------");
+                ArrayList<Demandeur> demandeurs = Demandeur.recupererListDemandeurDepuisJSON(demandeursJSON, client.SIREN);
+                System.err.println("--------------ok2------------------ demandeur = " + demandeurs);
+                if(demandeurs != null)
+                    client.demandeurs = demandeurs;
+            }
+            catch (NullPointerException ignored) {}
 
+            System.err.println("-------------------ok12----------------------------");
         } catch (NullPointerException e) {
             System.err.println("Erreur lors de la recuperation du client depuis un json parse impossible");
             return null;
@@ -385,5 +419,14 @@ public class RessourceClient {
         return client;
     }
 
-
+    private Response CreateDemandeurForClient(String token, Demandeur demandeur, int SIREN) {
+        SendDemandeur myDemandeur = new SendDemandeur(token, demandeur, SIREN);
+        String str = gson.toJson(myDemandeur);
+        System.err.println("json final = " + str + "------------------------------------------------------");
+        Response resp = RessourceDemandeur.createDemandeur(str);
+        if(resp.getStatus() != 200) {
+            return resp;
+        }
+        return null;
+    }
 }

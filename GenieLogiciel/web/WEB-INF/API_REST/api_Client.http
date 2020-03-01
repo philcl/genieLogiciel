@@ -12,20 +12,26 @@ Content-Type: text/plain
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 
 ###
-### Create Client
+### Create Client without Demandeurs
 POST http://localhost:8080/genielog/client/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":21,"nom":"tst","adresse":{"numero":500,"rue":"rue des saucissons","ville":"Jambon","codePostal":"25811"}}}
-
-
 ###
-### Modify Client
+### Create Client with Demandeurs
+POST http://localhost:8080/genielog/client/create
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":21,"nom":"tst","adresse":{"numero":500,"rue":"rue des saucissons","ville":"Jambon","codePostal":"25811"},
+"demandeurs":[{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"nom":"essaie","prenom":"je suis","sexe":"M"}, "telephone":"0645789878"}]}}
+###
+
+### Modify Client without Demandeur
 POST http://localhost:8080/genielog/client/modify
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des fromages","ville":"Saint Nectaire","codePostal":"25811"}}}
-
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","client":{"SIREN":20,"nom":"testouille","adresse":{"numero":258,"rue":"rue des fromages","ville":"Saint Nectaire","codePostal":"25811"},
+"demandeurs":[{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"nom":"essaie","prenom":"je suis","sexe":"M"}, "telephone":"0645789878"}]}}
 ###
 ### Init Client
 POST http://localhost:8080/genielog/client/init
