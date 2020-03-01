@@ -315,9 +315,9 @@ public class RessourceStat {
 
                 for(int i : pos2N)
                 {
-                    Long temp = res.radarChartData.get(pos).data.get(i);
+                    Long temp = res.radarChartData.get(i).data.get(pos);
 
-                    res.radarChartData.get(pos).data.set(i,temp+1);
+                    res.radarChartData.get(i).data.set(pos,temp+1);
                 }
             }
 
