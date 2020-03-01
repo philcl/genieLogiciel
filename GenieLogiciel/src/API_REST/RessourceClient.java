@@ -176,19 +176,18 @@ public class RessourceClient {
             tx = session.beginTransaction();
 
             try {
-                session.createQuery("FROM ClientEntity c WHERE c.siren = " + client.SIREN).getSingleResult();
+                session.createQuery("FROM ClientEntity c WHERE c.siren = " + client.SIREN + " and c.actif = 1").getSingleResult();
                 return ReponseType.getNOTOK("Le SIREN " + client.SIREN + " existe deja veuillez le changer", true, tx, session);
-            } catch (NoResultException ignored) {
-            }
+            } catch (NoResultException ignored) {}
 
             try {
-                session.createQuery("FROM ClientEntity c WHERE c.nom = '" + client.nom.replace("'", "''") + "'").getSingleResult();
+                session.createQuery("FROM ClientEntity c WHERE c.nom = '" + client.nom.replace("'", "''") + "' and c.actif = 1").getSingleResult();
                 return ReponseType.getNOTOK("Le client " + client.nom + " existe deja veuillez le changer", true, tx, session);
             } catch (NoResultException ignored) {
             }
 
             try{
-                session.createQuery("FROM ClientEntity c WHERE c.adresse = " + adresseId).getSingleResult();
+                session.createQuery("FROM ClientEntity c WHERE c.adresse = " + adresseId + " and  c.actif = 1").getSingleResult();
                 return ReponseType.getNOTOK("Impossible de créer le client avec l'adresse id = " + adresseId + " un client possede deja cette adresse", true, tx, session);
             }
             catch (NoResultException ignored) {}

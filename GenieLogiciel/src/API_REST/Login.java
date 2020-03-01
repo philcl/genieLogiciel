@@ -475,11 +475,11 @@ public class Login {
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             StaffEntity staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity p WHERE p.id = " + userId).getSingleResult();
-            user.token = Token.addUID();
             user.firstName = staffEntity.getNom();
             user.lastName = staffEntity.getPrenom();
             user.id = userId;
             user.role.addAll(getPoste(session, userId));
+            user.token = Token.addUID(user.role);
 
             tx.commit();
             session.clear();

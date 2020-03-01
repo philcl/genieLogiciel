@@ -277,7 +277,7 @@ public class RessourceTicket {
                 .build();
     }
 
-    //todo ajout du modify des taches + suppression des taches enlever(verifier les id si present modify si non present ajout si supprimer delete) statut Non resolu pour delete les taches
+
     @Path("/modify")
     @POST
     @Consumes("text/plain")
@@ -346,6 +346,7 @@ public class RessourceTicket {
             nbLignes += update.executeUpdate();
 
             //todo faire en sorte de pouvoir supprimer des competences
+            //todo accorder les competences des taches avec le ticket
 
             if(!ticket.competences.isEmpty() && (ticket.taches == null || ticket.taches.isEmpty())) {
                 for (String competence : ticket.competences) {

@@ -4,3 +4,10 @@ Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","adresse":{"numero":259,"rue":"rue des frotages","ville":"Saint Nectaire","codePostal":"25811"}}
 ###
+
+### Ajout d'une competence a la volee
+POST http://localhost:8080/genielog/ajoutBase/addCompetence
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","competence":"Informaticien"}
+###
