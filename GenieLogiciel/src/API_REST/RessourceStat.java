@@ -28,8 +28,7 @@ import java.util.List;
 //- temps par compétences/tech : KO
 //- Nombre tickets par clients : OK
 //- Nombre tickets par statut : OK
-//- Nombre de taches avec chaque compétences pour tout les tickets : KO
-// Nombre de taches avec chaque compétences pour toutes les compétences : KO
+//- Nombre de taches avec chaque compétences pour tout les tickets : OK
 
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/stat")
@@ -87,7 +86,7 @@ public class RessourceStat {
         return ReponseType.getOK(res);
     }
 
-    @Path("/statTicketParCategorie")
+    @Path("/statTicketParStatut")
     @POST
     @Consumes("text/plain")
     @Produces("application/json")
@@ -200,9 +199,9 @@ public class RessourceStat {
 
             for(Object o : competences)
             {
-                StatutTicketEntity statutTicketEntity = (StatutTicketEntity) o;
+                CompetencesEntity competencesEntity = (CompetencesEntity) o;
 
-                res.doughnutChartLabels.add(statutTicketEntity.getIdStatusTicket());
+                res.doughnutChartLabels.add(competencesEntity.getCompetence());
             }
 
             /*for (Object o : tickets)

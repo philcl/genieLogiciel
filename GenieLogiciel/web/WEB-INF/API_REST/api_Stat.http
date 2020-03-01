@@ -1,16 +1,16 @@
-### create User
+### Nb Ticket par client
 POST http://localhost:8080/genielog/stat/statTicketParClient
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
-### create User
-POST http://localhost:8080/genielog/stat/statTicketParCategorie
+### Nb Ticket par statut par année
+POST http://localhost:8080/genielog/stat/statTicketParStatut
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
-### create User
+### Nb ticket par compétence
 POST http://localhost:8080/genielog/stat/statNombreTicketParCompetence
 Content-Type: text/plain
 
