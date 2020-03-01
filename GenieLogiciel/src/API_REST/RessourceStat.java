@@ -28,7 +28,8 @@ import java.util.List;
 //- temps par compétences/tech : KO
 //- Nombre tickets par clients : OK
 //- Nombre tickets par statut : OK
-//- Nombre de taches avec chaque compétences pour tout les tickets et toutes les compétences : KO
+//- Nombre de taches avec chaque compétences pour tout les tickets : KO
+// Nombre de taches avec chaque compétences pour toutes les compétences : KO
 
 @SuppressWarnings("JpaQlInspection") //Enleve les erreurs pour les requetes SQL elles peuvent etre juste
 @Path("/stat")
@@ -151,6 +152,98 @@ public class RessourceStat {
                     if(map.label.equals(string))
                     {
                         map.data.set(pos,map.data.get(pos)+1);
+                    }
+                }
+            }
+
+            //clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
+            tx.commit();
+            session.clear();
+            session.close();
+        } catch (HibernateException e) {
+            if (tx != null)
+                tx.rollback();
+            e.printStackTrace();
+        } catch (NoResultException e) {
+            //return ReponseType.getNOTOK("Le client " + clientName + " n'existe pas", false, null, null);
+        }
+
+        return ReponseType.getOK(res);
+    }
+
+    @Path("/statNombreTicketParCompetence")
+    @POST
+    @Consumes("text/plain")
+    @Produces("application/json")
+    public Response getNbTicketParCompetence(String jsonStr) {
+        String token = "", statistique = "";
+        ClientTicket res = new ClientTicket();
+        Transaction tx = null;
+        try {
+            JSONParser parser = new JSONParser();
+            JSONObject json = (JSONObject) parser.parse(jsonStr);
+            token = (String) json.get("token");
+        } catch (ParseException | NullPointerException e) {
+            e.printStackTrace();
+            return ReponseType.getNOTOK("Il manque des parametres (token)", false, null, null);
+        }
+
+        if (!Token.tryToken(token))
+            return Token.tokenNonValide();
+
+        try (Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+
+            List competences = session.createQuery("FROM CompetencesEntity c").list();
+
+            List tickets = session.createQuery("FROM TicketEntity t").list();
+
+            for(Object o : competences)
+            {
+                StatutTicketEntity statutTicketEntity = (StatutTicketEntity) o;
+
+                res.doughnutChartLabels.add(statutTicketEntity.getIdStatusTicket());
+            }
+
+            /*for (Object o : tickets)
+            {
+                TicketEntity ticketEntity = (TicketEntity) o;
+
+                String string = String.valueOf(ticketEntity.getDate().toLocalDateTime().getYear());
+
+                if(!(res.contient(string)))
+                {
+                    System.err.println("J'ajoute un élément : " + string);
+                    res.radarChartData.add(new Map(string,res.radarChartLabels.size()));
+                }
+                else {
+                    System.err.println("J'ajoute PAS d'élément : " + string);
+                }
+            }*/
+
+            for (int i = 0;i<res.doughnutChartLabels.size();i++)
+            {
+                res.doughnutChartData.add(0L);
+            }
+
+            for (Object o : tickets)
+            {
+                TicketEntity ticketEntity = (TicketEntity) o;
+
+                List idCompetencesTicket = session.createQuery("SELECT c.competence FROM JonctionTicketCompetenceEntity c WHERE c.idTicket = " + ticketEntity.getId()).list();
+
+                for (Object p : idCompetencesTicket)
+                {
+                    int idCompetence = (Integer) p;
+
+                    CompetencesEntity competencesEntity = (CompetencesEntity) session.createQuery("FROM CompetencesEntity c WHERE c.idCompetences = " + idCompetence).getSingleResult();
+
+                    for (int i = 0;i<res.doughnutChartLabels.size();i++)
+                    {
+                        if(res.doughnutChartLabels.get(i).equals(competencesEntity.getCompetence()))
+                        {
+                            res.doughnutChartData.set(i,res.doughnutChartData.get(i)+1);
+                        }
                     }
                 }
             }
