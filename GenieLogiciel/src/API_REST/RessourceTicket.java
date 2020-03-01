@@ -276,7 +276,7 @@ public class RessourceTicket {
                 .build();
     }
 
-    //todo ajout du modify des taches + suppression des taches enlever(verifier les id si present modify si non present ajout si supprimer delete)
+    //todo ajout du modify des taches + suppression des taches enlever(verifier les id si present modify si non present ajout si supprimer delete) statut Non resolu pour delete les taches
     @Path("/modify")
     @POST
     @Consumes("text/plain")
@@ -388,9 +388,9 @@ public class RessourceTicket {
                         String str = gson.toJson(myTask);
                         System.err.println("json final = " + str + "------------------------------------------------------");
                         Response resp = RessourceTache.modifyTask(str);
-                        if(resp.getStatus() != 200) {
+                        if(resp.getStatus() != 200)
                             return resp;
-                        }
+                        map.remove(tache.id);
                     }
                     //Sinon on la creer
                     else {

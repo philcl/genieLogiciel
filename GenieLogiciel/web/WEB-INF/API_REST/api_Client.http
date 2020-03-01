@@ -2,7 +2,7 @@
 POST http://localhost:8080/genielog/client/getId
 Content-Type: text/plain
 
-{"clientName":"ACCOR","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+{"clientName":"Pops1920","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 
 ###
 ### Liste Client

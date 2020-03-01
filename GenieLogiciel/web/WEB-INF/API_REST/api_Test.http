@@ -42,3 +42,36 @@ Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","tache":{"statut":"En cours","objet":"TEST","description":"","ticketParent":8,"tempsPasse":-1,"id":-1,"pourcentage":0,"tempsEstime":40,"competences":[],"technicien":{"nom":"VITTONE","prenom":"Jules","id":2}}}
 ###
+
+### Create Client with Demandeurs
+POST http://localhost:8080/genielog/client/create
+Content-Type: text/plain
+
+{
+  "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "client": {
+    "SIREN": 9012132,
+    "nom": "RATATOUILLEINC",
+    "adresse": {
+      "numero": 12,
+      "rue": "Rue Edouard",
+      "ville": "LeZO",
+      "codePostal": "91080"
+    },
+    "demandeurs": [
+      {
+        "SIRET": 232323,
+        "demandeur": {
+          "nom": "SDQSD",
+          "prenom": "SQDSQD",
+          "sexe": "M"
+        },
+        "telephone": "01012",
+        "idAdresse": 28
+      }
+    ]
+  }
+}
+
+###
+

@@ -186,6 +186,13 @@ public class RessourceClient {
             } catch (NoResultException ignored) {
             }
 
+            try{
+                session.createQuery("FROM ClientEntity c WHERE c.adresse = " + adresseId).getSingleResult();
+                return ReponseType.getNOTOK("Impossible de créer le client avec l'adresse id = " + adresseId + " un client possede deja cette adresse", true, tx, session);
+            }
+            catch (NoResultException ignored) {}
+
+
             session.save(clientEntity);
             tx.commit();
             session.clear();
@@ -269,7 +276,6 @@ public class RessourceClient {
 
                     for(Demandeur demandeur : client.demandeurs) {
                         //Si le demandeur existe deja on le met a jour soit pour modifier soit pour supprimer via la mise a jour du statut
-                        //todo supprimer le demandeur si non présent dans la mise à jour
                         System.err.println("id du demandeur = " + demandeur.demandeur.id);
                         if(map.containsKey(demandeur.demandeur.id)) {
                             SendDemandeur myDemandeur = new SendDemandeur(token, demandeur, client.SIREN);
@@ -353,6 +359,7 @@ public class RessourceClient {
 
             List result = session.createQuery("SELECT d FROM DemandeurEntity d, JonctionSirensiretEntity ss WHERE d.siret = ss.siret and ss.siren = " + SIREN +  " and d.actif = 1").list();
 
+            HashMap<Integer, Long> map = new HashMap<>();
             for(Object o : result) {
                 DemandeurEntity p = (DemandeurEntity) o;
                 Demandeur demandeur = new Demandeur();
@@ -365,8 +372,11 @@ public class RessourceClient {
                 clientSite.adresse.recupererAdresse(demandeur.idAdresse);
                 clientSite.SIRET = demandeur.SIRET;
                 clientSite.idAdresse = demandeur.idAdresse;
-                clientInit.clientSiteList.add(clientSite);
 
+                //La map permet d'eviter les doublons
+                if(!map.containsKey(demandeur.idAdresse))
+                    clientInit.clientSiteList.add(clientSite);
+                map.put(demandeur.idAdresse,demandeur.SIRET);
             }
 
             tx.commit();
@@ -380,7 +390,6 @@ public class RessourceClient {
         return ReponseType.getOK(clientInit);
     }
 
-    //todo delete les demandeurs
     @Path("/delete")
     @POST
     @Consumes("text/plain")
