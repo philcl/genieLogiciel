@@ -2,5 +2,5 @@
 POST http://localhost:8080/genielog/demandeur/create
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":21, "demandeur":{"SIRET"}}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":21, "demandeur":{"SIRET"}, "telephone":"000014465454", "idAdresse":5}
 ###

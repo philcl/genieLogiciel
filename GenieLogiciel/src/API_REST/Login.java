@@ -121,7 +121,7 @@ public class Login {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             try{
-                session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
+                session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "'").getSingleResult();
                 return ReponseType.getNOTOK("Le login existe deja veuillez le changer", true, tx, session);
             } catch (NoResultException ignored) {}
 
@@ -591,7 +591,7 @@ public class Login {
         user.setSexe(p.staffSexe);
 
         //Recupération de l'id max et set
-        if(creation && p.staffId == -1) {
+        if(creation && p.staffId == 0) {
             user.setActif(1);
             user.setDebut(Timestamp.from(Instant.now()));
         }
