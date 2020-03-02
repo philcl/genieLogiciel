@@ -3,12 +3,8 @@ package API_REST;
 import DataBase.AdresseEntity;
 import DataBase.ClientEntity;
 import DataBase.DemandeurEntity;
-import DataBase.JonctionSirensiretEntity;
 import Modele.Client.*;
-import Modele.Personne;
 import Modele.Staff.Token;
-import Modele.Ticket.SendTache;
-import Modele.Ticket.Tache;
 import com.google.gson.Gson;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -60,7 +56,7 @@ public class RessourceClient {
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "'").getSingleResult();
+            clientId = (int) session.createQuery("SELECT c.siren FROM ClientEntity c WHERE c.nom = '" + clientName.replace("'", "''") + "' and c.actif = 1").getSingleResult();
             tx.commit();
             session.clear();
             session.close();
@@ -163,6 +159,7 @@ public class RessourceClient {
         if (client == null)
             return ReponseType.getNOTOK("Le JSON du client est mal forme ou contient des requetes SQL veuillez verifier", false, null, null);
 
+        System.err.println("------------------------------json client recup");
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setActif((byte) 1);
         clientEntity.setDebut(Timestamp.from(Instant.now()));
@@ -198,6 +195,8 @@ public class RessourceClient {
             session.save(clientEntity);
             tx.commit();
             session.clear();
+
+            System.err.println("-----------------client save---------------------");
 
             ArrayList<JSONObject> demandeursJSON;
             try{
@@ -439,7 +438,7 @@ public class RessourceClient {
             for(Object o : result) {
                 long SIRET = (long) o;
 
-                List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET).list();
+                List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET + " and d.actif = 1").list();
                 for(Object obj : res) {
                     DemandeurEntity demandeurEntity = (DemandeurEntity) obj;
                     SendDeleteDemandeur delete = new SendDeleteDemandeur(0, demandeurEntity.getIdPersonne(), token);
@@ -490,6 +489,7 @@ public class RessourceClient {
                 demandeursJSON = (ArrayList<JSONObject>) json.get("demandeurs");
                 System.err.println("-------------------------ok------------------- size" + demandeursJSON.size() + "--------");
                 ArrayList<Demandeur> demandeurs = Demandeur.recupererListDemandeurDepuisJSON(demandeursJSON, client.SIREN);
+                System.err.println("----------------------demandeur recup- sur le client----------------------------");
                 if(demandeurs != null)
                     client.demandeurs = demandeurs;
             }

@@ -48,7 +48,7 @@ public class Demandeur {
             if(this.demandeur.RecupererPersonDepuisJson(demandeur) == null)
                 return false;
             System.err.println("demandeur personne = " + demandeur);
-            System.err.println("demandeur apres construct = " + this.demandeur.toString());
+
 
             if(this.idAdresse == -1 || this.demandeur == null)
                 return false;
@@ -57,6 +57,7 @@ public class Demandeur {
             System.err.println("Impossible de parse le demandeur");
             return false;
         }
+        System.err.println("demandeur apres construct = " + this.demandeur.toString());
         return true;
     }
 
@@ -65,26 +66,40 @@ public class Demandeur {
             Transaction tx = null;
             try(Session session = CreateSession.getSession()) {
                 tx = session.beginTransaction();
+                System.err.println("----------------avant requete 1");
                 try {session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN + " and c.actif = 1").getSingleResult();}
                 catch (NoResultException e) {return false;}
 
-                try {session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN + " and j.actif = 1").getSingleResult();}
+                System.err.println("------------------avant requete 2");
+                try {
+                    session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN + " and j.actif = 1").getSingleResult();
+                    tx.commit();
+
+                }
                 catch (NoResultException e) {
+                    tx.commit();
+                    session.clear();
+                    tx = session.beginTransaction();
+                    System.err.println("---------------dans le catch normal");
                     JonctionSirensiretEntity j = new JonctionSirensiretEntity();
+                    System.err.println("Siret = " + SIRET + " siren = " + SIREN);
                     j.setSiren(SIREN);
                     j.setSiret(SIRET);
                     j.setActif(1);
                     j.setDebut(Timestamp.from(Instant.now()));
                     session.save(j);
+                    tx.commit();
+                    System.err.println("----------------after");
                 }
 
-                tx.commit();
                 session.clear();
                 session.close();
+                System.err.println("---------------fin de creation demandeur");
             }
             catch (HibernateException e) {
                 if(tx != null)
                     tx.rollback();
+                System.err.println("------------------hhhhhh");
                 e.printStackTrace();
                 return  false;
             }
@@ -196,6 +211,7 @@ public class Demandeur {
         ArrayList<Demandeur> demandeurs = new ArrayList<>();
 
         List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN + " and j.actif = 1").list();
+        System.err.println("------------------------------------------------------------------------------------------------------------------------");
         for(Object o : result) {
             long SIRET = (long) o;
             List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET + " and d.actif = 1").list();
