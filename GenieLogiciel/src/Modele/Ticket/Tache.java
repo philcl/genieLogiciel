@@ -73,7 +73,7 @@ public class Tache {
     }
 
     public ArrayList<String> getCompetencesForTask(int idTask, Session session) {
-        List result = session.createQuery("FROM JonctionTacheCompetenceEntity j WHERE j.tache = " + idTask).list();
+        List result = session.createQuery("FROM JonctionTacheCompetenceEntity j WHERE j.tache = " + idTask + "").list();
         ArrayList<String> competences = new ArrayList<>();
 
         for(Object o : result) {

@@ -592,9 +592,7 @@ public class Login {
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             //Recupération de l'id max et set
-            int id = (int) session.createQuery("SELECT MAX(s.id) FROM StaffEntity s").getSingleResult();
             if(creation) {
-                user.setId(id + 1);
                 user.setActif(1);
                 user.setDebut(Timestamp.from(Instant.now()));
             }

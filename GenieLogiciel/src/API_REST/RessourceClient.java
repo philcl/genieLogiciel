@@ -265,7 +265,7 @@ public class RessourceClient {
             tx = session.beginTransaction();
             ClientEntity clientEntity;
 
-            try{clientEntity = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + client.SIREN).getSingleResult();}
+            try{clientEntity = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + client.SIREN + " and c.actif = 1").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le SIREN du client n'existe pas ", true, tx, session);}
 
             //Recherche puis ajout si elle n'existe pas
