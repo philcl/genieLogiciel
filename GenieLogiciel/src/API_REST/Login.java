@@ -67,7 +67,7 @@ public class Login {
                 return ReponseType.getNOTOK("Le login contient des commandes SQL ce n'est pas bien merci de corriger", true, tx, session);
 
             try{ userEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.login = '" + obj.get("staffUserName") + "' and s.actif = 1").getSingleResult();}
-           catch(NoResultException e) {return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Utilisateur non trouve", true, tx, session);}
 
             if (Arrays.equals(bytes, userEntity.getMdp()))
                 user = getUser(userEntity.getId());
@@ -120,27 +120,15 @@ public class Login {
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
-            return ReponseType.getNOTOK("Le login existe deja veuillez le changer", true, tx, session);
-        } catch (NoResultException ignored) {}
+            try{
+                session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
+                return ReponseType.getNOTOK("Le login existe deja veuillez le changer", true, tx, session);
+            } catch (NoResultException ignored) {}
 
         //Recuperation du staffEntity
-        StaffEntity user = setStaffEntity(p, true);
+        StaffEntity user = setStaffEntity(p, true, session);
         if(user == null)
             return ReponseType.getNOTOK("Impossible de rajouter l'adresse du user", false, null, null);
-
-        //Recuperation des competences
-        ArrayList<JonctionStaffCompetenceEntity> competenceToAdd = getCompetences(p, user.getId());
-        if(competenceToAdd == null)
-            return ReponseType.getNOTOK("L'une des competences n'existe pas", false, null, null);
-
-        //Verification de l'existance des roles
-        ArrayList<JonctionStaffPosteEntity> posteId = getPosteId(p.staffRole, user.getId());
-        if(posteId == null)
-            return ReponseType.getNOTOK("L'un des postes n'existe pas", false, null, null);
-
-        try (Session session = CreateSession.getSession()) {
-            tx = session.beginTransaction();
 
             //Ajout du staff sur la base pour avoir les foreign key sur competence et poste
             session.save(user);
@@ -148,11 +136,28 @@ public class Login {
             session.clear();
             tx = session.beginTransaction();
 
+            int idUser = (int) session.createQuery("SELECT s.id FROM StaffEntity s WHERE s.login = '" + user.getLogin() + "' and s.actif = 1").getSingleResult();
+            user.setId(idUser);
+
+            //Recuperation des competences
+            System.err.println("user id = " + user.getId());
+            ArrayList<JonctionStaffCompetenceEntity> competenceToAdd = getCompetences(p, user.getId(), session);
+            if(competenceToAdd == null)
+                return ReponseType.getNOTOK("L'une des competences n'existe pas", false, null, null);
+
+            //Verification de l'existance des roles
+            ArrayList<JonctionStaffPosteEntity> posteId = getPosteId(p.staffRole, user.getId(), session);
+            if(posteId == null)
+                return ReponseType.getNOTOK("L'un des postes n'existe pas", false, null, null);
+
             try {
                 //Ajout des competences
                 for (JonctionStaffCompetenceEntity j : competenceToAdd)
                     session.save(j);
 
+                tx.commit();
+                session.clear();
+                tx = session.beginTransaction();
                 //Ajout des postes
                 for (JonctionStaffPosteEntity poste : posteId)
                     session.save(poste);
@@ -208,32 +213,29 @@ public class Login {
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            session.createQuery("FROM StaffEntity s WHERE s.id = '" + p.staffId + "' and s.actif = 1").getSingleResult();
-            session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
-            tx.commit();
-            session.clear();
-            session.close();
-        } catch (NoResultException e) {return ReponseType.getNOTOK("Le login ou le staffId n'existe pas veuillez les changer", false, null, null);}
+            try{
+                session.createQuery("FROM StaffEntity s WHERE s.id = '" + p.staffId + "' and s.actif = 1").getSingleResult();
+                session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
+            }
+            catch (NoResultException e) {return ReponseType.getNOTOK("Le login ou le staffId n'existe pas veuillez les changer", false, null, null);}
 
-        //Recuperation du staffEntity
-        StaffEntity user = setStaffEntity(p, false);
+            //Recuperation du staffEntity
+            StaffEntity user = setStaffEntity(p, false, session);
 
-        if(user == null)
-            return ReponseType.getNOTOK("Impossible de rajouter l'adresse du user", false, null, null);
+            if(user == null)
+                return ReponseType.getNOTOK("Impossible de rajouter l'adresse du user", false, null, null);
 
-        //Recuperation des competences
-        ArrayList<JonctionStaffCompetenceEntity> competenceToAdd = getCompetences(p, user.getId());
-        if(competenceToAdd == null)
-            return ReponseType.getNOTOK("L'une des competences n'existe pas", false, null, null);
+            //Recuperation des competences
+            ArrayList<JonctionStaffCompetenceEntity> competenceToAdd = getCompetences(p, user.getId(), session);
+            if(competenceToAdd == null)
+                return ReponseType.getNOTOK("L'une des competences n'existe pas", false, null, null);
 
-        //Verification de l'existance des roles
-        ArrayList<JonctionStaffPosteEntity> posteId = getPosteId(p.staffRole, user.getId());
-        if(posteId == null)
-            return ReponseType.getNOTOK("L'un des postes n'existe pas", false, null, null);
+            //Verification de l'existance des roles
+            ArrayList<JonctionStaffPosteEntity> posteId = getPosteId(p.staffRole, user.getId(), session);
+            if(posteId == null)
+                return ReponseType.getNOTOK("L'un des postes n'existe pas", false, null, null);
 
-        try (Session session = CreateSession.getSession()) {
             //Ajout du staff sur la base
-            tx = session.beginTransaction();
             StaffEntity staffEntity;
 
             try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + user.getId() + " and s.actif = 1").getSingleResult();}
@@ -354,9 +356,9 @@ public class Login {
         String token = "";
         ArrayList<StaffList> staffList = new ArrayList<>();
         try {
-          JSONParser parser = new JSONParser();
-          JSONObject obj = (JSONObject) parser.parse(jsonStr);
-          token = (String) obj.get("token");
+            JSONParser parser = new JSONParser();
+            JSONObject obj = (JSONObject) parser.parse(jsonStr);
+            token = (String) obj.get("token");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -575,8 +577,7 @@ public class Login {
      * @param p
      * @return Renvoie le staffEntity initialise avec p ou null si l'adresse n'a oas pu s'ajouter
      */
-    private StaffEntity setStaffEntity(Staff p, boolean creation) {
-        Transaction tx = null;
+    private StaffEntity setStaffEntity(Staff p, boolean creation, Session session) {
         StaffEntity user = new StaffEntity();
 
         //Set du staff pour ajout
@@ -589,31 +590,22 @@ public class Login {
         user.setTelephone(p.staffTel);
         user.setSexe(p.staffSexe);
 
-        try (Session session = CreateSession.getSession()) {
-            tx = session.beginTransaction();
-            //Recupération de l'id max et set
-            if(creation) {
-                user.setActif(1);
-                user.setDebut(Timestamp.from(Instant.now()));
-            }
-            else
-                user.setId(p.staffId);
-
-            //Ajout de l'adresse
-            int adr = p.staffAdress.getId();
-            if(adr == -1) //L'adresse n'existe pas lors de la modification ou de l'ajout d'un staff alors ajout direct de l'adresse
-                if(p.staffAdress.addAdresse() == -1)
-                    return null;
-            tx.commit();
-            session.clear();
-            session.close();
-            //Je le met apres pour etre sur que le save de l'adresse est bien passe
-            user.setAdresse(p.staffAdress.getId());
-        } catch (HibernateException e) {
-            if (tx != null)
-                tx.rollback();
-            e.printStackTrace();
+        //Recupération de l'id max et set
+        if(creation) {
+            user.setActif(1);
+            user.setDebut(Timestamp.from(Instant.now()));
         }
+        else
+            user.setId(p.staffId);
+
+        //Ajout de l'adresse
+        int adr = p.staffAdress.getId();
+        if(adr == -1) //L'adresse n'existe pas lors de la modification ou de l'ajout d'un staff alors ajout direct de l'adresse
+            if(p.staffAdress.addAdresse() == -1)
+                return null;
+
+        //Je le met apres pour etre sur que le save de l'adresse est bien passe
+        user.setAdresse(p.staffAdress.getId());
         return user;
     }
 
@@ -621,20 +613,10 @@ public class Login {
      * @param p le staff rempli
      * @return Renvoie l'objet si tout c'est bien passe sinon null
      */
-    private ArrayList<JonctionStaffCompetenceEntity> getCompetences(Staff p, int staffId) {
-        Transaction tx = null;
+    private ArrayList<JonctionStaffCompetenceEntity> getCompetences(Staff p, int staffId, Session session) {
         List result = null;
-        try (Session session = CreateSession.getSession()) {
-            //Verification de l'existance des competences et ajout
-            tx = session.beginTransaction();
-            result = session.createQuery("FROM CompetencesEntity c WHERE c.actif = 1").list();
-            tx.commit();
-            session.clear();
-            session.close();
-        } catch (HibernateException e) {
-            if (tx != null)
-                tx.rollback();
-        }
+        //Verification de l'existance des competences et ajout
+        result = session.createQuery("FROM CompetencesEntity c WHERE c.actif = 1").list();
 
         HashMap<String, Integer> competences = new HashMap<>();
         ArrayList<JonctionStaffCompetenceEntity> comptenceToAdd = new ArrayList<>();
@@ -642,6 +624,7 @@ public class Login {
         //Enregistrement des competences qui sont sur la base
         for (Object o : result) {
             CompetencesEntity c = (CompetencesEntity) o;
+            System.err.println("competence = " + c.getCompetence() + " id :" + c.getIdCompetences());
             competences.put(c.getCompetence(), c.getIdCompetences());
         }
 
@@ -656,6 +639,8 @@ public class Login {
                 jonction.setStaffId(staffId);
                 jonction.setActif(1);
                 jonction.setDebut(Timestamp.from(Instant.now()));
+
+                System.err.println("ajout de la competence = " + competences.get(s) + " pour le staff :" + staffId);
                 comptenceToAdd.add(jonction);
             }
         }
@@ -698,34 +683,24 @@ public class Login {
         return staffPostes;
     }
 
-    private ArrayList<JonctionStaffPosteEntity> getPosteId(ArrayList<String> postes, int staffId) {
+    private ArrayList<JonctionStaffPosteEntity> getPosteId(ArrayList<String> postes, int staffId, Session session) {
         Transaction tx = null;
         ArrayList<JonctionStaffPosteEntity> postesId = new ArrayList<>();
-        try(Session session = CreateSession.getSession()) {
-             tx = session.beginTransaction();
-            for (String s : postes) {
-                PosteEntity posteEntity = null;
-                try{posteEntity = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE p.poste = '" + s + "' and p.actif = 1").getSingleResult();}
-                catch(NoResultException e) {
-                    tx.rollback();
-                    session.clear();
-                    session.close();
-                    return null;
-                }
-                JonctionStaffPosteEntity poste = new JonctionStaffPosteEntity();
-                poste.setIdPoste(posteEntity.getIdPoste());
-                poste.setIdStaff(staffId);
-                poste.setActif(1);
-                poste.setDebut(Timestamp.from(Instant.now()));
-                postesId.add(poste);
-            }
-            tx.commit();
-            session.clear();
-            session.close();
-        } catch (HibernateException e) {
-            if(tx != null)
+        for (String s : postes) {
+            PosteEntity posteEntity = null;
+            try{posteEntity = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE p.poste = '" + s + "' and p.actif = 1").getSingleResult();}
+            catch(NoResultException e) {
                 tx.rollback();
-            e.printStackTrace();
+                session.clear();
+                session.close();
+                return null;
+            }
+            JonctionStaffPosteEntity poste = new JonctionStaffPosteEntity();
+            poste.setIdPoste(posteEntity.getIdPoste());
+            poste.setIdStaff(staffId);
+            poste.setActif(1);
+            poste.setDebut(Timestamp.from(Instant.now()));
+            postesId.add(poste);
         }
         return postesId;
     }
