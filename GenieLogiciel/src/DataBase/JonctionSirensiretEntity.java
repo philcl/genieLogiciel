@@ -6,8 +6,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "JonctionSIRENSIRET", schema = "GenieLog", catalog = "")
-@IdClass(JonctionSirensiretEntityPK.class)
 public class JonctionSirensiretEntity {
+    private int id;
     private long siret;
     private int siren;
     private Integer actif;
@@ -15,6 +15,16 @@ public class JonctionSirensiretEntity {
     private Timestamp fin;
 
     @Id
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
     @Column(name = "SIRET", nullable = false)
     public long getSiret() {
         return siret;
@@ -24,7 +34,7 @@ public class JonctionSirensiretEntity {
         this.siret = siret;
     }
 
-    @Id
+    @Basic
     @Column(name = "SIREN", nullable = false)
     public int getSiren() {
         return siren;
@@ -69,7 +79,8 @@ public class JonctionSirensiretEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JonctionSirensiretEntity that = (JonctionSirensiretEntity) o;
-        return siret == that.siret &&
+        return id == that.id &&
+                siret == that.siret &&
                 siren == that.siren &&
                 Objects.equals(actif, that.actif) &&
                 Objects.equals(debut, that.debut) &&
@@ -78,6 +89,6 @@ public class JonctionSirensiretEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(siret, siren, actif, debut, fin);
+        return Objects.hash(id, siret, siren, actif, debut, fin);
     }
 }
