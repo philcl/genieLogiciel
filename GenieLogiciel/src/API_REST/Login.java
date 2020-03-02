@@ -517,7 +517,6 @@ public class Login {
             if(!staff.staffAdress.RecupererAdresseDepuisJson(adresse))
                 return null;
 
-
             //Ajout du reste de l'objet staff
             if(creation) {
                 try {staff.staffId = Integer.parseInt(((Long) json.get("staffId")).toString());}

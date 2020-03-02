@@ -428,7 +428,7 @@ public class RessourceClient {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
 
-            try{p = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN).getSingleResult();}
+            try{p = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN + " and c.actif = 1").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren : " + SIREN + " n'existe pas", true, tx, session);}
 
             List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN).list();
