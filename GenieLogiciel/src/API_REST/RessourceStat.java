@@ -317,7 +317,8 @@ public class RessourceStat {
                 {
                     Long temp = res.radarChartData.get(i).data.get(pos);
 
-                    res.radarChartData.get(i).data.set(pos,temp+ticketEntity.getDureeReelle());
+                    if(ticketEntity.getDureeReelle()!=null)
+                        res.radarChartData.get(i).data.set(pos,temp+ticketEntity.getDureeReelle());
                 }
             }
 
