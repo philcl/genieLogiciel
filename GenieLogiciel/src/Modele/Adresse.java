@@ -3,6 +3,7 @@ package Modele;
 import API_REST.CreateSession;
 import API_REST.Security;
 import DataBase.AdresseEntity;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -30,7 +31,7 @@ public class Adresse {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             AdresseEntity adr;
-            try{ adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + id).getSingleResult();}
+            try{ adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + id + " and a.actif = 1").getSingleResult();}
             catch(NoResultException e) {return false;}
 
             this.numero = adr.getNumero();
@@ -54,7 +55,7 @@ public class Adresse {
         int id = -1;
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            String request = "FROM AdresseEntity a WHERE a.numero = " + this.numero + " and a.rue = '" + this.rue + "' and a.ville = '" + this.ville + "' and a.codePostal = '" + this .codePostal + "'";
+            String request = "FROM AdresseEntity a WHERE a.numero = " + this.numero + " and a.rue = '" + this.rue + "' and a.ville = '" + this.ville + "' and a.codePostal = '" + this .codePostal + "' and a.actif = 1";
             AdresseEntity adresseEntity = null;
             try{
                 adresseEntity = (AdresseEntity) session.createQuery(request).getSingleResult();
@@ -95,7 +96,10 @@ public class Adresse {
 
             id = (int) session.createQuery("SELECT MAX(a.idAdresse) FROM AdresseEntity a").getSingleResult();
             adresseEntity.setIdAdresse(id+1);
-            session.save(adresseEntity);
+            try{session.save(adresseEntity);}
+            catch (Exception e) {
+                System.err.println("impossible de sauvergarder l'adresse");
+            }
             tx.commit();
             session.clear();
             session.close();
@@ -115,7 +119,7 @@ public class Adresse {
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            try{id = (int) session.createQuery("SELECT a.idAdresse FROM AdresseEntity a WHERE a.numero = " + numero + " and a.rue = '" + rue + "' and a.codePostal = '" + codePostal + "' and a.ville = '" + ville + "'").getSingleResult();}
+            try{id = (int) session.createQuery("SELECT a.idAdresse FROM AdresseEntity a WHERE a.numero = " + numero + " and a.rue = '" + rue + "' and a.codePostal = '" + codePostal + "' and a.ville = '" + ville + "' and a.actif = 1").getSingleResult();}
             catch (NoResultException e) {return -1;}
             tx.commit();
             session.clear();

@@ -73,13 +73,13 @@ public class Tache {
     }
 
     public ArrayList<String> getCompetencesForTask(int idTask, Session session) {
-        List result = session.createQuery("FROM JonctionTacheCompetenceEntity j WHERE j.tache = " + idTask + "").list();
+        List result = session.createQuery("FROM JonctionTacheCompetenceEntity j WHERE j.tache = " + idTask + " and j.actif = 1").list();
         ArrayList<String> competences = new ArrayList<>();
 
         for(Object o : result) {
             JonctionTacheCompetenceEntity jct = (JonctionTacheCompetenceEntity)o;
             CompetencesEntity competencesEntity;
-             try{competencesEntity = (CompetencesEntity) session.createQuery("FROM CompetencesEntity c WHERE c.idCompetences = " + jct.getCompetence()).getSingleResult();}
+             try{competencesEntity = (CompetencesEntity) session.createQuery("FROM CompetencesEntity c WHERE c.idCompetences = " + jct.getCompetence() + " and c.actif = 1").getSingleResult();}
              catch (NoResultException e) {return null;}
              competences.add(competencesEntity.getCompetence());
         }
@@ -107,7 +107,7 @@ public class Tache {
         this.pourcentage = statut.equals("Resolu") ? 100 : 0;
 
         StaffEntity staff;
-        try{staff = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + tacheEntity.getTechnicien()).getSingleResult();}
+        try{staff = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + tacheEntity.getTechnicien() + " and s.actif = 1").getSingleResult();}
         catch (NoResultException e) {return false;}
         this.technicien = new Personne(staff.getNom(), staff.getPrenom(), staff.getId());
         this.competences = this.getCompetencesForTask(idTask, session);
@@ -137,7 +137,7 @@ public class Tache {
             try{session.createQuery("FROM TicketEntity t WHERE t.id = " + idTicket + " and t.statut != 'Resolu' and t.statut != 'Non Resolu'").getSingleResult();}
             catch (NoResultException e) { return null;}
 
-            List result = session.createQuery(" SELECT j.idEnfant FROM TicketJonctionEntity j WHERE j.idParent = " + idTicket).list();
+            List result = session.createQuery(" SELECT j.idEnfant FROM TicketJonctionEntity j WHERE j.idParent = " + idTicket + " and j.actif = 1").list();
 
             for(Object o : result) {
                 int idTask = (int)o;

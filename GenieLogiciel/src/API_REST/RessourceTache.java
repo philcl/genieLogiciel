@@ -20,6 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 //todo mettre la date de fin à -1 si le statut n'est pas en Resolu
 
@@ -103,7 +105,7 @@ public class RessourceTache {
             tx = session.beginTransaction();
 
             TacheEntity tacheEntity;
-            try{tacheEntity = (TacheEntity) session.createQuery("FROM TacheEntity t WHERE t.id = " + tache.id).getSingleResult();}
+            try{tacheEntity = (TacheEntity) session.createQuery("FROM TacheEntity t WHERE t.id = " + tache.id + " and t.statut != 'Resolu' and t.statut != 'Non resolu'").getSingleResult();}
             catch (NoResultException e) { return ReponseType.getNOTOK("La tache " + tache.id + " n'existe pas", true, tx, session);}
 
             tacheEntity.setStatut(tache.statut);
@@ -126,16 +128,33 @@ public class RessourceTache {
 
             tx = session.beginTransaction();
 
-            for(String competence : tache.competences) {
-                @SuppressWarnings("DuplicatedCode")
-                int idCompetence;
-                try{idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();}
-                catch (NoResultException e) {return ReponseType.getNOTOK("La competence " + competence + " n'existe pas",true, tx, session);}
+            List result = session.createQuery("SELECT c.competence FROM JonctionTacheCompetenceEntity j, CompetencesEntity c WHERE j.actif = 1 and c.actif = 1 and j.tache = " + tache.id + " and c.idCompetences = j.competence").list();
+            ArrayList<String> competencesOrigine = new ArrayList<>();
+            for(Object o : result)
+                competencesOrigine.add((String) o);
 
-                JonctionTacheCompetenceEntity jct = new JonctionTacheCompetenceEntity();
-                jct.setCompetence(idCompetence);
-                jct.setTache(tacheEntity.getId());
-                session.saveOrUpdate(jct);
+
+
+            for(String competence : tache.competences) {
+                if(!competencesOrigine.contains(competence)) {
+                    @SuppressWarnings("DuplicatedCode")
+                    int idCompetence;
+                    try {
+                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "' and c.actif = 1").getSingleResult();
+                    } catch (NoResultException e) {
+                        return ReponseType.getNOTOK("La competence " + competence + " n'existe pas", true, tx, session);
+                    }
+
+                    JonctionTacheCompetenceEntity jct = new JonctionTacheCompetenceEntity();
+                    jct.setCompetence(idCompetence);
+                    jct.setTache(tacheEntity.getId());
+                    jct.setActif(1);
+                    jct.setDebut(Timestamp.from(Instant.now()));
+                    session.saveOrUpdate(jct);
+                }
+                else {
+
+                }
             }
 
             tx.commit();
@@ -166,7 +185,7 @@ public class RessourceTache {
             tx = session.beginTransaction();
 
             TacheEntity tacheEntity;
-            try{tacheEntity = (TacheEntity) session.createQuery("FROM TacheEntity t WHERE t.id = " + tache.id).getSingleResult();}
+            try{tacheEntity = (TacheEntity) session.createQuery("FROM TacheEntity t WHERE t.id = " + tache.id + " and t.statut != 'Resoolu' and t.statut != 'Non resolu'").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("La tache " + tache.id + " n'existe pas", true, tx, session);}
 
             tacheEntity.setStatut("Non resolu");
