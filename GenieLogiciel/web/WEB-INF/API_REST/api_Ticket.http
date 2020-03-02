@@ -46,7 +46,7 @@ Content-Type: text/plain
 
  Notre meuble vitrine réfrigérée qui nous sert à la présentation des charcuteries n'est plus assez froid, il est impossible de descendre au-delà de 6°.
  ","statut":"En cours","technicien":{"id":9,"nom":"LESTOIL","prenom":"Veronique","sexe":"F"},"type":"Incident","id":8,"priorite":2,
- "taches":[{"statut":"En cours", "objet":"TEST", "competences":["Electricien"], "technicien":{"id":12,"nom":"TECHNOM","prenom":"TECHPRENOM","sexe":"M"}, "tempsEstime":50}]}}
+ "taches":[{"statut":"En cours", "objet":"TEST", "competences":["Electricien", "Informaticien"], "technicien":{"id":12,"nom":"TECHNOM","prenom":"TECHPRENOM","sexe":"M"}, "tempsEstime":50}]}}
 ###
 
 ##Send POST to modify the state
@@ -65,5 +65,5 @@ Content-Type: text/plain
 POST http://localhost:8080/genielog/ticket/list
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "userId":6}
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "userId":8}
 ###

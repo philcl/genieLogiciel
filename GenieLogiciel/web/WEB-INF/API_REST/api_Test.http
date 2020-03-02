@@ -72,6 +72,35 @@ Content-Type: text/plain
     ]
   }
 }
+###
+##Create User
+
+POST http://localhost:8080/genielog/user/create
+Content-Type: text/plain
+
+{
+  "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "staff":{
+  "staffSexe": "M",
+  "staffUserName": "KOKO2",
+  "staffPassword": "1234",
+  "staffMail": "RespTech@RespTech.com",
+  "staffAdress": {
+    "numero": 1,
+    "rue": "RespTechAdresse",
+    "ville": "RespTechVille",
+    "codePostal": "232323"
+  },
+  "staffSurname": "RespTechPrenom",
+  "staffName": "RespTechNom",
+  "staffTel": "2323",
+  "staffCompetency": [
+    "Bicraveur"
+  ],
+  "staffRole": [
+    "Admin"
+  ]
+}
+}
 
 ###
-

@@ -3,7 +3,6 @@ package API_REST;
 import DataBase.*;
 import Modele.*;
 import Modele.Client.ClientSite;
-import Modele.Client.SendDeleteDemandeur;
 import Modele.Staff.Token;
 import Modele.Ticket.InitTicket;
 import Modele.Ticket.SendTache;
@@ -65,14 +64,14 @@ public class RessourceTicket {
         try(Session session = CreateSession.getSession()) {
             //Recuperation des types des demandes
             tx = session.beginTransaction();
-            List result = session.createQuery("FROM TypeDemandesEntity ").list();
+            List result = session.createQuery("FROM TypeDemandesEntity td WHERE td.actif = 1").list();
             for(Object o : result) {
                 TypeDemandesEntity typeDemande = (TypeDemandesEntity) o;
                 answer.demandeTypeList.add(typeDemande.getIdTypeDemandes());
             }
 
             //Recuperation de la liste des techniciens
-            result = session.createQuery("FROM StaffEntity").list();
+            result = session.createQuery("FROM StaffEntity s WHERE s.actif = 1").list();
             for(Object o : result) {
                 StaffEntity technicienEntity = (StaffEntity) o;
                 answer.technicienList.add(new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId()));
@@ -80,7 +79,7 @@ public class RessourceTicket {
 
             List siretList;
             try{
-                siretList = session.createQuery("SELECT ss.siret FROM JonctionSirensiretEntity ss WHERE ss.siren = " + IdClient).list();
+                siretList = session.createQuery("SELECT ss.siret FROM JonctionSirensiretEntity ss WHERE ss.siren = " + IdClient + " and ss.actif = 1").list();
                 if(siretList == null || siretList.isEmpty())
                     return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
             } catch (NoResultException e) {return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);}
@@ -96,28 +95,28 @@ public class RessourceTicket {
                     answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
 
                     //Recuperation de la liste des sites du client
-                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + demandeurEntity.getAdresse()).getSingleResult();
+                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + demandeurEntity.getAdresse() + " and a.actif = 1").getSingleResult();
                     ClientSite adresseClient = new ClientSite(demandeurEntity.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()), adr.getIdAdresse());
                     answer.clientSiteList.add(adresseClient);
                 }
             }
 
             //Recuperation de la liste des categories
-            result = session.createQuery("FROM CategorieEntity ").list();
+            result = session.createQuery("FROM CategorieEntity c WHERE c.actif = 1").list();
             for(Object o : result) {
                 CategorieEntity categorie = (CategorieEntity) o;
                 answer.categorieList.add(categorie.getCategorie());
             }
 
             //Recuperation de la liste des statut
-            result = session.createQuery("FROM StatutTicketEntity ").list();
+            result = session.createQuery("FROM StatutTicketEntity s WHERE s.actif = 1").list();
             for (Object o : result) {
                 StatutTicketEntity statut = (StatutTicketEntity) o;
                 answer.statusList.add(statut.getIdStatusTicket());
             }
 
             // Recuperation de la liste des competences
-            result = session.createQuery("FROM CompetencesEntity ").list();
+            result = session.createQuery("FROM CompetencesEntity c WHERE c.actif = 1").list();
             for (Object o : result) {
                 CompetencesEntity competence = (CompetencesEntity) o;
                 answer.skillsList.add(competence.getCompetence());
@@ -131,7 +130,7 @@ public class RessourceTicket {
             }
 
             String clientName;
-            try{clientName = (String) session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + IdClient).getSingleResult();}
+            try{clientName = (String) session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + IdClient + " and c.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren " + IdClient + " n'existe pas", true, tx, session);}
             answer.clientName = clientName;
             tx.commit();
@@ -194,11 +193,11 @@ public class RessourceTicket {
             //Ajout de l'adresse (SIRET) des ID du demandeur et du technicien
             tx = session.beginTransaction();
             DemandeurEntity demandeur;
-            try{demandeur = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
+            try{demandeur = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.id = " + ticket.demandeur.id + " and p.actif = 1").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur avec l'id " + ticket.demandeur.id + " n'existe pas", true, tx, session);}
 
             ClientEntity clientEntity;
-            try{clientEntity = (ClientEntity) session.createQuery("SELECT c FROM ClientEntity c, JonctionSirensiretEntity ss WHERE c.siren = ss.siren and ss.siret = " + demandeur.getSiret()).getSingleResult();}
+            try{clientEntity = (ClientEntity) session.createQuery("SELECT c FROM ClientEntity c, JonctionSirensiretEntity ss WHERE c.siren = ss.siren and ss.siret = " + demandeur.getSiret() + " and c.actif = 1 and ss.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le client lie au demandeur avec l'id " + ticket.demandeur.id + " n'existe pas", true, tx, session);}
 
             ticketEntity.setSiren(clientEntity.getSiren());
@@ -206,7 +205,7 @@ public class RessourceTicket {
             ticketEntity.setDemandeur(demandeur.getIdPersonne());
 
             StaffEntity tech;
-            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id).getSingleResult();}
+            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id + " and s.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien avec l'id " + ticket.technicien.id + " n'existe pas", true, tx, session);}
             ticketEntity.setTechnicien(tech.getId());
 
@@ -224,7 +223,7 @@ public class RessourceTicket {
                 for (String competence : ticket.competences) {
                     int idCompetence;
                     try {
-                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();
+                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "' and c.actif = 1").getSingleResult();
                     } catch (NoResultException e) {
                         return ReponseType.getNOTOK("La competence " + competence + " n'existe pas", true, tx, session);
                     }
@@ -284,6 +283,7 @@ public class RessourceTicket {
     public Response postModify(String jsonStr) {
         String token = "", ticketJson = "";
         long IdClient = 0;
+        HashMap<String, Integer> competences = new HashMap<>();
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
@@ -309,12 +309,12 @@ public class RessourceTicket {
             tx = session.beginTransaction();
             //Recuperation du tech
             StaffEntity tech;
-            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id).getSingleResult();}
+            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id + " and s.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien n'existe pas", true, tx, session);}
 
             //Recuperation du demandeur
             DemandeurEntity demandeur;
-            try{demandeur = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.id = " + ticket.demandeur.id).getSingleResult();}
+            try{demandeur = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.id = " + ticket.demandeur.id + " and p.actif = 1").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur n'existe pas", true, tx, session);}
 
             //Recuperation du client
@@ -352,15 +352,24 @@ public class RessourceTicket {
                 for (String competence : ticket.competences) {
                     int idCompetence;
                     try {
-                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "'").getSingleResult();
+                        idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "' and c.actif = 1").getSingleResult();
                     } catch (NoResultException e) {
                         return ReponseType.getNOTOK("La competence " + competence + " n'existe pas", true, tx, session);
                     }
                     JonctionTicketCompetenceEntity jct = new JonctionTicketCompetenceEntity();
                     jct.setIdTicket(ticket.id);
                     jct.setCompetence(idCompetence);
+                    jct.setActif(1);
+                    jct.setDebut(Timestamp.from(Instant.now()));
                     session.saveOrUpdate(jct);
                 }
+            }
+            request = "SELECT c FROM JonctionTacheCompetenceEntity j, CompetencesEntity c WHERE c.idCompetences = j.competence and j.tache = " + ticket.id + " and j.actif = 1 and c.actif = 1";
+            List result = session.createQuery(request).list();
+
+            for(Object o : result) {
+                CompetencesEntity competencesEntity = (CompetencesEntity)o;
+                competences.put(competencesEntity.getCompetence(), competencesEntity.getIdCompetences());
             }
             tx.commit();
             session.clear();
@@ -374,6 +383,7 @@ public class RessourceTicket {
         }
 
         if(ticket.taches != null && !ticket.taches.isEmpty()) {
+            ArrayList<String> competencesTaches = new ArrayList<>();
             HashMap<Integer, Tache> map = new HashMap<>();
             ArrayList<Tache> taches = Tache.getListTaskFromTicket(ticket.id);
             if(taches != null) {
@@ -417,6 +427,8 @@ public class RessourceTicket {
                     if (resp != null) return resp;
                 }
             }
+            //Mise a jour des competences du ticket en fonction de celles des taches
+            chekCompetenceForTicket(competences, competencesTaches, ticket.id);
         }
         return ReponseType.getOK("");
     }
@@ -524,14 +536,14 @@ public class RessourceTicket {
     private Ticket recuperationTicket(Session session, int IdTicket) {
         Ticket ticket = null;
         Transaction tx = session.beginTransaction();
-        List result = session.createQuery("FROM TicketEntity t WHERE t.id = " + IdTicket).list();
+        List result = session.createQuery("FROM TicketEntity t WHERE t.id = " + IdTicket + " and t.statut != 'Non resolu' and t.statut != 'Resolu'").list();
         TicketEntity ticketEntity;
         if(result.size() == 1) {
             ticketEntity = (TicketEntity) result.get(0);
 
             //Recuperation du nom et prenom du demandeur et du technicien
-            DemandeurEntity demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur()).getSingleResult();
-            StaffEntity technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien()).getSingleResult();
+            DemandeurEntity demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur() + " and p.actif = 1").getSingleResult();
+            StaffEntity technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien() + " and s.actif = 1").getSingleResult();
 
             Personne demandeur, technicien;
             demandeur = new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne());
@@ -539,17 +551,17 @@ public class RessourceTicket {
 
             //Recuperation du nom de l'entreprise du client
             int siren = ticketEntity.getSiren();
-            ClientEntity client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + siren).getSingleResult();
+            ClientEntity client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + siren + " and c.actif = 1").getSingleResult();
 
             //Recuperation de l'adresse
-            AdresseEntity adresse = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + client.getAdresse()).getSingleResult();
+            AdresseEntity adresse = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + client.getAdresse() + " and a.actif = 1").getSingleResult();
 
             //Recuperation des taches associees au tickets s'il y en a
 
 
             //Recuperation des competences
             ArrayList<String> competences = new ArrayList<>();
-            String request = "SELECT c.competence FROM CompetencesEntity c, JonctionTicketCompetenceEntity jtc WHERE jtc.idTicket = " + IdTicket + " and jtc.competence = c.idCompetences";
+            String request = "SELECT c.competence FROM CompetencesEntity c, JonctionTicketCompetenceEntity jtc WHERE jtc.idTicket = " + IdTicket + " and jtc.competence = c.idCompetences and jtc.actif = 1 and c.actif = 1";
             result = session.createQuery(request).list();
             for(Object o : result) {
                 String competence = (String) o;
@@ -643,5 +655,49 @@ public class RessourceTicket {
             return resp;
         }
         return null;
+    }
+
+    private boolean chekCompetenceForTicket(HashMap<String, Integer> competencesTicket, ArrayList<String> competencesTaches, int idTicket) {
+        Transaction tx = null;
+
+        try(Session session = CreateSession.getSession()) {
+            tx = session.beginTransaction();
+
+            //update des competences vers le ticket
+            //Ajout
+            for(String competence : competencesTaches) {
+                if(!competencesTicket.containsKey(competence)) {
+                    JonctionTicketCompetenceEntity j = new JonctionTicketCompetenceEntity();
+                    j.setCompetence(competencesTicket.get(competence));
+                    j.setIdTicket(idTicket);
+                    j.setActif(1);
+                    j.setDebut(Timestamp.from(Instant.now()));
+
+                    session.save(j);
+                    competencesTicket.remove(competence);
+                }
+            }
+            //Suppression
+            for(String competence : competencesTicket.keySet()) {
+                if(!competencesTaches.contains(competence)) {
+                    System.err.println("competence a supprimer = " + competence + " pour le ticket = " +idTicket);
+                    JonctionTicketCompetenceEntity j = (JonctionTicketCompetenceEntity) session.createQuery("FROM JonctionTicketCompetenceEntity j WHERE j.competence = " + competencesTicket.get(competence) + " and j.idTicket = " + idTicket + " and j.actif = 1").getSingleResult();
+                    j.setActif(0);
+                    j.setFin(Timestamp.from(Instant.now()));
+                    session.update(j);
+                }
+            }
+
+            tx.commit();
+            session.clear();
+            session.close();
+        }
+        catch (HibernateException e){
+            if(tx != null)
+                tx.rollback();
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 }

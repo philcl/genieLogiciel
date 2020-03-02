@@ -107,6 +107,10 @@ public class Login {
             json = (JSONObject) parser.parse(jsonStr);
             obj = (JSONObject) json.get("staff");
             token = (String) json.get("token");
+
+            if(obj == null)
+                throw new NullPointerException();
+
         } catch (ParseException | NullPointerException ex) {
             ex.printStackTrace();
             return ReponseType.getNOTOK("Il manque des parametres (token, staff)", false, null, null);
@@ -114,6 +118,7 @@ public class Login {
         if(!Token.tryToken(token))
             return Token.tokenNonValide();
 
+        System.err.println("staff = " + obj);
         p = getStaffFromJSON(obj.toJSONString(), true); //Transformation du json en modele Staff
         if (p == null)
             return ReponseType.getNOTOK("L'objet staff n'est pas correctement rempli ou contient des commandes SQL veuillez verifier", false, null, null);
@@ -150,7 +155,7 @@ public class Login {
             //Verification de l'existance des roles
             ArrayList<JonctionStaffPosteEntity> posteId = getPosteId(p.staffRole, user.getId(), session);
             if(posteId == null)
-                return ReponseType.getNOTOK("L'un des postes n'existe pas", false, null, null);
+                return ReponseType.getNOTOK("L'un des postes n'existe pas ou aucun poste attribué", false, null, null);
 
             try {
                 //Ajout des competences
@@ -422,6 +427,8 @@ public class Login {
                 try {staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = '" + staffId + "' and s.actif = 1").getSingleResult();}
                 catch (NoResultException e) {return ReponseType.getNOTOK("Le staff avec l'id : " + staffId + " n'existe pas", true, tx, session);}
             }
+
+            //todo supprimer les competences et postes lies
             staffEntity.setActif(0);
             staffEntity.setFin(Timestamp.from(Instant.now()));
             session.update(staffEntity);
@@ -540,11 +547,16 @@ public class Login {
             }
             System.err.println("ok1");
 
-            staff.staffSurname = Security.test ((String) json.get("staffSurname"));
-            staff.staffName = Security.test ((String) json.get("staffName"));
-            staff.staffTel = Security.test ((String) json.get("staffTel"));
-            staff.staffMail = Security.test ((String) json.get("staffMail"));
-            staff.staffSexe = Security.test ((String) json.get("staffSexe"));
+            try {
+                staff.staffSurname = Security.test((String) json.get("staffSurname"));
+                staff.staffName = Security.test((String) json.get("staffName"));
+                staff.staffTel = Security.test((String) json.get("staffTel"));
+                staff.staffMail = Security.test((String) json.get("staffMail"));
+                staff.staffSexe = Security.test((String) json.get("staffSexe"));
+            }
+            catch (ClassCastException e) {
+                return null;
+            }
 
             if(staff.staffSurname == null || staff.staffName == null ||staff.staffTel == null || staff.staffMail == null)
                 return null;
@@ -623,6 +635,9 @@ public class Login {
         HashMap<String, Integer> competences = new HashMap<>();
         ArrayList<JonctionStaffCompetenceEntity> comptenceToAdd = new ArrayList<>();
 
+        if(p.staffCompetency.isEmpty())
+            return comptenceToAdd;
+
         //Enregistrement des competences qui sont sur la base
         for (Object o : result) {
             CompetencesEntity c = (CompetencesEntity) o;
@@ -632,18 +647,20 @@ public class Login {
 
         //Verification entre les competences entrees et celles sur la base
         for (String s : p.staffCompetency) {
-            if (!competences.containsKey(s))
-                return null;
-            else {
-                //todo permettre la suppression des competences avec le staff
-                JonctionStaffCompetenceEntity jonction = new JonctionStaffCompetenceEntity();
-                jonction.setCompetenceId(competences.get(s));
-                jonction.setStaffId(staffId);
-                jonction.setActif(1);
-                jonction.setDebut(Timestamp.from(Instant.now()));
+            if(!s.equals("")) {
+                if (!competences.containsKey(s))
+                    return null;
+                else {
+                    //todo permettre la suppression des competences avec le staff
+                    JonctionStaffCompetenceEntity jonction = new JonctionStaffCompetenceEntity();
+                    jonction.setCompetenceId(competences.get(s));
+                    jonction.setStaffId(staffId);
+                    jonction.setActif(1);
+                    jonction.setDebut(Timestamp.from(Instant.now()));
 
-                System.err.println("ajout de la competence = " + competences.get(s) + " pour le staff :" + staffId);
-                comptenceToAdd.add(jonction);
+                    System.err.println("ajout de la competence = " + competences.get(s) + " pour le staff :" + staffId);
+                    comptenceToAdd.add(jonction);
+                }
             }
         }
         return comptenceToAdd;
@@ -688,6 +705,7 @@ public class Login {
     private ArrayList<JonctionStaffPosteEntity> getPosteId(ArrayList<String> postes, int staffId, Session session) {
         Transaction tx = null;
         ArrayList<JonctionStaffPosteEntity> postesId = new ArrayList<>();
+        //todo permettre la suppression des postes
         for (String s : postes) {
             PosteEntity posteEntity = null;
             try{posteEntity = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE p.poste = '" + s + "' and p.actif = 1").getSingleResult();}
