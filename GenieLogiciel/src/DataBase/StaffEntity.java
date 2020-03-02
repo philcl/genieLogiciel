@@ -1,6 +1,7 @@
 package DataBase;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -17,6 +18,8 @@ public class StaffEntity {
     private String nom;
     private int actif;
     private String sexe;
+    private Timestamp debut;
+    private Timestamp fin;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -118,6 +121,26 @@ public class StaffEntity {
         this.sexe = sexe;
     }
 
+    @Basic
+    @Column(name = "debut", nullable = true)
+    public Timestamp getDebut() {
+        return debut;
+    }
+
+    public void setDebut(Timestamp debut) {
+        this.debut = debut;
+    }
+
+    @Basic
+    @Column(name = "fin", nullable = true)
+    public Timestamp getFin() {
+        return fin;
+    }
+
+    public void setFin(Timestamp fin) {
+        this.fin = fin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -132,12 +155,14 @@ public class StaffEntity {
                 Objects.equals(mail, that.mail) &&
                 Objects.equals(prenom, that.prenom) &&
                 Objects.equals(nom, that.nom) &&
-                Objects.equals(sexe, that.sexe);
+                Objects.equals(sexe, that.sexe) &&
+                Objects.equals(debut, that.debut) &&
+                Objects.equals(fin, that.fin);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, login, adresse, telephone, mail, prenom, nom, actif, sexe);
+        int result = Objects.hash(id, login, adresse, telephone, mail, prenom, nom, actif, sexe, debut, fin);
         result = 31 * result + Arrays.hashCode(mdp);
         return result;
     }

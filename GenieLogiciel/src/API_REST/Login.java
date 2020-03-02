@@ -24,7 +24,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.Normalizer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -117,7 +120,7 @@ public class Login {
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "'").getSingleResult();
+            session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
             return ReponseType.getNOTOK("Le login existe deja veuillez le changer", true, tx, session);
         } catch (NoResultException ignored) {}
 
@@ -205,8 +208,8 @@ public class Login {
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            session.createQuery("FROM StaffEntity s WHERE s.id = '" + p.staffId + "'").getSingleResult();
-            session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "'").getSingleResult();
+            session.createQuery("FROM StaffEntity s WHERE s.id = '" + p.staffId + "' and s.actif = 1").getSingleResult();
+            session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "' and s.actif = 1").getSingleResult();
             tx.commit();
             session.clear();
             session.close();
@@ -233,7 +236,7 @@ public class Login {
             tx = session.beginTransaction();
             StaffEntity staffEntity;
 
-            try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + user.getId()).getSingleResult();}
+            try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + user.getId() + " and s.actif = 1").getSingleResult();}
             catch(NoResultException e) {return ReponseType.getNOTOK("Staff non trouve " + user.getId(), true, tx, session);}
 
             staffEntity.setAdresse(user.getAdresse());
@@ -242,6 +245,8 @@ public class Login {
             staffEntity.setTelephone(user.getTelephone());
             staffEntity.setMail(user.getMail());
             staffEntity.setActif(user.getActif());
+            if(user.getActif() == 0)
+                staffEntity.setFin(Timestamp.from(Instant.now()));
             staffEntity.setPrenom(user.getPrenom());
             staffEntity.setNom(user.getNom());
 
@@ -290,22 +295,22 @@ public class Login {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
 
-            List result = session.createQuery("SELECT c.competence FROM CompetencesEntity c").list();
+            List result = session.createQuery("SELECT c.competence FROM CompetencesEntity c WHERE c.actif = 1").list();
             for(Object o : result)
                 staffInit.competencesList.add((String) o);
 
-            result = session.createQuery("SELECT p.poste FROM PosteEntity p").list();
+            result = session.createQuery("SELECT p.poste FROM PosteEntity p WHERE p.actif = 1").list();
             for(Object o : result)
                 staffInit.fonctionsList.add((String) o);
 
             if(staffId != -1) {
                 staffInit.staff = new Staff();
                 StaffEntity staffEntity;
-                try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + staffId).getSingleResult();}
+                try{staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + staffId + " and s.actif = 1").getSingleResult();}
                 catch(NoResultException e) {return ReponseType.getNOTOK("Le user avec l'id " + staffId + " n'existe pas", true, tx,session);}
 
                 AdresseEntity adresse;
-                try{adresse = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + staffEntity.getAdresse()).getSingleResult();}
+                try{adresse = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + staffEntity.getAdresse() + " and a.actif = 1").getSingleResult();}
                 catch(NoResultException e) {return ReponseType.getNOTOK("Une erreur c'est produite sur la base de donnee", true, tx, session);}
 
                 //Recuperation du staff
@@ -414,6 +419,7 @@ public class Login {
                 catch (NoResultException e) {return ReponseType.getNOTOK("Le staff avec l'id : " + staffId + " n'existe pas", true, tx, session);}
             }
             staffEntity.setActif(0);
+            staffEntity.setFin(Timestamp.from(Instant.now()));
             session.update(staffEntity);
 
             tx.commit();
@@ -445,14 +451,14 @@ public class Login {
         StaffList staff = new StaffList();
         Transaction tx = session.beginTransaction();
 
-        StaffEntity staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + idStaff).getSingleResult();
+        StaffEntity staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + idStaff + " and s.actif = 1").getSingleResult();
         staff.staffTel = staffEntity.getTelephone();
         staff.staffName = staffEntity.getNom();
         staff.staffSurname = staffEntity.getPrenom();
         staff.staffId = idStaff;
         staff.staffMail = staffEntity.getMail();
 
-        AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + staffEntity.getAdresse()).getSingleResult();
+        AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + staffEntity.getAdresse() + " and a.actif = 1").getSingleResult();
         staff.staffAdress.numero = adresseEntity.getNumero();
         staff.staffAdress.codePostal = adresseEntity.getCodePostal();
         staff.staffAdress.ville = adresseEntity.getVille();
@@ -474,7 +480,7 @@ public class Login {
 
         try (Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            StaffEntity staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity p WHERE p.id = " + userId).getSingleResult();
+            StaffEntity staffEntity = (StaffEntity) session.createQuery("FROM StaffEntity p WHERE p.id = " + userId + " and p.actif = 1").getSingleResult();
             user.firstName = staffEntity.getNom();
             user.lastName = staffEntity.getPrenom();
             user.id = userId;
@@ -552,8 +558,6 @@ public class Login {
             staff.staffRole.addAll(roles);
             staff.staffCompetency.addAll(competences);
 
-            System.err.println("ok2");
-
             System.err.println("userName : " + staff.staffUserName + " pwd : " + staff.staffPassword + " role : " + staff.staffRole.isEmpty() + " competences : " + staff.staffCompetency.isEmpty());
 
             //Pas de verification sur le password pour ne pas le changer.
@@ -579,7 +583,6 @@ public class Login {
         user.setLogin(p.staffUserName); //Seulement pour la création
         if(p.staffPassword != null)
             user.setMdp(encrypt(p.staffPassword));
-        user.setActif(1);
         user.setMail(p.staffMail);
         user.setNom(p.staffName);
         user.setPrenom(p.staffSurname);
@@ -590,8 +593,11 @@ public class Login {
             tx = session.beginTransaction();
             //Recupération de l'id max et set
             int id = (int) session.createQuery("SELECT MAX(s.id) FROM StaffEntity s").getSingleResult();
-            if(creation)
-                user.setId(id+1);
+            if(creation) {
+                user.setId(id + 1);
+                user.setActif(1);
+                user.setDebut(Timestamp.from(Instant.now()));
+            }
             else
                 user.setId(p.staffId);
 
@@ -623,7 +629,7 @@ public class Login {
         try (Session session = CreateSession.getSession()) {
             //Verification de l'existance des competences et ajout
             tx = session.beginTransaction();
-            result = session.createQuery("FROM CompetencesEntity c").list();
+            result = session.createQuery("FROM CompetencesEntity c WHERE c.actif = 1").list();
             tx.commit();
             session.clear();
             session.close();
@@ -646,9 +652,12 @@ public class Login {
             if (!competences.containsKey(s))
                 return null;
             else {
+                //todo permettre la suppression des competences avec le staff
                 JonctionStaffCompetenceEntity jonction = new JonctionStaffCompetenceEntity();
                 jonction.setCompetenceId(competences.get(s));
                 jonction.setStaffId(staffId);
+                jonction.setActif(1);
+                jonction.setDebut(Timestamp.from(Instant.now()));
                 comptenceToAdd.add(jonction);
             }
         }
@@ -657,14 +666,14 @@ public class Login {
 
     private ArrayList<String> getCompetences(Session session, int userId) {
         ArrayList<String> staffCompetences = new ArrayList<>();
-        List result = session.createQuery("FROM CompetencesEntity").list();
+        List result = session.createQuery("FROM CompetencesEntity c WHERE c.actif = 1").list();
         HashMap<Integer, String> competences = new HashMap<>();
         for(Object o : result) {
             CompetencesEntity competence = (CompetencesEntity) o;
             competences.put(competence.getIdCompetences(), competence.getCompetence());
         }
 
-        result = session.createQuery("FROM JonctionStaffCompetenceEntity sc WHERE sc.staffId = " + userId).list();
+        result = session.createQuery("FROM JonctionStaffCompetenceEntity sc WHERE sc.staffId = " + userId + " and sc.actif = 1").list();
         for(Object o : result) {
             JonctionStaffCompetenceEntity staffPoste = (JonctionStaffCompetenceEntity) o;
             String poste = competences.get(staffPoste.getCompetenceId());
@@ -682,7 +691,7 @@ public class Login {
             postes.put(poste.getIdPoste(), poste.getPoste());
         }
 
-        result = session.createQuery("FROM JonctionStaffPosteEntity sp WHERE sp.idStaff = " + userId).list();
+        result = session.createQuery("FROM JonctionStaffPosteEntity sp WHERE sp.idStaff = " + userId + " and sp.actif = 1").list();
         for(Object o : result) {
             JonctionStaffPosteEntity staffPoste = (JonctionStaffPosteEntity) o;
             String poste = postes.get(staffPoste.getIdPoste());
@@ -698,7 +707,7 @@ public class Login {
              tx = session.beginTransaction();
             for (String s : postes) {
                 PosteEntity posteEntity = null;
-                try{posteEntity = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE p.poste = '" + s + "'").getSingleResult();}
+                try{posteEntity = (PosteEntity) session.createQuery("FROM PosteEntity p WHERE p.poste = '" + s + "' and p.actif = 1").getSingleResult();}
                 catch(NoResultException e) {
                     tx.rollback();
                     session.clear();
@@ -708,6 +717,8 @@ public class Login {
                 JonctionStaffPosteEntity poste = new JonctionStaffPosteEntity();
                 poste.setIdPoste(posteEntity.getIdPoste());
                 poste.setIdStaff(staffId);
+                poste.setActif(1);
+                poste.setDebut(Timestamp.from(Instant.now()));
                 postesId.add(poste);
             }
             tx.commit();

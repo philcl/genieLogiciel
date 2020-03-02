@@ -7,7 +7,6 @@ import Modele.Staff.Token;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.exception.ConstraintViolationException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,6 +17,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 @Path("/demandeur")
 public class RessourceDemandeur {
@@ -39,6 +40,7 @@ public class RessourceDemandeur {
 
         DemandeurEntity demandeurEntity = new DemandeurEntity();
         demandeurEntity.setActif((byte) 1);
+        demandeurEntity.setDebut(Timestamp.from(Instant.now()));
         demandeurEntity.setNom(demandeur.demandeur.nom);
         demandeurEntity.setPrenom(demandeur.demandeur.prenom);
         demandeurEntity.setSexe(demandeur.demandeur.sexe);
@@ -94,7 +96,7 @@ public class RessourceDemandeur {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             DemandeurEntity demandeurEntity;
-            try{demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity d WHERE d.idPersonne = " + demandeur.demandeur.id).getSingleResult();}
+            try{demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity d WHERE d.idPersonne = " + demandeur.demandeur.id + " and d.actif = 1").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le demandeur avec l'id " + demandeur.demandeur.id + " n'existe pas", true, tx, session);}
 
             try{session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + demandeur.idAdresse).getSingleResult();}
@@ -159,11 +161,13 @@ public class RessourceDemandeur {
     }
 
     private static Transaction createJonctionSiretSiren(Transaction tx, Session session) {
-        try{session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + demandeur.SIRET + " and j.siren = " + clientSIREN).getSingleResult();}
+        try{session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + demandeur.SIRET + " and j.siren = " + clientSIREN + " and j.actif = 1").getSingleResult();}
         catch (NoResultException e) {
             JonctionSirensiretEntity j = new JonctionSirensiretEntity();
             j.setSiren(clientSIREN);
             j.setSiret(demandeur.SIRET);
+            j.setActif(1);
+            j.setDebut(Timestamp.from(Instant.now()));
             session.save(j);
             tx.commit();
             session.clear();

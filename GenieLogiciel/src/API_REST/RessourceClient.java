@@ -23,6 +23,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -163,6 +165,7 @@ public class RessourceClient {
 
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setActif((byte) 1);
+        clientEntity.setDebut(Timestamp.from(Instant.now()));
         clientEntity.setNom(client.nom);
         clientEntity.setSiren(client.SIREN);
 
@@ -431,7 +434,7 @@ public class RessourceClient {
             try{p = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN + " and c.actif = 1").getSingleResult();}
             catch (NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren : " + SIREN + " n'existe pas", true, tx, session);}
 
-            List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN).list();
+            List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN + " and j.actif = 1").list();
 
             for(Object o : result) {
                 long SIRET = (long) o;
@@ -446,6 +449,7 @@ public class RessourceClient {
                 }
             }
             p.setActif((byte) 0);
+            p.setFin(Timestamp.from(Instant.now()));
             session.update(p);
             tx.commit();
             session.clear();
@@ -453,6 +457,7 @@ public class RessourceClient {
         } catch (HibernateException e) {
             if(tx != null)
                 tx.rollback();
+            System.err.println("-----------------------------");
             e.printStackTrace();
         }
 

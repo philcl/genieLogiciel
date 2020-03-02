@@ -11,6 +11,9 @@ import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
 
 import javax.persistence.NoResultException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,14 +65,16 @@ public class Demandeur {
             Transaction tx = null;
             try(Session session = CreateSession.getSession()) {
                 tx = session.beginTransaction();
-                try {session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN).getSingleResult();}
+                try {session.createQuery("FROM ClientEntity c WHERE c.siren = " + SIREN + " and c.actif = 1").getSingleResult();}
                 catch (NoResultException e) {return false;}
 
-                try {session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN).getSingleResult();}
+                try {session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN + " and j.actif = 1").getSingleResult();}
                 catch (NoResultException e) {
                     JonctionSirensiretEntity j = new JonctionSirensiretEntity();
                     j.setSiren(SIREN);
                     j.setSiret(SIRET);
+                    j.setActif(1);
+                    j.setDebut(Timestamp.from(Instant.now()));
                     session.save(j);
                 }
 
@@ -108,7 +113,7 @@ public class Demandeur {
         Transaction tx = null;
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            try{session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + idDemandeur).getSingleResult();}
+            try{session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + idDemandeur + " and p.actif = 1").getSingleResult();}
             catch(NoResultException e) {
                 tx.commit();
                 session.clear();
@@ -158,11 +163,23 @@ public class Demandeur {
 
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
-            try{demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity d WHERE d.idPersonne = " + idDemandeur).getSingleResult();}
+            try{demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity d WHERE d.idPersonne = " + idDemandeur + " and d.actif = 1").getSingleResult();}
             catch (NoResultException e) {return false;}
 
             demandeurEntity.setActif((byte) 0);
+            demandeurEntity.setFin(Timestamp.from(Instant.now()));
             session.update(demandeurEntity);
+            tx.commit();
+            session.clear();
+
+            tx = session.beginTransaction();
+
+            JonctionSirensiretEntity jct;
+            try{jct = (JonctionSirensiretEntity) session.createQuery("FROM JonctionSirensiretEntity j WHERE j.actif = 1 and j.siret = " + demandeurEntity.getSiret()).getSingleResult();}
+            catch (NoResultException e) {return false;}
+
+            jct.setActif(0);
+            jct.setFin(Timestamp.from(Instant.now()));
             tx.commit();
             session.clear();
             session.close();
@@ -178,10 +195,10 @@ public class Demandeur {
     public static ArrayList<Demandeur> getDemandeurFromClient(int SIREN, Session session) {
         ArrayList<Demandeur> demandeurs = new ArrayList<>();
 
-        List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN).list();
+        List result = session.createQuery("SELECT j.siret FROM JonctionSirensiretEntity j WHERE j.siren = " + SIREN + " and j.actif = 1").list();
         for(Object o : result) {
             long SIRET = (long) o;
-            List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET).list();
+            List res = session.createQuery("FROM DemandeurEntity d WHERE d.siret = " + SIRET + " and d.actif = 1").list();
 
             for(Object obj : res) {
                 DemandeurEntity demandeurEntity = (DemandeurEntity) obj;

@@ -1,6 +1,7 @@
 package DataBase;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,8 @@ public class DemandeurEntity {
     private String telephone;
     private String sexe;
     private int adresse;
+    private Timestamp debut;
+    private Timestamp fin;
 
     @Id
     @Column(name = "idPersonne", nullable = false)
@@ -106,6 +109,26 @@ public class DemandeurEntity {
         this.adresse = adresse;
     }
 
+    @Basic
+    @Column(name = "debut", nullable = true)
+    public Timestamp getDebut() {
+        return debut;
+    }
+
+    public void setDebut(Timestamp debut) {
+        this.debut = debut;
+    }
+
+    @Basic
+    @Column(name = "fin", nullable = true)
+    public Timestamp getFin() {
+        return fin;
+    }
+
+    public void setFin(Timestamp fin) {
+        this.fin = fin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,11 +142,13 @@ public class DemandeurEntity {
                 Objects.equals(nom, that.nom) &&
                 Objects.equals(mail, that.mail) &&
                 Objects.equals(telephone, that.telephone) &&
-                Objects.equals(sexe, that.sexe);
+                Objects.equals(sexe, that.sexe) &&
+                Objects.equals(debut, that.debut) &&
+                Objects.equals(fin, that.fin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret, telephone, sexe, adresse);
+        return Objects.hash(idPersonne, prenom, nom, mail, actif, siret, telephone, sexe, adresse, debut, fin);
     }
 }

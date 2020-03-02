@@ -17,6 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.io.File;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 
 @Path("/ajoutBase")
@@ -93,6 +95,8 @@ public class RessourceAjoutBase {
             catch (NoResultException e) {
                 CompetencesEntity competencesEntity = new CompetencesEntity();
                 competencesEntity.setCompetence(competence);
+                competencesEntity.setActif(1);
+                competencesEntity.setDebut(Timestamp.from(Instant.now()));
                 session.save(competencesEntity);
             }
 

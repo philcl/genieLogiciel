@@ -9,6 +9,8 @@ import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
 
 import javax.persistence.NoResultException;
+import java.sql.Timestamp;
+import java.time.Instant;
 
 public class Adresse {
     public int numero = -1;
@@ -88,6 +90,8 @@ public class Adresse {
             adresseEntity.setNumero(numero);
             adresseEntity.setRue(rue);
             adresseEntity.setVille(ville);
+            adresseEntity.setActif(1);
+            adresseEntity.setDebut(Timestamp.from(Instant.now()));
 
             id = (int) session.createQuery("SELECT MAX(a.idAdresse) FROM AdresseEntity a").getSingleResult();
             adresseEntity.setIdAdresse(id+1);
