@@ -61,7 +61,11 @@ public class RessourceDemandeur {
             }
             catch (NoResultException e) {demandeurEntity.setTelephone(demandeur.telephone);}
 
-            int maxID = (int) session.createQuery("SELECT MAX(d.id) FROM DemandeurEntity d").getSingleResult()+1;
+            int maxID;
+            if(demandeur.demandeur.id == -1)
+                maxID = (int) session.createQuery("SELECT MAX(d.id) FROM DemandeurEntity d").getSingleResult()+1;
+            else
+                maxID = demandeur.demandeur.id;
             demandeurEntity.setIdPersonne(maxID);
 
             tx = createJonctionSiretSiren(tx, session);
