@@ -129,6 +129,8 @@ public class Login {
         StaffEntity user = setStaffEntity(p, true, session);
         if(user == null)
             return ReponseType.getNOTOK("Impossible de rajouter l'adresse du user", false, null, null);
+        user.setActif(1);
+        user.setDebut(Timestamp.from(Instant.now()));
 
             //Ajout du staff sur la base pour avoir les foreign key sur competence et poste
             session.save(user);
