@@ -591,7 +591,7 @@ public class Login {
         user.setSexe(p.staffSexe);
 
         //Recupération de l'id max et set
-        if(creation) {
+        if(creation && p.staffId == -1) {
             user.setActif(1);
             user.setDebut(Timestamp.from(Instant.now()));
         }

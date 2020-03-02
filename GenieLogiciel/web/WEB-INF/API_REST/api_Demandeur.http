@@ -1,0 +1,6 @@
+### Send POST to change clientName to clientId
+POST http://localhost:8080/genielog/demandeur/create
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":21, "demandeur":{"SIRET"}}
+###
