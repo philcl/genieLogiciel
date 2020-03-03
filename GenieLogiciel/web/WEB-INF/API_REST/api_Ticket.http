@@ -12,7 +12,7 @@ Accept: */*
 Cache-Control: no-cache
 Content-Type: text/plain
 
-{"clientId":"123456789","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "ticketId":24}
+{"clientId":"123456789","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "ticketId":23}
 ###
 
 ### Send POST to create Ticket without task
@@ -46,7 +46,7 @@ Content-Type: text/plain
 
  Notre meuble vitrine réfrigérée qui nous sert à la présentation des charcuteries n'est plus assez froid, il est impossible de descendre au-delà de 6°.
  ","statut":"En cours","technicien":{"id":2,"nom":"Jules","prenom":"VITTONE","sexe":"M"},"type":"Incident","id":20,"priorite":2,
- "taches":[{"statut":"En cours", "objet":"TEST", "competences":["Electricien", "Informaticien"], "technicien":{"id":12,"nom":"TECHNOM","prenom":"TECHPRENOM","sexe":"M"}, "tempsEstime":50}]}}
+ "taches":[{"statut":"Resolu", "objet":"TEST", "competences":["Electricien", "Informaticien"], "technicien":{"id":12,"nom":"TECHNOM","prenom":"TECHPRENOM","sexe":"M"}, "tempsEstime":50}]}}
 ###
 
 ##Send POST to modify the state

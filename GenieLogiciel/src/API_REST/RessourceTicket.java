@@ -580,8 +580,18 @@ public class RessourceTicket {
             ticketEntity = (TicketEntity) result.get(0);
 
             //Recuperation du nom et prenom du demandeur et du technicien
-            DemandeurEntity demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur() + " and p.actif = 1").getSingleResult();
-            StaffEntity technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien() + " and s.actif = 1").getSingleResult();
+            DemandeurEntity demandeurEntity;
+            StaffEntity technicienEntity;
+
+            try {
+                demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur() + " and p.actif = 1").getSingleResult();
+                technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien() + " and s.actif = 1").getSingleResult();
+            }
+            catch (NoResultException e) {
+                tx.commit();
+                session.clear();
+                return null;
+            }
 
             Personne demandeur, technicien;
             demandeur = new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne());
