@@ -260,9 +260,6 @@ public class Login {
                 staffEntity.setMdp(user.getMdp());
             staffEntity.setTelephone(user.getTelephone());
             staffEntity.setMail(user.getMail());
-            staffEntity.setActif(user.getActif());
-            if(user.getActif() == 0)
-                staffEntity.setFin(Timestamp.from(Instant.now()));
             staffEntity.setPrenom(user.getPrenom());
             staffEntity.setNom(user.getNom());
 
