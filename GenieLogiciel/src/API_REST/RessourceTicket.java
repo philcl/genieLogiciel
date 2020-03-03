@@ -77,12 +77,12 @@ public class RessourceTicket {
                 answer.technicienList.add(new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId()));
             }
 
-            List siretList;
+            List siretList = null;
             try{
                 siretList = session.createQuery("SELECT ss.siret FROM JonctionSirensiretEntity ss WHERE ss.siren = " + IdClient + " and ss.actif = 1").list();
-                if(siretList == null || siretList.isEmpty())
-                    return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
-            } catch (NoResultException e) {return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);}
+                //if(siretList == null || siretList.isEmpty())
+                //    return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
+            } catch (NoResultException ignored) {}//return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);}
 
             ClientEntity client;
             try{client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + IdClient + " and c.actif = 1").getSingleResult();}
