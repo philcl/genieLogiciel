@@ -151,3 +151,78 @@ Content-Type: text/plain
   }
 }
 ###
+
+##Create ticket
+
+POST http://localhost:8080/genielog/ticket/create
+Content-Type: text/plain
+
+{
+  "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "ticket": {
+    "categorie": "Etude",
+    "competences": [
+      "Electricien",
+      "Frigoriste"
+    ],
+    "priorite": 1,
+    "demandeur": {
+      "sexe": "M",
+      "id": 33,
+      "nom": "qsdqsd",
+      "prenom": "qsdqsd"
+    },
+    "description": "sqdsqdsqd",
+    "nomClient": "A",
+    "objet": "OBjecto",
+    "statut": "Bloque",
+    "technicien": {
+      "sexe": "M",
+      "id": 56,
+      "nom": "CLAUDE",
+      "prenom": "Philippe"
+    },
+    "type": "Demande",
+    "adresse": {
+      "numero": 23,
+      "rue": "qsdqsd 3434",
+      "codePostal": "kqsjdqs"
+    },
+    "taches": [
+      {
+        "statut": "En cours",
+        "objet": "sdqsd",
+        "description": "qsdqsd",
+        "technicien": {
+          "sexe": "M",
+          "id": 65,
+          "nom": "CLAUDE",
+          "prenom": "Philippe"
+        },
+        "competences": [
+          "Electricien"
+        ],
+        "tempsEstime": 56,
+        "tempsPasse": 0
+      },
+      {
+        "statut": "Ouvert",
+        "objet": "qsdq",
+        "description": "dsqd",
+        "technicien": {
+          "sexe": "M",
+          "id": 63,
+          "nom": "Irteza",
+          "prenom": "She"
+        },
+        "competences": [
+          "Mecanicien"
+        ],
+        "tempsEstime": 455,
+        "tempsPasse": 0
+      }
+    ]
+  }
+}
+
+###

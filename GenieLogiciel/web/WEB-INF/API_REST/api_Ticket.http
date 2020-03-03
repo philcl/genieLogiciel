@@ -25,7 +25,7 @@ Content-Type: text/plain
 POST http://localhost:8080/genielog/ticket/create
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Etude","competences":["Electricien"],"demandeur":{"id":1,"nom":"ALIMI","prenom":"Jean","sexe":"M"},"objet":"TESTEST","statut":"En cours","technicien":{"id":6,"nom":"SHEIKH MUHAMMAD","prenom":"Irteza","sexe":"M"},"type":"Demande","priorite":1,
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"690000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Etude","competences":["Electricien"],"demandeur":{"id":1,"nom":"ALIMI","prenom":"Jean","sexe":"M"},"objet":"TESTEST","statut":"En cours","technicien":{"id":6,"nom":"SHEIKH MUHAMMAD","prenom":"Irteza","sexe":"M"},"type":"Demande","priorite":1,
 "taches":[{"statut":"En cours", "objet":"TEST", "competences":[], "technicien":{"id":2,"nom":"VITTONE","prenom":"Jules","sexe":"M"}, "tempsEstime":40}]}}
 ###
 

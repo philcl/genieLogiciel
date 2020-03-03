@@ -230,9 +230,6 @@ public class RessourceTicket {
 
             //Ajout en base de donnee du ticket
             session.save(ticketEntity);
-            tx.commit();
-            session.clear();
-            tx = session.beginTransaction();
 
             //Rajout des competences
             if(!ticket.competences.isEmpty()) {
@@ -249,6 +246,9 @@ public class RessourceTicket {
                     jct.setActif(1);
                     jct.setDebut(Timestamp.from(Instant.now()));
                     session.save(jct);
+                    tx.commit();
+                    session.clear();
+                    tx = session.beginTransaction();
                 }
             }
 
@@ -273,7 +273,7 @@ public class RessourceTicket {
             session.clear();
             session.close();
         } catch (HibernateException e) {
-            if (tx != null) tx.rollback();
+            //if (tx != null) tx.rollback();
             e.printStackTrace();
             return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
         }
@@ -616,6 +616,9 @@ public class RessourceTicket {
 
             //Recuperation des taches associees au tickets s'il y en a
 
+            tx.commit();
+            session.clear();
+            tx = session.beginTransaction();
 
             //Recuperation des competences
             ArrayList<String> competences = new ArrayList<>();
@@ -739,6 +742,9 @@ public class RessourceTicket {
                     competencesTicket.remove(competence);
                 }
             }
+            tx.commit();
+            session.clear();
+            tx = session.beginTransaction();
             //Suppression
             for(String competence : competencesTicket.keySet()) {
                 if(!competencesTaches.contains(competence)) {
@@ -749,6 +755,7 @@ public class RessourceTicket {
                     j.setActif(0);
                     j.setFin(Timestamp.from(Instant.now()));
                     session.update(j);
+                    competencesTicket.remove(competence);
                 }
             }
 
