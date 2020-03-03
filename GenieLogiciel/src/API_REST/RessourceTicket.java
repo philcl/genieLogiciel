@@ -370,15 +370,21 @@ public class RessourceTicket {
                     } catch (NoResultException e) {
                         return ReponseType.getNOTOK("La competence " + competence + " n'existe pas", true, tx, session);
                     }
-                    JonctionTicketCompetenceEntity jct = new JonctionTicketCompetenceEntity();
-                    jct.setIdTicket(ticket.id);
-                    jct.setCompetence(idCompetence);
-                    jct.setActif(1);
-                    jct.setDebut(Timestamp.from(Instant.now()));
-                    session.saveOrUpdate(jct);
+                    try{session.createQuery("FROM JonctionTicketCompetenceEntity j WHERE j.actif = 1 and j.idTicket = " + ticket.id + " and j.competence = " + idCompetence).getSingleResult();}
+                    catch (NoResultException e) {
+                        JonctionTicketCompetenceEntity jct = new JonctionTicketCompetenceEntity();
+                        jct.setIdTicket(ticket.id);
+                        jct.setCompetence(idCompetence);
+                        jct.setActif(1);
+                        jct.setDebut(Timestamp.from(Instant.now()));
+                        session.saveOrUpdate(jct);
+                    }
                 }
             }
-            request = "SELECT c FROM JonctionTacheCompetenceEntity j, CompetencesEntity c WHERE c.idCompetences = j.competence and j.tache = " + ticket.id + " and j.actif = 1 and c.actif = 1";
+            tx.commit();
+            session.clear();
+            tx = session.beginTransaction();
+            request = "SELECT c FROM JonctionTicketCompetenceEntity j, CompetencesEntity c WHERE c.idCompetences = j.competence and j.idTicket = " + ticket.id + " and j.actif = 1 and c.actif = 1";
             List result = session.createQuery(request).list();
 
             for(Object o : result) {
@@ -392,13 +398,14 @@ public class RessourceTicket {
                 return ReponseType.getNOTOK("Erreur lors de l'execution de la requete", true, null, session);
             session.close();
         }catch (HibernateException e){
-            if (tx != null) tx.rollback();
+            //if (tx != null) tx.rollback();
             e.printStackTrace();
         }
+        ArrayList<String> competencesTaches = new ArrayList<>();
+        HashMap<Integer, Tache> map = new HashMap<>();
 
         if(ticket.taches != null && !ticket.taches.isEmpty()) {
-            ArrayList<String> competencesTaches = new ArrayList<>();
-            HashMap<Integer, Tache> map = new HashMap<>();
+
             ArrayList<Tache> taches = Tache.getListTaskFromTicket(ticket.id);
             if(taches != null) {
                 for(Tache tache : taches) {
@@ -423,26 +430,27 @@ public class RessourceTicket {
                         Response resp = CreateTaskWithTicket(token, tache);
                         if (resp != null) return resp;
                     }
+                    competencesTaches.addAll(tache.competences);
                 }
                 //suppression des taches qui etaitent la auparavant
-                if(!map.isEmpty()) {
-                    for(int id : map.keySet()) {
-                        System.err.println("la tache supprimer de la liste est " + id);
-                        SendTache myTask = new SendTache(token, map.get(id));
-                        Response resp = RessourceTache.deleteTask(gson.toJson(myTask));
-                        if(resp.getStatus() != 200)
-                            return resp;
-                    }
-                }
-            }
-            else {
-                for(Tache tache : ticket.taches) {
-                    Response resp = CreateTaskWithTicket(token, tache);
-                    if (resp != null) return resp;
-                }
+                Response resp = deleteTaskForTicket(token, ticket, map, competences, competencesTaches);
+                if (resp != null) return resp;
             }
             //Mise a jour des competences du ticket en fonction de celles des taches
             chekCompetenceForTicket(competences, competencesTaches, ticket.id);
+        }
+        //suppression des taches associees
+        else {
+            ArrayList<Tache> taches = Tache.getListTaskFromTicket(ticket.id);
+            if (taches != null) {
+                for (Tache tache : taches) {
+                    map.put(tache.id, tache);
+                    System.err.println("id in map = " + tache.id);
+                }
+
+                Response resp = deleteTaskForTicket(token, ticket, map, competences, competencesTaches);
+                if (resp != null) return resp;
+            }
         }
         return ReponseType.getOK("");
     }
@@ -682,12 +690,16 @@ public class RessourceTicket {
             for(String competence : competencesTaches) {
                 if(!competencesTicket.containsKey(competence)) {
                     JonctionTicketCompetenceEntity j = new JonctionTicketCompetenceEntity();
-                    j.setCompetence(competencesTicket.get(competence));
-                    j.setIdTicket(idTicket);
-                    j.setActif(1);
-                    j.setDebut(Timestamp.from(Instant.now()));
+                    int idCompetence = (int) session.createQuery("SELECT c.idCompetences FROM CompetencesEntity c WHERE c.competence = '" + competence + "' and c.actif = 1").getSingleResult();
+                    try{session.createQuery("FROM JonctionTicketCompetenceEntity j WHERE j.actif = 1 and j.idTicket = " + idTicket + " and j.competence = " + idCompetence).getSingleResult();}
+                    catch (NoResultException e) {
+                        j.setCompetence(idCompetence);
+                        j.setIdTicket(idTicket);
+                        j.setActif(1);
+                        j.setDebut(Timestamp.from(Instant.now()));
 
-                    session.save(j);
+                        session.save(j);
+                    }
                     competencesTicket.remove(competence);
                 }
             }
@@ -715,5 +727,33 @@ public class RessourceTicket {
             return false;
         }
         return true;
+    }
+
+    private Response deleteTaskForTicket(String token, Ticket ticket, HashMap<Integer, Tache> map, HashMap<String, Integer> competences, ArrayList<String> competencesTaches) {
+        Transaction tx;
+        System.err.println("in delete task --------------");
+        if(!map.isEmpty()) {
+            System.err.println("begin");
+            for(int id : map.keySet()) {
+                System.err.println("la tache supprimer de la liste est " + id);
+                SendTache myTask = new SendTache(token, map.get(id));
+                Response resp = RessourceTache.deleteTask(gson.toJson(myTask));
+                if(resp.getStatus() != 200)
+                    return resp;
+
+                try(Session session = CreateSession.getSession()) {
+                    tx = session.beginTransaction();
+                    TicketJonctionEntity j = (TicketJonctionEntity) session.createQuery("FROM TicketJonctionEntity t WHERE t.idParent = " + ticket.id + " and t.actif = 1 and t.idEnfant = " + id).getSingleResult();
+                    j.setActif(0);
+                    j.setFin(Timestamp.from(Instant.now()));
+                    tx.commit();
+                    session.clear();
+                    session.close();
+                    System.err.println("task " + id+ " delete");
+                }
+                chekCompetenceForTicket(competences, competencesTaches, ticket.id);
+            }
+        }
+        return null;
     }
 }

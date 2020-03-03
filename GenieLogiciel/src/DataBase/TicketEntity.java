@@ -20,6 +20,7 @@ public class TicketEntity {
     private String type;
     private int ticket;
     private byte priorite;
+    private Timestamp fin;
 
     @Id
     @Column(name = "ID", nullable = false)
@@ -151,6 +152,16 @@ public class TicketEntity {
         this.priorite = priorite;
     }
 
+    @Basic
+    @Column(name = "fin", nullable = true)
+    public Timestamp getFin() {
+        return fin;
+    }
+
+    public void setFin(Timestamp fin) {
+        this.fin = fin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -168,11 +179,12 @@ public class TicketEntity {
                 Objects.equals(objet, that.objet) &&
                 Objects.equals(description, that.description) &&
                 Objects.equals(date, that.date) &&
-                Objects.equals(type, that.type);
+                Objects.equals(type, that.type) &&
+                Objects.equals(fin, that.fin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, siren, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket, priorite);
+        return Objects.hash(id, siren, adresse, technicien, categorie, statut, objet, description, date, demandeur, type, ticket, priorite, fin);
     }
 }

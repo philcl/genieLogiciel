@@ -6,8 +6,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "JonctionTicketCompetence", schema = "GenieLog", catalog = "")
-@IdClass(JonctionTicketCompetenceEntityPK.class)
 public class JonctionTicketCompetenceEntity {
+    private int id;
     private int idTicket;
     private int competence;
     private Integer actif;
@@ -15,6 +15,16 @@ public class JonctionTicketCompetenceEntity {
     private Timestamp fin;
 
     @Id
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
     @Column(name = "IdTicket", nullable = false)
     public int getIdTicket() {
         return idTicket;
@@ -24,7 +34,7 @@ public class JonctionTicketCompetenceEntity {
         this.idTicket = idTicket;
     }
 
-    @Id
+    @Basic
     @Column(name = "Competence", nullable = false)
     public int getCompetence() {
         return competence;
@@ -69,7 +79,8 @@ public class JonctionTicketCompetenceEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JonctionTicketCompetenceEntity that = (JonctionTicketCompetenceEntity) o;
-        return idTicket == that.idTicket &&
+        return id == that.id &&
+                idTicket == that.idTicket &&
                 competence == that.competence &&
                 Objects.equals(actif, that.actif) &&
                 Objects.equals(debut, that.debut) &&
@@ -78,6 +89,6 @@ public class JonctionTicketCompetenceEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(idTicket, competence, actif, debut, fin);
+        return Objects.hash(id, idTicket, competence, actif, debut, fin);
     }
 }
