@@ -100,7 +100,7 @@ public class RessourceClient {
                 myClient.name = client.getNom();
                 myClient.SIREN = client.getSiren();
 
-                AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse()).getSingleResult();
+                AdresseEntity adresseEntity = (AdresseEntity) session.createQuery("SELECT t FROM AdresseEntity t WHERE t.idAdresse = " + client.getAdresse() + " and t.actif = 1").getSingleResult();
 
                 myClient.adresse.numero = adresseEntity.getNumero();
                 myClient.adresse.codePostal = adresseEntity.getCodePostal();

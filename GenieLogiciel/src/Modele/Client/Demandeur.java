@@ -11,7 +11,6 @@ import org.hibernate.Transaction;
 import org.json.simple.JSONObject;
 
 import javax.persistence.NoResultException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -148,7 +147,7 @@ public class Demandeur {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             if(verifyDemandeurExistance(idDemandeur)) {
-                DemandeurEntity p = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + idDemandeur).getSingleResult();
+                DemandeurEntity p = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + idDemandeur + " and p.actif = 1").getSingleResult();
 
                 this.SIRET = p.getSiret();
                 this.telephone = p.getTelephone();
