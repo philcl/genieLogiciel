@@ -84,6 +84,10 @@ public class RessourceTicket {
                     return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);
             } catch (NoResultException e) {return ReponseType.getNOTOK("L'id du client n'existe pas", true, tx, session);}
 
+            ClientEntity client;
+            try{client = (ClientEntity) session.createQuery("FROM ClientEntity c WHERE c.siren = " + IdClient + " and c.actif = 1").getSingleResult();}
+            catch(NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren " + IdClient + " n'existe pas", true, tx, session);}
+            answer.clientName = client.getNom();
 
             for(Object obj : siretList) {
                 long siret = (long) obj;
@@ -95,11 +99,15 @@ public class RessourceTicket {
                     answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
 
                     //Recuperation de la liste des sites du client
-                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.id = " + demandeurEntity.getAdresse() + " and a.actif = 1").getSingleResult();
+                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE (a.id = " + demandeurEntity.getAdresse() + " and a.actif = 1").getSingleResult();
                     ClientSite adresseClient = new ClientSite(demandeurEntity.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()), adr.getIdAdresse());
                     answer.clientSiteList.add(adresseClient);
                 }
             }
+
+            Adresse adresse = new Adresse();
+            if(adresse.recupererAdresse(client.getAdresse()))
+                answer.clientSiteList.add(new ClientSite(-1, adresse, client.getAdresse()));
 
             //Recuperation de la liste des categories
             result = session.createQuery("FROM CategorieEntity c WHERE c.actif = 1").list();
@@ -129,10 +137,6 @@ public class RessourceTicket {
                 answer.priorityList.add(priority.intValue());
             }
 
-            String clientName;
-            try{clientName = (String) session.createQuery("SELECT c.nom FROM ClientEntity c WHERE c.siren = " + IdClient + " and c.actif = 1").getSingleResult();}
-            catch(NoResultException e) {return ReponseType.getNOTOK("Le client avec le siren " + IdClient + " n'existe pas", true, tx, session);}
-            answer.clientName = clientName;
             tx.commit();
             session.clear();
 

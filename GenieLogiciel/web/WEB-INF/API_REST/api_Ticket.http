@@ -4,7 +4,7 @@ Accept: */*
 Cache-Control: no-cache
 Content-Type: text/plain
 
-{"clientId":"123456789","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
+{"clientId":"2323233","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e"}
 ###
 ### Send POST to get init info for Ticket with id
 POST http://localhost:8080/genielog/ticket/init
