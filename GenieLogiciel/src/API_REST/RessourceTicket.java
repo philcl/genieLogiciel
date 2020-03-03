@@ -157,7 +157,8 @@ public class RessourceTicket {
     public Response postCreation(String jsonStr) {
         String token = "", ticketJson = "";
         JSONObject ticketJsonObject = null;
-        int ticketParent = 1;
+        HashMap<String, Integer> competencesTicket = new HashMap<>();
+        int ticketParent = 1, maxID = -1;
         try {
             JSONParser parser = new JSONParser();
             JSONObject json = (JSONObject) parser.parse(jsonStr);
@@ -209,7 +210,7 @@ public class RessourceTicket {
             catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien avec l'id " + ticket.technicien.id + " n'existe pas", true, tx, session);}
             ticketEntity.setTechnicien(tech.getId());
 
-            int maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult()+1;
+            maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult()+1;
             ticketEntity.setId(maxID); //Rajout de l'increment
 
             //Ajout en base de donnee du ticket
@@ -230,8 +231,17 @@ public class RessourceTicket {
                     JonctionTicketCompetenceEntity jct = new JonctionTicketCompetenceEntity();
                     jct.setIdTicket(maxID);
                     jct.setCompetence(idCompetence);
+                    jct.setActif(1);
+                    jct.setDebut(Timestamp.from(Instant.now()));
                     session.save(jct);
                 }
+            }
+
+            List result = session.createQuery("SELECT c FROM CompetencesEntity c, JonctionTicketCompetenceEntity j WHERE j.actif = 1 and c.actif = 1 and j.competence = c.idCompetences and j.idTicket = " + maxID).list();
+
+            for(Object o : result) {
+                CompetencesEntity competencesEntity = (CompetencesEntity) o;
+                competencesTicket.put(competencesEntity.getCompetence(), competencesEntity.getIdCompetences());
             }
 
             ArrayList<Tache> taches;
@@ -244,13 +254,6 @@ public class RessourceTicket {
                 ticket.id = maxID;
             }
 
-            if(!ticket.taches.isEmpty()) {
-                for(Tache tache : ticket.taches) {
-                    Response resp = CreateTaskWithTicket(token, tache);
-                    if (resp != null) return resp;
-                }
-            }
-
             tx.commit();
             session.clear();
             session.close();
@@ -259,6 +262,17 @@ public class RessourceTicket {
             e.printStackTrace();
             return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
         }
+
+            if(!ticket.taches.isEmpty()) {
+                for(Tache tache : ticket.taches) {
+                    Response resp = CreateTaskWithTicket(token, tache);
+                    if (resp != null) return resp;
+                    chekCompetenceForTicket(competencesTicket, tache.competences, maxID);
+                }
+
+            }
+
+
         list.add(ticket);
         System.err.println("ticket rajouté sur la liste");
         list.add(null);
@@ -681,7 +695,9 @@ public class RessourceTicket {
             for(String competence : competencesTicket.keySet()) {
                 if(!competencesTaches.contains(competence)) {
                     System.err.println("competence a supprimer = " + competence + " pour le ticket = " +idTicket);
-                    JonctionTicketCompetenceEntity j = (JonctionTicketCompetenceEntity) session.createQuery("FROM JonctionTicketCompetenceEntity j WHERE j.competence = " + competencesTicket.get(competence) + " and j.idTicket = " + idTicket + " and j.actif = 1").getSingleResult();
+                    String request = "SELECT j FROM JonctionTicketCompetenceEntity j, CompetencesEntity c WHERE j.competence = c.idCompetences and c.competence = '" + competence + "' and j.idTicket = " + idTicket + " and j.actif = 1 and c.actif = 1";
+                    System.err.println("competence delete ");
+                    JonctionTicketCompetenceEntity j = (JonctionTicketCompetenceEntity) session.createQuery(request).getSingleResult();
                     j.setActif(0);
                     j.setFin(Timestamp.from(Instant.now()));
                     session.update(j);

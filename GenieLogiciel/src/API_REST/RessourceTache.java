@@ -1,8 +1,6 @@
 package API_REST;
 
-import DataBase.JonctionTacheCompetenceEntity;
-import DataBase.TacheEntity;
-import DataBase.TicketJonctionEntity;
+import DataBase.*;
 import Modele.Staff.Token;
 import Modele.Ticket.Tache;
 import org.hibernate.HibernateException;
@@ -18,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -70,6 +69,8 @@ public class RessourceTache {
                 JonctionTacheCompetenceEntity jct = new JonctionTacheCompetenceEntity();
                 jct.setCompetence(idCompetence);
                 jct.setTache(maxID);
+                jct.setActif(1);
+                jct.setDebut(Timestamp.from(Instant.now()));
                 session.save(jct);
             }
 
@@ -77,6 +78,8 @@ public class RessourceTache {
 
             jct.setIdEnfant(maxID);
             jct.setIdParent(tache.ticketParent);
+            jct.setActif(1);
+            jct.setDebut(Timestamp.from(Instant.now()));
             session.save(jct);
 
             tx.commit();
@@ -150,10 +153,15 @@ public class RessourceTache {
                     jct.setTache(tacheEntity.getId());
                     jct.setActif(1);
                     jct.setDebut(Timestamp.from(Instant.now()));
-                    session.saveOrUpdate(jct);
+                    session.save(jct);
                 }
-                else {
-
+            }
+            for(String competence : competencesOrigine) {
+                if(!tache.competences.contains(competence)) {
+                    JonctionTacheCompetenceEntity j = (JonctionTacheCompetenceEntity) session.createQuery("SELECT j FROM JonctionTacheCompetenceEntity j, CompetencesEntity c WHERE c.actif = 1 and j.actif = 1 and j.competence = c.idCompetences and c.competence = '" + competence + "'").getSingleResult();
+                    j.setActif(0);
+                    j.setFin(Timestamp.from(Instant.now()));
+                    session.update(j);
                 }
             }
 
@@ -189,7 +197,17 @@ public class RessourceTache {
             catch (NoResultException e) {return ReponseType.getNOTOK("La tache " + tache.id + " n'existe pas", true, tx, session);}
 
             tacheEntity.setStatut("Non resolu");
+            tacheEntity.setFin(Timestamp.from(Instant.now()));
             session.update(tacheEntity);
+
+            List result = session.createQuery("FROM JonctionTacheCompetenceEntity j WHERE j.actif = 1 and j.tache = " + tacheEntity.getId()).list();
+
+            for(Object o : result) {
+                JonctionTacheCompetenceEntity j = (JonctionTacheCompetenceEntity) o;
+                j.setActif(0);
+                j.setFin(Timestamp.from(Instant.now()));
+                session.update(j);
+            }
 
             tx.commit();
             session.clear();

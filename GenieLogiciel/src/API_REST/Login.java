@@ -3,6 +3,7 @@ package API_REST;
 import DataBase.*;
 import Modele.Staff.*;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -138,8 +139,14 @@ public class Login {
         user.setDebut(Timestamp.from(Instant.now()));
 
             //Ajout du staff sur la base pour avoir les foreign key sur competence et poste
-            session.save(user);
+            try{session.save(user);
             tx.commit();
+            }
+            catch (Exception e) {
+                System.err.println("Une erreur c'est produite lors de l'ajout du staff " + jsonStr);
+                e.printStackTrace();
+                return ReponseType.getNOTOK("Erreur interne", true, tx, session);
+            }
             session.clear();
             tx = session.beginTransaction();
 

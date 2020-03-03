@@ -96,11 +96,13 @@ public class Adresse {
 
             id = (int) session.createQuery("SELECT MAX(a.idAdresse) FROM AdresseEntity a").getSingleResult();
             adresseEntity.setIdAdresse(id+1);
-            try{session.save(adresseEntity);}
+            try{session.save(adresseEntity);
+
+            tx.commit();
+            }
             catch (Exception e) {
                 System.err.println("impossible de sauvergarder l'adresse");
             }
-            tx.commit();
             session.clear();
             session.close();
         } catch (HibernateException e) {
@@ -135,7 +137,9 @@ public class Adresse {
 
     public boolean RecupererAdresseDepuisJson(JSONObject adr) {
         numero = -1;
-        numero = Integer.parseInt(((Long) adr.get("numero")).toString());
+        try{numero = Integer.parseInt(((Long) adr.get("numero")).toString());}
+        catch (NumberFormatException e) {
+            System.err.println("le numero est trop long"); return false;}
         codePostal = Security.test((String) adr.get("codePostal"));
         rue = Security.test((String) adr.get("rue"));
         ville = Security.test((String) adr.get("ville"));

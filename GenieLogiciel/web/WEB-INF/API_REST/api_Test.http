@@ -74,7 +74,6 @@ Content-Type: text/plain
 }
 ###
 ##Create User
-
 POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
@@ -100,5 +99,23 @@ Content-Type: text/plain
   },
   "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e"
 }
+###
 
+##Create User
+
+POST http://localhost:8080/genielog/user/create
+Content-Type: text/plain
+
+{"token":"9b15a375-94e6-4de5-8fc6-a21ccf93a2aa",
+"staff":{
+"staffSexe":"M",
+"staffUserName":"log000",
+"staffPassword":"1234",
+"staffMail":"sgvfsgdfdfsdfd",
+"staffAdress":{"numero":1556,"rue":"dbfwbw","ville":"vfw<ddfv","codePostal":"vdwfvdwv"},
+"staffSurname":"dfbgdwfbwdbwdfb",
+"staffName":"jigbqfdigjubdnvuig",
+"staffTel":"06452415",
+"staffCompetency":[],
+"staffRole":["Operateur"]}}
 ###
