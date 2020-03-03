@@ -424,6 +424,7 @@ public class RessourceTicket {
                     map.put(tache.id, tache);
                     System.err.println("id in map = " + tache.id);
                     //Ajout du pourcentage
+                    System.err.println("statut tache = " + tache.statut + " id = " + tache.id);
                     pourcentage += (tache.statut == "Resolu") ? 100 : 0;
                     pourcentage /= taches.size();
                     ticket.pourcentage = pourcentage;
@@ -443,8 +444,10 @@ public class RessourceTicket {
                     }
                     //Sinon on la creer
                     else {
-                        Response resp = CreateTaskWithTicket(token, tache);
-                        if (resp != null) return resp;
+                        if(!tache.statut.equals("Resolu") || !tache.equals("Non resolu")) {
+                            Response resp = CreateTaskWithTicket(token, tache);
+                            if (resp != null) return resp;
+                        }
                     }
                     competencesTaches.addAll(tache.competences);
                 }
@@ -551,16 +554,21 @@ public class RessourceTicket {
                 List result = session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.statut != 'Non resolu' and t.statut != 'Resolu'").list();
                 tx.commit();
                 session.clear();
-                for (Object o : result)
-                    tickets.add(recuperationTicket(session, (int) o));
+                for (Object o : result) {
+                    Ticket ticket = recuperationTicket(session, (int) o);
+                    if(ticket != null)
+                        tickets.add(ticket);
+                }
             }
             else {
                 List result = session.createQuery("SELECT t.id FROM TicketEntity t WHERE t.technicien = " + techId + "and t.statut != 'Non resolu' and t.statut != 'Resolu'").list();
                 tx.commit();
                 session.clear();
-                for(Object o : result)
-                    tickets.add(recuperationTicket(session, (int) o));
-
+                for(Object o : result) {
+                    Ticket ticket = recuperationTicket(session, (int) o);
+                    if (ticket != null)
+                        tickets.add(ticket);
+                }
             }
             session.close();
         } catch (HibernateException e) {
@@ -697,7 +705,7 @@ public class RessourceTicket {
     private Response CreateTaskWithTicket(String token, Tache tache) {
         SendTache myTask = new SendTache(token, tache);
         String str = gson.toJson(myTask);
-        System.err.println("json final = " + str + "------------------------------------------------------");
+        System.err.println("json final pour creation = " + str + "------------------------------------------------------");
         Response resp = RessourceTache.createTache(str);
         if(resp.getStatus() != 200) {
             return resp;

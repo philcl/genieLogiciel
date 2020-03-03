@@ -122,8 +122,13 @@ public class RessourceTache {
             resp = verifyTask(session, tx, tacheEntity);
             if(resp != null)
                 return resp;
-            if(tacheEntity.getStatut().equals("Resolu"))
+            System.err.println("statut = " + tache.statut);
+            if(tache.statut.equals("Resolu")) {
+                System.err.println("dans le if ");
                 tacheEntity.setFin(Timestamp.from(Instant.now()));
+            }
+
+            System.err.println("tache fin " + tacheEntity.getFin());
 
             session.update(tacheEntity);
             tx.commit();
@@ -254,7 +259,7 @@ public class RessourceTache {
         catch (NoResultException e) {return ReponseType.getNOTOK("Le technicien avec l'id " + tache.technicien.id + " n'existe pas", true, tx, session);}
         tacheEntity.setTechnicien(tache.technicien.id);
 
-        try{session.createQuery("FROM StatutTicketEntity s WHERE s.idStatusTicket = '" + tache.statut.replace("'", "''") + "'").getSingleResult();}
+        try{session.createQuery("FROM StatutTicketEntity s WHERE s.idStatusTicket = '" + tache.statut.replace("'", "''") + "' and s.actif = 1").getSingleResult();}
         catch (NoResultException e) {return ReponseType.getNOTOK("Le statut : " + tache.statut + " n'existe pas", true, tx, session);}
         tacheEntity.setStatut(tache.statut);
 

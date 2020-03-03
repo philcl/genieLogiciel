@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Tache {
     public String statut = "", objet = "", description = "";
-    public int ticketParent = -1, tempsPasse = -1, id = -1, pourcentage = 0, tempsEstime = -1;
+    public int ticketParent = -1, tempsPasse = 0, id = -1, pourcentage = 0, tempsEstime = -1;
     public ArrayList<String> competences;
     public Personne technicien;
 
