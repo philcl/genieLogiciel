@@ -226,3 +226,64 @@ Content-Type: text/plain
 }
 
 ###
+##Modify ticket
+
+POST http://localhost:8080/genielog/ticket/modify
+Content-Type: text/plain
+
+{
+  "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "clientId": 123456789,
+  "ticket": {
+    "categorie": "Temperature",
+    "competences": [
+      "Electricien",
+      "Frigoriste"
+    ],
+    "priorite": 1,
+    "demandeur": {
+      "sexe": "M",
+      "id": 12,
+      "nom": "RENARD",
+      "prenom": "Maxime"
+    },
+    "description": "Bonjour,\n Notre meuble vitrine réfrigérée qui nous sert à la présentation des charcuteries n'est plus assez froid, il est impossible de descendre au-delà de 6°.\n ",
+    "nomClient": "A",
+    "objet": "La vitrine réfrigérée n'est plus assez chaude",
+    "statut": "En cours",
+    "technicien": {
+      "sexe": "M",
+      "id": 2,
+      "nom": "VITTONE",
+      "prenom": "Jules"
+    },
+    "type": "Incident",
+    "adresse": {
+      "numero": 32,
+      "rue": "RUE ALAINE",
+      "ville": "LYON",
+      "codePostal": "69000"
+    },
+    "taches": [
+      {
+        "statut": "En cours",
+        "objet": "Chauffer le sol",
+        "description": "sol le chauffer",
+        "technicien": {
+          "sexe": "M",
+          "id": 66,
+          "nom": "TAKITAKI",
+          "prenom": "TAKITAKI"
+        },
+        "competences": [
+          "Frigoriste"
+        ],
+        "tempsEstime": 23,
+        "tempsPasse": 0
+      }
+    ],
+    "id": 20
+  }
+}
+
+###

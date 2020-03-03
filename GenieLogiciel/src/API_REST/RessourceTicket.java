@@ -273,7 +273,7 @@ public class RessourceTicket {
             session.clear();
             session.close();
         } catch (HibernateException e) {
-            //if (tx != null) tx.rollback();
+            if (tx != null) tx.rollback();
             e.printStackTrace();
             return ReponseType.getNOTOK("Erreur lors de la sauvegarde du ticket", false, null, null);
         }
@@ -751,14 +751,17 @@ public class RessourceTicket {
                     System.err.println("competence a supprimer = " + competence + " pour le ticket = " +idTicket);
                     String request = "SELECT j FROM JonctionTicketCompetenceEntity j, CompetencesEntity c WHERE j.competence = c.idCompetences and c.competence = '" + competence + "' and j.idTicket = " + idTicket + " and j.actif = 1 and c.actif = 1";
                     System.err.println("competence delete ");
-                    JonctionTicketCompetenceEntity j = (JonctionTicketCompetenceEntity) session.createQuery(request).getSingleResult();
-                    j.setActif(0);
-                    j.setFin(Timestamp.from(Instant.now()));
-                    session.update(j);
-                    competencesTicket.remove(competence);
+                    JonctionTicketCompetenceEntity j;
+                    try{
+                        j = (JonctionTicketCompetenceEntity) session.createQuery(request).getSingleResult();
+                        j.setActif(0);
+                        j.setFin(Timestamp.from(Instant.now()));
+                        session.update(j);
+                        competencesTaches.remove(competence);
+                    }
+                    catch (NoResultException ignored) {}
                 }
             }
-
             tx.commit();
             session.clear();
             session.close();
