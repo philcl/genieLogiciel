@@ -146,15 +146,17 @@ public class RessourceTicket {
                 if(answer.ticket == null)
                     return ReponseType.getNOTOK("Le ticket avec l'id " + IdTicket + " n'existe pas", true, null, session);
                 int pourcentage = 0;
-                if(answer.ticket.taches != null && !answer.ticket.taches.isEmpty()) {
-                    for (Tache tache : answer.ticket.taches) {
+
+                List res = session.createQuery("SELECT t FROM TacheEntity t, TicketJonctionEntity j WHERE j.idParent = " + answer.ticket.id + " and t.statut != 'Non resolu'").list();
+                    for (Object o : res) {
+                        TacheEntity tache = (TacheEntity) o;
                         //Ajout du pourcentage
-                        pourcentage += (tache.statut == "Resolu") ? 100 : 0;
-                        pourcentage /= answer.ticket.taches.size();
+                        pourcentage += (tache.getStatut().equals("Resolu")) ? 100 : 0;
+                        if(res.size() != 0)
+                            pourcentage /= res.size();
                         answer.ticket.pourcentage = pourcentage;
                     }
                 }
-            }
             session.close();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();

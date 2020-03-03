@@ -50,27 +50,38 @@ Content-Type: text/plain
 {
   "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
   "client": {
-    "SIREN": 992223,
-    "nom": "QSDQSD",
-    "adresse": {
-      "numero": 1,
-      "rue": "BOQSDSQD",
-      "ville": "OKOKQSD",
-      "codePostal": "23323"
+  "SIREN": 9280312,
+  "nom": "HUR0LE",
+  "adresse": {
+    "numero": 01,
+    "rue": "HURL00000EADRE",
+    "ville": "HURLVIL",
+    "codePostal": "9933"
+  },
+  "demandeurs": [
+    {
+      "SIRET": 92323,
+      "demandeur": {
+        "nom": "NOM",
+        "prenom": "PRENOM",
+        "sexe": "M",
+        "id": 17
+      },
+      "telephone": "011251454",
+      "idAdresse": 27
     },
-    "demandeurs": [
-      {
-        "SIRET": 82323,
-        "demandeur": {
-          "nom": "SQDSD",
-          "prenom": "QSDSDQ",
-          "sexe": "M"
-        },
-        "telephone": "0012",
-        "idAdresse": 35
-      }
-    ]
-  }
+    {
+      "SIRET": 2323,
+      "demandeur": {
+        "nom": "QDQSd",
+        "prenom": "qSDd",
+        "sexe": "M"
+      },
+      "telephone": "323",
+      "idAdresse": 60
+    }
+  ]
+}
 }
 ###
 ##Create User
@@ -101,21 +112,42 @@ Content-Type: text/plain
 }
 ###
 
-##Create User
+##Create ticket
 
-POST http://localhost:8080/genielog/user/create
+POST http://localhost:8080/genielog/ticket/create
 Content-Type: text/plain
 
-{"token":"9b15a375-94e6-4de5-8fc6-a21ccf93a2aa",
-"staff":{
-"staffSexe":"M",
-"staffUserName":"log000",
-"staffPassword":"1234",
-"staffMail":"sgvfsgdfdfsdfd",
-"staffAdress":{"numero":1556,"rue":"dbfwbw","ville":"vfw<ddfv","codePostal":"vdwfvdwv"},
-"staffSurname":"dfbgdwfbwdbwdfb",
-"staffName":"jigbqfdigjubdnvuig",
-"staffTel":"06452415",
-"staffCompetency":[],
-"staffRole":["Operateur"]}}
+{
+  "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "ticket": {
+    "categorie": "Etude",
+    "competences": [
+      "Electricien",
+      "Frigoriste"
+    ],
+    "priorite": 1,
+    "demandeur": {
+      "sexe": "M",
+      "id": 32,
+      "nom": "sdqs",
+      "prenom": "dqsdq"
+    },
+    "description": "Descripto",
+    "nomClient": "A",
+    "objet": "Objecto",
+    "statut": "Bloque",
+    "technicien": {
+      "sexe": "M",
+      "id": 1,
+      "nom": "CLAUDE",
+      "prenom": "Philippe"
+    },
+    "type": "Demande",
+    "adresse": {
+      "numero": 23,
+      "rue": "232 2323",
+      "codePostal": "qsds"
+    }
+  }
+}
 ###

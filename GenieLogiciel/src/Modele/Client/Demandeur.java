@@ -71,7 +71,7 @@ public class Demandeur {
 
                 System.err.println("------------------avant requete 2");
                 try {
-                    session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.siren = " + SIREN + " and j.actif = 1").getSingleResult();
+                    session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + SIRET + " and j.actif = 1").getSingleResult();
                     tx.commit();
 
                 }
