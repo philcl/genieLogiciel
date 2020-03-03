@@ -127,6 +127,7 @@ public class Login {
         try(Session session = CreateSession.getSession()) {
             tx = session.beginTransaction();
             try{
+                System.err.println("test du login = " + p.staffUserName);
                 session.createQuery("FROM StaffEntity s WHERE s.login = '" + p.staffUserName + "'").getSingleResult();
                 return ReponseType.getNOTOK("Le login existe deja veuillez le changer", true, tx, session);
             } catch (NoResultException ignored) {}

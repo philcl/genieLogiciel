@@ -11,6 +11,7 @@ public class Ticket {
     public ArrayList<String> competences;
     public Adresse adresse;
     public int id, priorite;
+    public int pourcentage = 0;
     public ArrayList<Tache> taches;
 
     public Ticket(){}

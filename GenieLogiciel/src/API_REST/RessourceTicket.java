@@ -99,7 +99,7 @@ public class RessourceTicket {
                     answer.demandeurList.add(new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne()));
 
                     //Recuperation de la liste des sites du client
-                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE (a.id = " + demandeurEntity.getAdresse() + " and a.actif = 1").getSingleResult();
+                    AdresseEntity adr = (AdresseEntity) session.createQuery("FROM AdresseEntity a WHERE a.idAdresse = " + demandeurEntity.getAdresse() + " and a.actif = 1").getSingleResult();
                     ClientSite adresseClient = new ClientSite(demandeurEntity.getSiret(), new Adresse(adr.getNumero(), adr.getCodePostal(), adr.getRue(), adr.getVille()), adr.getIdAdresse());
                     answer.clientSiteList.add(adresseClient);
                 }
@@ -145,6 +145,15 @@ public class RessourceTicket {
                 answer.ticket = recuperationTicket(session, IdTicket);
                 if(answer.ticket == null)
                     return ReponseType.getNOTOK("Le ticket avec l'id " + IdTicket + " n'existe pas", true, null, session);
+                int pourcentage = 0;
+                if(answer.ticket.taches != null && !answer.ticket.taches.isEmpty()) {
+                    for (Tache tache : answer.ticket.taches) {
+                        //Ajout du pourcentage
+                        pourcentage += (tache.statut == "Resolu") ? 100 : 0;
+                        pourcentage /= answer.ticket.taches.size();
+                        answer.ticket.pourcentage = pourcentage;
+                    }
+                }
             }
             session.close();
         } catch (HibernateException e) {
@@ -273,9 +282,7 @@ public class RessourceTicket {
                     if (resp != null) return resp;
                     chekCompetenceForTicket(competencesTicket, tache.competences, maxID);
                 }
-
             }
-
 
         list.add(ticket);
         System.err.println("ticket rajouté sur la liste");
@@ -407,6 +414,7 @@ public class RessourceTicket {
         }
         ArrayList<String> competencesTaches = new ArrayList<>();
         HashMap<Integer, Tache> map = new HashMap<>();
+        int pourcentage = 0;
 
         if(ticket.taches != null && !ticket.taches.isEmpty()) {
 
@@ -415,6 +423,10 @@ public class RessourceTicket {
                 for(Tache tache : taches) {
                     map.put(tache.id, tache);
                     System.err.println("id in map = " + tache.id);
+                    //Ajout du pourcentage
+                    pourcentage += (tache.statut == "Resolu") ? 100 : 0;
+                    pourcentage /= taches.size();
+                    ticket.pourcentage = pourcentage;
                 }
 
                 for(Tache tache : ticket.taches) {
@@ -456,7 +468,7 @@ public class RessourceTicket {
                 if (resp != null) return resp;
             }
         }
-        return ReponseType.getOK("");
+        return ReponseType.getOK(pourcentage);
     }
 
     //todo possible seulemnet si aucune tache
