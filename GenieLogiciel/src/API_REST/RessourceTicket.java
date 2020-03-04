@@ -203,6 +203,7 @@ public class RessourceTicket {
         ticketEntity.setObjet(ticket.objet.replace("'", "''"));
         ticketEntity.setStatut(ticket.statut.replace("'", "''"));
         ticketEntity.setType(ticket.type.replace("'", "''"));
+        ticketEntity.setPriorite((byte) ticket.priorite);
         ticketEntity.setTicket(ticketParent);
 
         try(Session session = CreateSession.getSession()) {
