@@ -29,14 +29,16 @@ print("Etape 1")
 
 resultat = ""
 j = 98765432112345
+k = 645789878
 
 for i in temp:
 	j += 1
+	k += 1
 	resultat += "### Send POST to change clientName to clientId\n"
 	resultat += "POST http://localhost:8080/genielog/demandeur/create \n"
 	resultat += "Content-Type: text/plain\n"
 	resultat += "\n"
-	resultat += "{\"token\":\"96b29b22-cefb-4699-93b9-9fcc97aa003e\", \"clientID\":123456781, \"demandeur\":{\"SIRET\":" + str(j) + ", \"idAdresse\":12, \"demandeur\":{\"id\":" + i[9] + ",\"nom\":\"" + i[10] + "\",\"prenom\":\"" + i[11] + "\",\"sexe\":\"M\"}, \"telephone\":\"0645789878\"}} \n"
+	resultat += "{\"token\":\"96b29b22-cefb-4699-93b9-9fcc97aa003e\", \"clientID\":123456781, \"demandeur\":{\"SIRET\":" + str(j) + ", \"idAdresse\":12, \"demandeur\":{\"id\":" + i[9] + ",\"nom\":\"" + i[10] + "\",\"prenom\":\"" + i[11] + "\",\"sexe\":\"M\"}, \"telephone\":\"" + "0" + str(k) + "\"}} \n"
 	resultat += "###\n\n"
 
 numpy.savetxt(sortie1,[resultat],fmt='%s')
