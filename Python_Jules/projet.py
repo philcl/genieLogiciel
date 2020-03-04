@@ -54,7 +54,7 @@ for i in temp:
 	resultat += "POST http://localhost:8080/genielog/user/create \n"
 	resultat += "Content-Type: text/plain\n"
 	resultat += "\n"
-	resultat += "{\"token\":\"96b29b22-cefb-4699-93b9-9fcc97aa003e\",\"staff\":{\"staffId\":" + i[12] + ",\"staffUserName\":\"" + i[12] + "\",\"staffPassword\":\"1234\",\"staffMail\":\"test@test.fr\",\"staffAdress\":{\"numero\":12,\"rue\":\"avenue des champs\",\"ville\":\"PARIS\",\"codePostal\":\"75000\"},\"staffSurname\":\"" + i[13] + "\",\"staffName\":\"" + i[14] + "\",\"staffSexe\":\"M\",\"staffTel\":\"0504070105\",\"staffCompetency\":[\"Informaticien\"],\"staffRole\":[\"Tech\"]}} \n"
+	resultat += "{\"token\":\"96b29b22-cefb-4699-93b9-9fcc97aa003e\",\"staff\":{\"staffId\":" + i[12] + ",\"staffUserName\":\"" + i[12] + "\",\"staffPassword\":\"1234\",\"staffMail\":\"test@test.fr\",\"staffAdress\":{\"numero\":12,\"rue\":\"avenue des champs\",\"ville\":\"PARIS\",\"codePostal\":\"75000\"},\"staffSurname\":\"" + i[13] + "\",\"staffName\":\"" + i[14] + "\",\"staffSexe\":\"M\",\"staffTel\":\"0504070105\",\"staffCompetency\":[\"Informaticien\"],\"staffRole\":[\"Technicien\"]}} \n"
 	resultat += "###\n\n"
 
 numpy.savetxt(sortie2,[resultat],fmt='%s')
