@@ -1,0 +1,345 @@
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Etude","competences":[],"demandeur":{"id":12,"nom":"RENARD","prenom":"Maxime"},"objet":"TEST","statut":"Resolu","technicien":{"id":2,"nom":"VITTONE","prenom":"Jules
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13000","numero":67,"rue":"rue jean martin","ville":"marseille"},"categorie":"Materiel","competences":[],"demandeur":{"id":100,"nom":"DE SOUSA","prenom":"Lionel"},"objet":"j'ai besoin de faire réparer mon ordinateur","statut":"Non resolu","technicien":{"id":100,"nom":"VIGLIONE","prenom":"Sébastien
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"24240","numero":5,"rue":"route de nontron","ville":"Mareuil"},"categorie":"Temperature","competences":[],"demandeur":{"id":101,"nom":"PAPA","prenom":"Michel"},"objet":"panne de chaudière","statut":"Ouvert","technicien":{"id":101,"nom":"TERZIAN","prenom":"Jacques
+"},"type":"Incident","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"91700","numero":95,"rue":"Avenue gabriel péri","ville":"Ste Geneviève des bois"},"categorie":"Etude","competences":[],"demandeur":{"id":102,"nom":"LEVY","prenom":"Sandra"},"objet":"Etude de plan","statut":"Resolu","technicien":{"id":102,"nom":"GIRAUT","prenom":"Patrick
+"},"type":"Demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13000","numero":12,"rue":"traverse des faienciers","ville":"Marseille"},"categorie":"Materiel","competences":[],"demandeur":{"id":103,"nom":"GONTIER","prenom":"Annie"},"objet":"j'ai besoin de faire réparer ma machine à laver le linge","statut":"Ouvert","technicien":{"id":103,"nom":"CORENTI","prenom":"Antoine
+"},"type":"Incident","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13260","numero":3,"rue":"avenue revestel","ville":"Cassis"},"categorie":"Temperature","competences":[],"demandeur":{"id":104,"nom":"AZEMARD","prenom":"Christophe"},"objet":"Panne de ballon d'eau chaude","statut":"Resolu","technicien":{"id":104,"nom":"ARZALAOUI","prenom":"Mohamed
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13600","numero":145,"rue":"avenue du serpolet","ville":"La Ciotat"},"categorie":"Etude","competences":[],"demandeur":{"id":105,"nom":"BOLADO","prenom":"Faustino"},"objet":"Etude de sol","statut":"Ouvert","technicien":{"id":105,"nom":"SOLINAS","prenom":"Pierre
+"},"type":"Demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13190","numero":10,"rue":"rue marcel pagnol","ville":"Allauch"},"categorie":"Materiel","competences":[],"demandeur":{"id":106,"nom":"ROUX","prenom":"Daniel"},"objet":"j'ai besoin de louer un tractopelle","statut":"Non resolu","technicien":{"id":106,"nom":"POIRIER","prenom":"Joel
+"},"type":"Demande","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13950","numero":18,"rue":"chemin de la garrigue","ville":"Cadolive"},"categorie":"Temperature","competences":[],"demandeur":{"id":107,"nom":"HERPE","prenom":"Céline"},"objet":"panne de radiateur","statut":"Ouvert","technicien":{"id":107,"nom":"LAPINA","prenom":"Fabrice
+"},"type":"Incident","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13240","numero":156,"rue":"clos de la vigne","ville":"Gémenos"},"categorie":"Materiel","competences":[],"demandeur":{"id":108,"nom":"MAANANE","prenom":"Sabrina"},"objet":"j'ai besoin d'une porte de garage","statut":"non resolu","technicien":{"id":108,"nom":"POLITO ","prenom":"Joseph
+"},"type":"demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"06200","numero":20,"rue":"rue des gravier","ville":"NICE"},"categorie":"Temperature","competences":[],"demandeur":{"id":109,"nom":"POMMIER","prenom":"Glady"},"objet":"panne du réseau de chauffage au gaz","statut":"Ouvert","technicien":{"id":109,"nom":"ZIEMMIAK","prenom":"Stanislas
+"},"type":"Incident","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"83000","numero":157,"rue":"rue des miozotis","ville":"TOULON"},"categorie":"Materiel","competences":[],"demandeur":{"id":110,"nom":"CANONEIRO","prenom":"Madeleine"},"objet":"besoin de 10 fenètres","statut":"non resolu","technicien":{"id":110,"nom":"GLAVIC","prenom":"Mathieu
+"},"type":"demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"44340","numero":53,"rue":"route de la villa mahaud","ville":"PORNICHET"},"categorie":"Etude","competences":[],"demandeur":{"id":111,"nom":"VIDAL","prenom":"Raphael"},"objet":"Etude de plan","statut":"Ouvert","technicien":{"id":111,"nom":"TRICHET","prenom":"Fabien
+"},"type":"demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"91700","numero":317,"rue":"Avenue gabriel péri","ville":"Ste Geneviève des bois"},"categorie":"temperature","competences":[],"demandeur":{"id":112,"nom":"DOUMALIN","prenom":"Jeanine"},"objet":"panne de chaudière fuel","statut":"Resolu","technicien":{"id":112,"nom":"Reynaud","prenom":"Denis
+"},"type":"Incident","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"28000","numero":50,"rue":"rue des Comtesses","ville":"Chartres"},"categorie":"Materiel","competences":[],"demandeur":{"id":113,"nom":"DEVROE","prenom":"Pascal"},"objet":"Panne du téléviseur","statut":"en cours","technicien":{"id":113,"nom":"LAYANI","prenom":"Ichoua
+"},"type":"Demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"94700","numero":19,"rue":"rue de Reims","ville":"MAISON ALFORT"},"categorie":"Materiel","competences":[],"demandeur":{"id":114,"nom":"FRANCISCO","prenom":"Patrice"},"objet":"J'ai besoin d'une porte d'entrée","statut":"Ouvert","technicien":{"id":114,"nom":"TEXEIRA","prenom":"Abilio
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"94230","numero":27,"rue":"rue de la gare","ville":"CACHAN"},"categorie":"temperature","competences":[],"demandeur":{"id":115,"nom":"GRELET","prenom":"Christophe"},"objet":"Panne de chaudière","statut":"Resolu","technicien":{"id":115,"nom":"LOUARMA","prenom":"SaÏd
+"},"type":"Incident","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"95270","numero":6,"rue":"rue des azalées","ville":"LUZARCHES"},"categorie":"Materiel","competences":[],"demandeur":{"id":116,"nom":"HELAINE","prenom":"Philippe"},"objet":"j'ai besoin d'une cloture","statut":"non resoludemande","technicien":{"id":116,"nom":"GALVEZ","prenom":"Fausto
+"},"type":"","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"83210","numero":3,"rue":"rue peirex","ville":"BELGENTIER"},"categorie":"Etude","competences":[],"demandeur":{"id":117,"nom":"LACAMPAGNE","prenom":"Daniel"},"objet":"etude de plan","statut":"Resolu","technicien":{"id":117,"nom":"JOUSSET","prenom":"Mathieu
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"06200","numero":84,"rue":"avenue henri matisse","ville":"VENCE"},"categorie":"Temperature","competences":[],"demandeur":{"id":118,"nom":"MOTHU","prenom":"Gisèle"},"objet":"Panne du ballon d'eau chaude","statut":"en cours","technicien":{"id":118,"nom":"LUMETA","prenom":"Vincent
+"},"type":"Demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"91170","numero":65,"rue":"rue francoeur","ville":"VIRY CHATILLON"},"categorie":"Materiel","competences":[],"demandeur":{"id":119,"nom":"SABATIER","prenom":"Alain"},"objet":"Remplacement du portail","statut":"Resolu","technicien":{"id":119,"nom":"KRIVOCAPIC","prenom":"Branco
+"},"type":"Incident","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"91070","numero":32,"rue":"rue du maréchal leclerc","ville":"BONDOUFLE"},"categorie":"Etude","competences":[],"demandeur":{"id":120,"nom":"TOUBLANC","prenom":"Adeline"},"objet":"Etude de sol","statut":"non résolu","technicien":{"id":120,"nom":"NOTARI","prenom":"Jean Philippe
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"78240","numero":15,"rue":"Rue des Petits Pères","ville":"Trifouillis-les-Oies"},"categorie":"Materiel","competences":[],"demandeur":{"id":121,"nom":"Tira","prenom":"Matalino"},"objet":"Le monte-charge a besoin d'un contrôle","statut":"Resolu","technicien":{"id":121,"nom":"Sinac","prenom":"Mistaur
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"74160","numero":152,"rue":"PLACE DE LA BANQUE","ville":"Bordeaux"},"categorie":"Etude","competences":[],"demandeur":{"id":122,"nom":"Durion","prenom":"Nandor"},"objet":"Il faut un plan pour installer des chaussettes à la cheminée","statut":"Resolu","technicien":{"id":122,"nom":"De Beaufort","prenom":"Hildegarde
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"93410","numero":45,"rue":"Rue Saint-Honoré","ville":"Pontoise"},"categorie":"Temperature","competences":[],"demandeur":{"id":123,"nom":"Lézard","prenom":"Neyfer"},"objet":"Le Groenland est trop froid pour mes rennes","statut":"Ouvert","technicien":{"id":123,"nom":"Depère","prenom":"Valef
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"52300","numero":65,"rue":"Place du Palais","ville":"Caen"},"categorie":"Materiel","competences":[],"demandeur":{"id":124,"nom":"Bellini","prenom":"Megara"},"objet":"Le porte-bagage est cassé","statut":"en cours","technicien":{"id":124,"nom":"Na","prenom":"Gwylonna
+"},"type":"Incident","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"93470","numero":15,"rue":"Avenue des Champs Elysees","ville":"Calais"},"categorie":"Etude","competences":[],"demandeur":{"id":125,"nom":"Espochi","prenom":"Natanael"},"objet":"Il faut vérifier mon cours de biologie","statut":"en cours","technicien":{"id":125,"nom":"Qeur","prenom":"Altaaraen
+"},"type":"Demande","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"51380","numero":84,"rue":"Rue Blonduelle","ville":"Caux"},"categorie":"Temperature","competences":[],"demandeur":{"id":126,"nom":"Farhadis","prenom":"Charus"},"objet":"Le four n'est pas assez chaud pour les pizzas","statut":"Ouvert","technicien":{"id":126,"nom":"Syronis","prenom":"Quartus
+"},"type":"Incident","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"71670","numero":56,"rue":"Place des Victoires","ville":"Pau"},"categorie":"Materiel","competences":[],"demandeur":{"id":127,"nom":"Monnier","prenom":"Anatole"},"objet":"Le premier étage de la fusée a explosé","statut":"Resolu","technicien":{"id":127,"nom":"Larrelier","prenom":"Arwen
+"},"type":"Incident","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"35620","numero":874,"rue":"Champs de Mars","ville":"Lille"},"categorie":"Etude","competences":[],"demandeur":{"id":128,"nom":"Ribaude","prenom":"Gonstand"},"objet":"Il me faut une maquette à l'échelle 1:1 pour mon projet","statut":"Resolu","technicien":{"id":128,"nom":"Viltis","prenom":"Yenova
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"82430","numero":54,"rue":"Chemin des oiseaux","ville":"Toulouse"},"categorie":"Temperature","competences":[],"demandeur":{"id":129,"nom":"Sker","prenom":"Smara"},"objet":"Le brumisateur est en panne","statut":"Ouvert","technicien":{"id":129,"nom":"Staende","prenom":"Dragil
+"},"type":"Incident","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"13450","numero":12,"rue":"Un petit chemin","ville":"Rouen"},"categorie":"Materiel","competences":[],"demandeur":{"id":130,"nom":"Zerua","prenom":"Sven"},"objet":"J'ai perdu la clef de démarrage de la tondeuse","statut":"Ouvert","technicien":{"id":130,"nom":"Staende","prenom":"Aélios
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"65020","numero":615,"rue":"Rue Grossin","ville":"Evry"},"categorie":"Etude","competences":[],"demandeur":{"id":131,"nom":"Vonari","prenom":"Yashar"},"objet":"J'ai besoin des informations sur les délais","statut":"Ouvert","technicien":{"id":131,"nom":"Cairn","prenom":"Iullius
+"},"type":"Demande","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"34150","numero":23,"rue":"Allée des orangers","ville":"Mont-Saint-Michel"},"categorie":"Temperature","competences":[],"demandeur":{"id":132,"nom":"Praefectis","prenom":"Lucio"},"objet":"Le thermomètre indique des valeurs excessives","statut":"en cours","technicien":{"id":132,"nom":"Mondoré","prenom":"Kielo
+"},"type":"Incident","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"63510","numero":8,"rue":"Chemin aux noisettes","ville":"Evreux"},"categorie":"Materiel","competences":[],"demandeur":{"id":133,"nom":"Ragever","prenom":"Eltator"},"objet":"La lumière ne s'allume plus dans l'habitacle","statut":"en cours","technicien":{"id":133,"nom":"Nepheris","prenom":"Sehlis
+"},"type":"Incident","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"74620","numero":9,"rue":"Rue Louis de Broglie","ville":"Brest"},"categorie":"Etude","competences":[],"demandeur":{"id":134,"nom":"Barrett","prenom":"Fabrice"},"objet":"Il faut contrôler les installations","statut":"Ouvert","technicien":{"id":134,"nom":"Detremblay","prenom":"Cassandre
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"15720","numero":456,"rue":"Rue de la Vallée","ville":"Lorient"},"categorie":"Temperature","competences":[],"demandeur":{"id":135,"nom":"Séraphin","prenom":"Ethan"},"objet":"Contrôle de la chambre froide","statut":"Resolu","technicien":{"id":135,"nom":"Mihra","prenom":"Neshan
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"48630","numero":12,"rue":"Rue des Bons Pères","ville":"Quimper"},"categorie":"Materiel","competences":[],"demandeur":{"id":136,"nom":"Patchole","prenom":"Don"},"objet":"Les prises électriques doivent être vérifiées","statut":"en cours","technicien":{"id":136,"nom":"Aksaïnen","prenom":"Bardan
+"},"type":"Demande","priorite":3}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"49630","numero":325,"rue":"Rue Sacos","ville":"Nantes"},"categorie":"Etude","competences":[],"demandeur":{"id":137,"nom":"Hikari","prenom":"Aeris"},"objet":"L'installation doit être avancée d'une semaine","statut":"Ouvert","technicien":{"id":137,"nom":"Cairn","prenom":"André
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"35820","numero":56,"rue":"Avenue Sans-Retour","ville":"Saint-Malo"},"categorie":"Temperature","competences":[],"demandeur":{"id":138,"nom":"Dironiil","prenom":"Noraz"},"objet":"Le ventilateur n'est plus assezpuissant","statut":"Resolu","technicien":{"id":138,"nom":"Notaris","prenom":"Théodôros
+"},"type":"Incident","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"49320","numero":12,"rue":"Impasse des Bons amis","ville":"Saint-Nazaire"},"categorie":"Materiel","competences":[],"demandeur":{"id":139,"nom":"Linden","prenom":"Lynni"},"objet":"Les outils ne sont plus aux normes","statut":"en cours","technicien":{"id":139,"nom":"Ahrondor","prenom":"Naro
+"},"type":"Demande","priorite":1}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69520","numero":35,"rue":"Père La Chaise","ville":"Vannes"},"categorie":"Etude","competences":[],"demandeur":{"id":140,"nom":"FrancheBrise","prenom":"Uth"},"objet":"Travaux préparatoire à la mise aux normes","statut":"en cours","technicien":{"id":140,"nom":"Iadirus","prenom":"Lloyd
+"},"type":"Demande","priorite":2}} 
+###
+
+### Send POST to create Ticket
+POST http://localhost:8080/genielog/ticket/create 
+Content-Type: text/plain
+
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"64120","numero":48,"rue":"Rue Ricolotte","ville":"Rennes"},"categorie":"Temperature","competences":[],"demandeur":{"id":141,"nom":"Bonheur","prenom":"Gontrand"},"objet":"Le radiateur doit être agrandi","statut":"Resolu","technicien":{"id":141,"nom":"Tanguy","prenom":"Gwendolynn
+"},"type":"Demande","priorite":2}} 
+###
+
+
