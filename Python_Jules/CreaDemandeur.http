@@ -2,301 +2,301 @@
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":12,"nom":"RENARD","prenom":"Maxime","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":12,"nom":"RENARD","prenom":"Maxime","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":100,"nom":"DE SOUSA","prenom":"Lionel","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":100,"nom":"DE SOUSA","prenom":"Lionel","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":101,"nom":"PAPA","prenom":"Michel","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":101,"nom":"PAPA","prenom":"Michel","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":102,"nom":"LEVY","prenom":"Sandra","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":102,"nom":"LEVY","prenom":"Sandra","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":103,"nom":"GONTIER","prenom":"Annie","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":103,"nom":"GONTIER","prenom":"Annie","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":104,"nom":"AZEMARD","prenom":"Christophe","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":104,"nom":"AZEMARD","prenom":"Christophe","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":105,"nom":"BOLADO","prenom":"Faustino","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":105,"nom":"BOLADO","prenom":"Faustino","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":106,"nom":"ROUX","prenom":"Daniel","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":106,"nom":"ROUX","prenom":"Daniel","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":107,"nom":"HERPE","prenom":"Céline","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":107,"nom":"HERPE","prenom":"Céline","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":108,"nom":"MAANANE","prenom":"Sabrina","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":108,"nom":"MAANANE","prenom":"Sabrina","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":109,"nom":"POMMIER","prenom":"Glady","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":109,"nom":"POMMIER","prenom":"Glady","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":110,"nom":"CANONEIRO","prenom":"Madeleine","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":110,"nom":"CANONEIRO","prenom":"Madeleine","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":111,"nom":"VIDAL","prenom":"Raphael","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":111,"nom":"VIDAL","prenom":"Raphael","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":112,"nom":"DOUMALIN","prenom":"Jeanine","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":112,"nom":"DOUMALIN","prenom":"Jeanine","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":113,"nom":"DEVROE","prenom":"Pascal","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":113,"nom":"DEVROE","prenom":"Pascal","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":114,"nom":"FRANCISCO","prenom":"Patrice","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":114,"nom":"FRANCISCO","prenom":"Patrice","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":115,"nom":"GRELET","prenom":"Christophe","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":115,"nom":"GRELET","prenom":"Christophe","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":116,"nom":"HELAINE","prenom":"Philippe","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":116,"nom":"HELAINE","prenom":"Philippe","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":117,"nom":"LACAMPAGNE","prenom":"Daniel","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":117,"nom":"LACAMPAGNE","prenom":"Daniel","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":118,"nom":"MOTHU","prenom":"Gisèle","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":118,"nom":"MOTHU","prenom":"Gisèle","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":119,"nom":"SABATIER","prenom":"Alain","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":119,"nom":"SABATIER","prenom":"Alain","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":120,"nom":"TOUBLANC","prenom":"Adeline","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":120,"nom":"TOUBLANC","prenom":"Adeline","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":121,"nom":"Tira","prenom":"Matalino","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":121,"nom":"Tira","prenom":"Matalino","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":122,"nom":"Durion","prenom":"Nandor","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":122,"nom":"Durion","prenom":"Nandor","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":123,"nom":"Lézard","prenom":"Neyfer","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":123,"nom":"Lézard","prenom":"Neyfer","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":124,"nom":"Bellini","prenom":"Megara","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":124,"nom":"Bellini","prenom":"Megara","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":125,"nom":"Espochi","prenom":"Natanael","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":125,"nom":"Espochi","prenom":"Natanael","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":126,"nom":"Farhadis","prenom":"Charus","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":126,"nom":"Farhadis","prenom":"Charus","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":127,"nom":"Monnier","prenom":"Anatole","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":127,"nom":"Monnier","prenom":"Anatole","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":128,"nom":"Ribaude","prenom":"Gonstand","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":128,"nom":"Ribaude","prenom":"Gonstand","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":129,"nom":"Sker","prenom":"Smara","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":129,"nom":"Sker","prenom":"Smara","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":130,"nom":"Zerua","prenom":"Sven","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":130,"nom":"Zerua","prenom":"Sven","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":131,"nom":"Vonari","prenom":"Yashar","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":131,"nom":"Vonari","prenom":"Yashar","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":132,"nom":"Praefectis","prenom":"Lucio","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":132,"nom":"Praefectis","prenom":"Lucio","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":133,"nom":"Ragever","prenom":"Eltator","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":133,"nom":"Ragever","prenom":"Eltator","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":134,"nom":"Barrett","prenom":"Fabrice","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":134,"nom":"Barrett","prenom":"Fabrice","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":135,"nom":"Séraphin","prenom":"Ethan","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":135,"nom":"Séraphin","prenom":"Ethan","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":136,"nom":"Patchole","prenom":"Don","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":136,"nom":"Patchole","prenom":"Don","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":137,"nom":"Hikari","prenom":"Aeris","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":137,"nom":"Hikari","prenom":"Aeris","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":138,"nom":"Dironiil","prenom":"Noraz","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":138,"nom":"Dironiil","prenom":"Noraz","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":139,"nom":"Linden","prenom":"Lynni","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":139,"nom":"Linden","prenom":"Lynni","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":140,"nom":"FrancheBrise","prenom":"Uth","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":140,"nom":"FrancheBrise","prenom":"Uth","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 ### Send POST to change clientName to clientId
 POST http://localhost:8080/genielog/demandeur/create 
 Content-Type: text/plain
 
-{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"demandeurId":141,"nom":"Bonheur","prenom":"Gontrand","sexe":"M"}, "telephone":"0645789878"}} 
+{"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "clientID":12, "demandeur":{"SIRET":12345678912349, "idAdresse":12, "demandeur":{"id":141,"nom":"Bonheur","prenom":"Gontrand","sexe":"M"}, "telephone":"0645789878"}} 
 ###
 
 
