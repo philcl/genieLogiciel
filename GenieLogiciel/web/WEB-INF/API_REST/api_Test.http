@@ -154,12 +154,14 @@ Content-Type: text/plain
 
 ##Create ticket
 
-POST http://localhost:8080/genielog/ticket/create
+POST http://localhost:8080/genielog/ticket/modify
 Content-Type: text/plain
 
 {
   "token": "96b29b22-cefb-4699-93b9-9fcc97aa003e",
+  "clientId":3443434
   "ticket": {
+    "id":50,
     "categorie": "Etude",
     "competences": [
       "Electricien",

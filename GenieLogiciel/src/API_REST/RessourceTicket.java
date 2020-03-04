@@ -373,7 +373,7 @@ public class RessourceTicket {
             tx =  session.beginTransaction();
 
             TicketEntity ticketEntity;
-            try{ticketEntity = (TicketEntity) session.createQuery("FROM TacheEntity t WHERE t.id = " + ticket.id + " and t.statut != 'Resolu' and t.statut != 'Non resolu'").getSingleResult();}
+            try{ticketEntity = (TicketEntity) session.createQuery("FROM TicketEntity t WHERE t.id = " + ticket.id + " and t.statut != 'Resolu' and t.statut != 'Non resolu'").getSingleResult();}
             catch (NoResultException e) {return  ReponseType.getNOTOK("Le ticket n'existe pas", true, tx, session);}
 
             if(tech == null)
@@ -626,9 +626,10 @@ public class RessourceTicket {
                 return null;
             }
 
-            Personne demandeur, technicien;
+            Personne demandeur, technicien = null;
             demandeur = new Personne(demandeurEntity.getNom(), demandeurEntity.getPrenom(), demandeurEntity.getIdPersonne());
-            technicien = new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId());
+            try{technicien = new Personne(technicienEntity.getNom(), technicienEntity.getPrenom(), technicienEntity.getId());}
+            catch (NullPointerException ignored) {}
 
             //Recuperation du nom de l'entreprise du client
             int siren = ticketEntity.getSiren();
