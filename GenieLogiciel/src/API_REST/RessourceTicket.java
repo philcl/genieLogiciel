@@ -221,9 +221,14 @@ public class RessourceTicket {
             ticketEntity.setDemandeur(demandeur.getIdPersonne());
 
             StaffEntity tech;
-            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id + " and s.actif = 1").getSingleResult();}
-            catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien avec l'id " + ticket.technicien.id + " n'existe pas", true, tx, session);}
-            ticketEntity.setTechnicien(tech.getId());
+            try{
+                tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id + " and s.actif = 1").getSingleResult();
+                ticketEntity.setTechnicien(tech.getId());
+            }
+            catch(NoResultException | NullPointerException e) {
+                ticketEntity.setTechnicien(null);
+            }
+
 
             maxID = (int) session.createQuery("SELECT MAX(t.id) FROM TicketEntity t").getSingleResult()+1;
             ticketEntity.setId(maxID); //Rajout de l'increment
@@ -336,8 +341,12 @@ public class RessourceTicket {
             tx = session.beginTransaction();
             //Recuperation du tech
             StaffEntity tech;
-            try{tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id + " and s.actif = 1").getSingleResult();}
-            catch(NoResultException e) {return ReponseType.getNOTOK("Le technicien n'existe pas", true, tx, session);}
+            try{
+                tech = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticket.technicien.id + " and s.actif = 1").getSingleResult();
+            }
+            catch(NoResultException | NullPointerException e) {
+                tech = null;
+            }
 
             //Recuperation du demandeur
             DemandeurEntity demandeur;
@@ -363,15 +372,29 @@ public class RessourceTicket {
             //Execution de la commande update
             tx =  session.beginTransaction();
 
-            //le replace permet d'echapper le token '
-            String request = "UPDATE TicketEntity t SET t.objet = '" + ticket.objet.replace("'", "''") + "', t.categorie = '" + ticket.categorie + "', t.description ='" + ticket.description.replace("'", "''") + "', t.statut ='" + ticket.statut.replace("'", "''") + "', t.type = '" + ticket.type.replace("'", "''") + "' WHERE t.id = " + ticket.id;
-            Query update = session.createQuery(request);
-            int nbLignes = update.executeUpdate();
+            TicketEntity ticketEntity;
+            try{ticketEntity = (TicketEntity) session.createQuery("FROM TacheEntity t WHERE t.id = " + ticket.id + " and t.statut != 'Resolu' and t.statut != 'Non resolu'").getSingleResult();}
+            catch (NoResultException e) {return  ReponseType.getNOTOK("Le ticket n'existe pas", true, tx, session);}
 
-            request = "UPDATE TicketEntity t SET t.siren = " + client.getSiren() + ", t.demandeur = " + demandeur.getIdPersonne() + ", t.technicien = " + tech.getId() + ", t.priorite = " + ticket.priorite + ", t.adresse = " + client.getAdresse() + " WHERE t.id = " + ticket.id;
-            update = session.createQuery(request);
-            nbLignes += update.executeUpdate();
+            if(tech == null)
+                ticketEntity.setTechnicien(null);
+            else
+                ticketEntity.setTechnicien(tech.getId());
 
+            ticketEntity.setObjet(ticket.objet.replace("'", "''"));
+            ticketEntity.setCategorie(ticket.categorie.replace("'", "''"));
+            ticketEntity.setDescription(ticket.description.replace("'", "''"));
+            ticketEntity.setStatut(ticket.statut.replace("'", "''"));
+            ticketEntity.setType(ticket.type.replace("'", "''"));
+            ticketEntity.setDemandeur(demandeur.getIdPersonne());
+            ticketEntity.setPriorite((byte) ticket.priorite);
+            ticketEntity.setAdresse(client.getAdresse());
+            ticketEntity.setSiren(client.getSiren());
+
+            session.save(ticketEntity);
+            tx.commit();
+            session.clear();
+            tx = session.beginTransaction();
             //todo faire en sorte de pouvoir supprimer des competences
             //todo accorder les competences des taches avec le ticket
 
@@ -397,7 +420,7 @@ public class RessourceTicket {
             tx.commit();
             session.clear();
             tx = session.beginTransaction();
-            request = "SELECT c FROM JonctionTicketCompetenceEntity j, CompetencesEntity c WHERE c.idCompetences = j.competence and j.idTicket = " + ticket.id + " and j.actif = 1 and c.actif = 1";
+            String request = "SELECT c FROM JonctionTicketCompetenceEntity j, CompetencesEntity c WHERE c.idCompetences = j.competence and j.idTicket = " + ticket.id + " and j.actif = 1 and c.actif = 1";
             List result = session.createQuery(request).list();
 
             for(Object o : result) {
@@ -406,9 +429,6 @@ public class RessourceTicket {
             }
             tx.commit();
             session.clear();
-
-            if(nbLignes != 2)
-                return ReponseType.getNOTOK("Erreur lors de l'execution de la requete", true, null, session);
             session.close();
         }catch (HibernateException e){
             //if (tx != null) tx.rollback();
@@ -595,7 +615,10 @@ public class RessourceTicket {
 
             try {
                 demandeurEntity = (DemandeurEntity) session.createQuery("FROM DemandeurEntity p WHERE p.idPersonne = " + ticketEntity.getDemandeur() + " and p.actif = 1").getSingleResult();
-                technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien() + " and s.actif = 1").getSingleResult();
+                try{technicienEntity = (StaffEntity) session.createQuery("FROM StaffEntity s WHERE s.id = " + ticketEntity.getTechnicien() + " and s.actif = 1").getSingleResult();}
+                catch (NoResultException e) {
+                    technicienEntity = null;
+                }
             }
             catch (NoResultException e) {
                 tx.commit();

@@ -168,31 +168,25 @@ Content-Type: text/plain
     "priorite": 1,
     "demandeur": {
       "sexe": "M",
-      "id": 33,
-      "nom": "qsdqsd",
-      "prenom": "qsdqsd"
+      "id": 35,
+      "nom": "dsqd",
+      "prenom": "dsqd"
     },
-    "description": "sqdsqdsqd",
+    "description": "sdqsdqsdq",
     "nomClient": "A",
-    "objet": "OBjecto",
-    "statut": "Bloque",
-    "technicien": {
-      "sexe": "M",
-      "id": 56,
-      "nom": "CLAUDE",
-      "prenom": "Philippe"
-    },
+    "objet": "OKOKSDQD",
+    "statut": "Ouvert",
     "type": "Demande",
     "adresse": {
-      "numero": 23,
-      "rue": "qsdqsd 3434",
-      "codePostal": "kqsjdqs"
+      "numero": 2954,
+      "rue": "QSd 231",
+      "codePostal": "sd"
     },
     "taches": [
       {
         "statut": "En cours",
-        "objet": "sdqsd",
-        "description": "qsdqsd",
+        "objet": "QDd",
+        "description": "SQDsd",
         "technicien": {
           "sexe": "M",
           "id": 65,
@@ -200,25 +194,9 @@ Content-Type: text/plain
           "prenom": "Philippe"
         },
         "competences": [
-          "Electricien"
+          "Bicraveur"
         ],
-        "tempsEstime": 56,
-        "tempsPasse": 0
-      },
-      {
-        "statut": "Ouvert",
-        "objet": "qsdq",
-        "description": "dsqd",
-        "technicien": {
-          "sexe": "M",
-          "id": 63,
-          "nom": "Irteza",
-          "prenom": "She"
-        },
-        "competences": [
-          "Mecanicien"
-        ],
-        "tempsEstime": 455,
+        "tempsEstime": 344,
         "tempsPasse": 0
       }
     ]
