@@ -3,7 +3,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":2,"staffUserName":"2","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"VITTONE","staffName":"Jules
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -11,7 +11,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":100,"staffUserName":"100","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"VIGLIONE","staffName":"Sébastien
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -19,7 +19,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":101,"staffUserName":"101","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"TERZIAN","staffName":"Jacques
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -27,7 +27,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":102,"staffUserName":"102","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"GIRAUT","staffName":"Patrick
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -35,7 +35,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":103,"staffUserName":"103","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"CORENTI","staffName":"Antoine
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -43,7 +43,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":104,"staffUserName":"104","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"ARZALAOUI","staffName":"Mohamed
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -51,7 +51,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":105,"staffUserName":"105","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"SOLINAS","staffName":"Pierre
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -59,7 +59,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":106,"staffUserName":"106","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"POIRIER","staffName":"Joel
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -67,7 +67,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":107,"staffUserName":"107","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"LAPINA","staffName":"Fabrice
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -75,7 +75,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":108,"staffUserName":"108","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"POLITO ","staffName":"Joseph
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -83,7 +83,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":109,"staffUserName":"109","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"ZIEMMIAK","staffName":"Stanislas
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -91,7 +91,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":110,"staffUserName":"110","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"GLAVIC","staffName":"Mathieu
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -99,7 +99,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":111,"staffUserName":"111","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"TRICHET","staffName":"Fabien
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -107,7 +107,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":112,"staffUserName":"112","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Reynaud","staffName":"Denis
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -115,7 +115,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":113,"staffUserName":"113","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"LAYANI","staffName":"Ichoua
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -123,7 +123,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":114,"staffUserName":"114","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"TEXEIRA","staffName":"Abilio
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -131,7 +131,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":115,"staffUserName":"115","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"LOUARMA","staffName":"SaÏd
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -139,7 +139,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":116,"staffUserName":"116","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"GALVEZ","staffName":"Fausto
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -147,7 +147,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":117,"staffUserName":"117","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"JOUSSET","staffName":"Mathieu
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -155,7 +155,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":118,"staffUserName":"118","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"LUMETA","staffName":"Vincent
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -163,7 +163,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":119,"staffUserName":"119","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"KRIVOCAPIC","staffName":"Branco
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -171,7 +171,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":120,"staffUserName":"120","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"NOTARI","staffName":"Jean Philippe
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -179,7 +179,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":121,"staffUserName":"121","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Sinac","staffName":"Mistaur
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -187,7 +187,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":122,"staffUserName":"122","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"De Beaufort","staffName":"Hildegarde
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -195,7 +195,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":123,"staffUserName":"123","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Depère","staffName":"Valef
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -203,7 +203,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":124,"staffUserName":"124","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Na","staffName":"Gwylonna
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -211,7 +211,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":125,"staffUserName":"125","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Qeur","staffName":"Altaaraen
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -219,7 +219,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":126,"staffUserName":"126","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Syronis","staffName":"Quartus
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -227,7 +227,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":127,"staffUserName":"127","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Larrelier","staffName":"Arwen
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -235,7 +235,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":128,"staffUserName":"128","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Viltis","staffName":"Yenova
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -243,7 +243,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":129,"staffUserName":"129","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Staende","staffName":"Dragil
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -251,7 +251,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":130,"staffUserName":"130","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Staende","staffName":"Aélios
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -259,7 +259,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":131,"staffUserName":"131","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Cairn","staffName":"Iullius
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -267,7 +267,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":132,"staffUserName":"132","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Mondoré","staffName":"Kielo
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -275,7 +275,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":133,"staffUserName":"133","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Nepheris","staffName":"Sehlis
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -283,7 +283,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":134,"staffUserName":"134","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Detremblay","staffName":"Cassandre
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -291,7 +291,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":135,"staffUserName":"135","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Mihra","staffName":"Neshan
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -299,7 +299,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":136,"staffUserName":"136","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Aksaïnen","staffName":"Bardan
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -307,7 +307,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":137,"staffUserName":"137","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Cairn","staffName":"André
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -315,7 +315,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":138,"staffUserName":"138","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Notaris","staffName":"Théodôros
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -323,7 +323,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":139,"staffUserName":"139","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Ahrondor","staffName":"Naro
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -331,7 +331,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":140,"staffUserName":"140","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Iadirus","staffName":"Lloyd
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 ### create User
@@ -339,7 +339,7 @@ POST http://localhost:8080/genielog/user/create
 Content-Type: text/plain
 
 {"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","staff":{"staffId":141,"staffUserName":"141","staffPassword":"1234","staffMail":"test@test.fr","staffAdress":{"numero":12,"rue":"avenue des champs","ville":"PARIS","codePostal":"75000"},"staffSurname":"Tanguy","staffName":"Gwendolynn
-","staffSexe":"M","staffTel":"0504070105","staffCompetency":[""],"staffRole":["Tech"]}} 
+","staffSexe":"M","staffTel":"0504070105","staffCompetency":["Informaticien"],"staffRole":["Tech"]}} 
 ###
 
 
