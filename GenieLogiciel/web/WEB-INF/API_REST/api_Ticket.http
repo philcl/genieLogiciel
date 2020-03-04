@@ -12,7 +12,7 @@ Accept: */*
 Cache-Control: no-cache
 Content-Type: text/plain
 
-{"clientId":"123456789","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "ticketId":20}
+{"clientId":"123456789","token":"96b29b22-cefb-4699-93b9-9fcc97aa003e", "ticketId":50}
 ###
 
 ### Send POST to create Ticket without task
@@ -45,7 +45,7 @@ Content-Type: text/plain
 {"clientId":123456789,"token":"96b29b22-cefb-4699-93b9-9fcc97aa003e","ticket":{"adresse":{"codePostal":"69000","numero":32,"rue":"RUE ALAINE","ville":"LYON"},"categorie":"Temperature","competences":["Electricien", "Frigoriste"],"demandeur":{"id": 12,"nom":"RENARD","prenom":"Maxime","sexe":"M"},"objet":"La vitrine réfrigérée n'est plus assez froide","description":"Bonjour,
 
  Notre meuble vitrine réfrigérée qui nous sert à la présentation des charcuteries n'est plus assez froid, il est impossible de descendre au-delà de 6°.
- ","statut":"En cours","technicien":{"id":2,"nom":"Jules","prenom":"VITTONE","sexe":"M"},"type":"Incident","id":20,"priorite":2,
+ ","statut":"En cours","technicien":{"id":2,"nom":"Jules","prenom":"VITTONE","sexe":"M"},"type":"Incident","id":7,"priorite":2,
  "taches":[{"id":44, "statut":"Resolu", "objet":"TEST", "competences":["Electricien", "Informaticien"], "technicien":{"id":12,"nom":"TECHNOM","prenom":"TECHPRENOM","sexe":"M"}, "tempsEstime":50}]}}
 ###
 

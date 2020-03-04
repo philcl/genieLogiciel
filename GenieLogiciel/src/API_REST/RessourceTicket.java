@@ -762,6 +762,9 @@ public class RessourceTicket {
                         j.setDebut(Timestamp.from(Instant.now()));
 
                         session.save(j);
+                        tx.commit();
+                        session.clear();
+                        tx = session.beginTransaction();
                     }
                     competencesTicket.remove(competence);
                 }

@@ -168,6 +168,7 @@ public class RessourceDemandeur {
         try{session.createQuery("FROM JonctionSirensiretEntity j WHERE j.siret = " + demandeur.SIRET + " and j.siren = " + clientSIREN + " and j.actif = 1").getSingleResult();}
         catch (NoResultException e) {
             JonctionSirensiretEntity j = new JonctionSirensiretEntity();
+            System.err.println("create jonction SIRETSIREN SIRET = " + demandeur.SIRET + " SIREN = " + clientSIREN);
             j.setSiren(clientSIREN);
             j.setSiret(demandeur.SIRET);
             j.setActif(1);
